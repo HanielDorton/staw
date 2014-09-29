@@ -8,7 +8,10 @@ public class ManueverCard extends Card{
 
 	public ManueverCard(String faction, String shipClass){
 		super(faction, shipClass);
-		this.texture = Assets.manager.get(faction + "/" + shipClass + " Manuevers.png", Texture.class);
+		if (Assets.manager.isLoaded(faction + "/" + shipClass + " Manuevers.png")) {
+			this.texture = Assets.manager.get(faction + "/" + shipClass + " Manuevers.png", Texture.class);
+			this.textureLoaded = true;
+		}
 	}
 
 }

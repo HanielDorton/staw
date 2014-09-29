@@ -65,8 +65,10 @@ public class GameScreen implements Screen{
 		int size = currentCards.size();
 		for (int i = startingCard; i < startingCard + numberOfCards; i++) {
 			if (i < size) {
-				game.batch.draw(currentCards.get(i).getTexture(), x, resizeY(150), resizeX(200), resizeY(278));
-				x += resizeX(220);
+				if (currentCards.get(i).hasTexture()) {
+					game.batch.draw(currentCards.get(i).getTexture(), x, resizeY(150), resizeX(200), resizeY(278));
+					x += resizeX(220);
+				}
 			}
 		}
 		game.batch.end();
@@ -270,9 +272,11 @@ public class GameScreen implements Screen{
 					currentDirectory = newFile;
 					loadFiles(currentDirectory);
 					currentDirectoryText.setText(newFile.path());
+					return;
 				} else {
 					if (newFile.exists()) {
 	            		loadFleet(newFile.toString());
+	            		return;
 	            	}
 				}
 				newFile = Gdx.files.absolute(currentDirectory +"/" +  directoryList.getSelected() + "/");
@@ -280,9 +284,11 @@ public class GameScreen implements Screen{
 					currentDirectory = newFile;
 					loadFiles(currentDirectory);
 					currentDirectoryText.setText(newFile.path());
+					return;
 				} else {
 					if (newFile.exists()) {
 	            		loadFleet(newFile.toString());
+	            		return;
 	            	}
 				}
 			}

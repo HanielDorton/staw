@@ -59,5 +59,8 @@ public class Card {
 	public Texture getTexture() {
 		return texture;
 	}
+	public boolean hasTexture() {
+		return textureLoaded;
+	}
 
 }
