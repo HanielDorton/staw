@@ -1,27 +1,27 @@
 package com.haniel.staw;
 
+
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.utils.XmlReader;
 import com.haniel.staw.Cards.Card;
 import com.haniel.staw.Cards.ShipCard;
 
@@ -29,30 +29,29 @@ import com.haniel.staw.Cards.ShipCard;
 public class GameScreen implements Screen{
 	final staw game;
 	public OrthographicCamera camera;
-	private static int screenWidth = 1000;
-    private static int screenHeight = 600;
-    
+	private static int assumeX = 1000;
+    private static int assumeY = 600;    
 	private Stage stage;
 	private Skin skin;
-	//private Skin skin2;
-	private Table fleetTable, shipTable, leftTable, rightTable, bottomTable;
+	private Table fleetTable, shipTable, leftTable, rightTable, bottomTable, centerTable;
 	private TextureAtlas atlas;
-	//private TextureAtlas atlas2;
-	private TextField loadFile;
+	private TextButton loadFile;
 	private Button buttonMore, buttonLess;
-	//private ListFileChooser chooser;
-	private List<Fleet> fleets = new ArrayList<Fleet>();	
-	private List<Actor> actors = new ArrayList<Actor>();
-	public List<Card> currentCards = new ArrayList<Card>();
+	List<String> directoryList;
+	private ArrayList<Fleet> fleets = new ArrayList<Fleet>();	
+	private ArrayList<Actor> actors = new ArrayList<Actor>();
+	public ArrayList<Card> currentCards = new ArrayList<Card>();
 	private int startingCard = 0;
 	private int numberOfCards = 4;
-	private int buttonWidth = 200;
-	private int buttonHeight = 40;
+	private int buttonWidth = resizeX(200);
+	private int buttonHeight = resizeY(60);
+	private int buttonPad = resizeX(20);
+	private FileHandle currentDirectory = Gdx.files.absolute("/");
     
 	public GameScreen(final staw gam) {
 		this.game = gam;
 		camera = new OrthographicCamera();
-	    camera.setToOrtho(false, screenWidth, screenHeight);		
+	    camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());		
 	}
 
 	@Override
@@ -62,110 +61,63 @@ public class GameScreen implements Screen{
 		camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 		game.batch.begin();
-		int x = 62;
+		int x = resizeX(62);
 		int size = currentCards.size();
 		for (int i = startingCard; i < startingCard + numberOfCards; i++) {
 			if (i < size) {
-				game.batch.draw(currentCards.get(i).getTexture(), x, 150, 200, 300);
-				x += 225;
+				game.batch.draw(currentCards.get(i).getTexture(), x, resizeY(150), resizeX(200), resizeY(278));
+				x += resizeX(220);
 			}
 		}
 		game.batch.end();
     	stage.act(Gdx.graphics.getDeltaTime());
     	stage.draw();
 	}
-	public int getWidth() {
-    	return screenWidth;
-    }
-
-    public int getHeight() {
-    	return screenHeight;
-    }
-
 
 	@Override
-	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
+	public void resize(int width, int height) {		
 	}
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
 		atlas = new TextureAtlas("uiskin.atlas");
 		skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
-		//atlas2 = new TextureAtlas("uiskin2.atlas");
-		//skin2 = new Skin(Gdx.files.internal("uiskin2.json"), atlas2);
+		directoryList = new List<String>(skin);
 		stage = new Stage();
 		fleetTable = new Table(skin);
 		shipTable = new Table(skin);
 		rightTable = new Table(skin);
 		leftTable = new Table(skin);
 		bottomTable = new Table(skin);
+		centerTable = new Table(skin);
 		stage.addActor(fleetTable);
 		stage.addActor(shipTable);
 		stage.addActor(rightTable);
 		stage.addActor(leftTable);
 		stage.addActor(bottomTable);
-		shipTable.setBounds(0, 515, stage.getWidth(), 40);
-		fleetTable.setBounds(0, 560, stage.getWidth(), 40);
-		
-		rightTable.setBounds(960, 0, 40, stage.getHeight());
-		leftTable.setBounds(0, 0, 40, stage.getHeight());
-		bottomTable.setBounds(0, 0, stage.getWidth(), 40);
+		stage.addActor(centerTable);
+		shipTable.setBounds(0, resizeY(460), stage.getWidth(), resizeY(60));
+		fleetTable.setBounds(0, resizeY(540), stage.getWidth(), resizeY(60));
+		rightTable.setBounds(resizeX(940), 0, resizeX(40), stage.getHeight());
+		leftTable.setBounds(0, 0, resizeX(60), stage.getHeight());
+		bottomTable.setBounds(0, 0, stage.getWidth(), resizeY(80));
+		centerTable.setBounds(resizeX(300), resizeY(100), resizeX(400), resizeY(500));
 		Gdx.input.setInputProcessor(stage);
-		/*
-		chooser = new ListFileChooser(skin2, new Listener() {
-
-			@Override
-			public void choose(FileHandle file) {
-				System.out.println("chose " + file);
-			}
-
-			@Override
-			public void choose(Array<FileHandle> files) {
-				System.out.println("chose");
-				for(int i = 0; i < files.size; i++)
-					System.out.println("\t" + files.get(i).name());
-			}
-
-			@Override
-			public void cancel() {
-				System.out.println("cancelled");
+						
+		loadFile = new TextButton("Add Fleet", skin);
+		loadFile.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				centerTable.clear();
+				makeFileChooser();
 			}
 		});
 		
-		chooser.setDirectoriesChoosable(true);
-		chooser.setShowHidden(true);
-		
-		Window window = new Window("choose a file", skin);
-		window.setPosition(stage.getWidth() / 2 - chooser.getWidth() / 2, stage.getHeight() / 2 - chooser.getHeight() / 2);
-		window.setResizable(true);
-		window.add(chooser).expand().fill();
-		*/
-		
-		loadFile = new TextField("/home/haniel/Fed.xml", skin);
-		loadFile.addListener(new InputListener() {
-			public boolean keyUp(InputEvent event, int keycode) {
-	            if (keycode == Input.Keys.ENTER) {
-	            	if (!(Gdx.files.absolute(loadFile.getText()).exists())) {
-						addError("File does not exist", "Belay that Order");
-	            	} else{
-	            		loadFleet(loadFile.getText());
-	            	}
-	               
-	            }
-	            return false;
-	        }
-
-		});
 		buttonMore = new TextButton("+", skin);
 		buttonMore.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				startingCard += numberOfCards;
-				leftTable.add(buttonLess).width(buttonHeight).height(buttonWidth);
+				leftTable.add(buttonLess).width(buttonHeight - resizeX(10)).height(buttonWidth);
 				if (startingCard + numberOfCards > currentCards.size()) {
-					//buttonMore.remove();
 					rightTable.clear();
 				}
 			}
@@ -175,15 +127,13 @@ public class GameScreen implements Screen{
 			public void changed(ChangeEvent event, Actor actor) {
 				startingCard -= numberOfCards;
 				if (startingCard == 0) {
-					//buttonLess.remove();
 					leftTable.clear();
 				}
 				if (startingCard + numberOfCards < currentCards.size()) {
-					rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth);;
+					rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth);
 				}
 			}
 		});
-		//actors.add(window);
 		actors.add(loadFile);
 		recreateTable();
 		
@@ -192,23 +142,32 @@ public class GameScreen implements Screen{
 	private void recreateTable() {
 		if (actors.size() > 4) actors.remove(0);
 		for (Actor w : actors) {
-			fleetTable.add(w).width(buttonWidth).height(buttonHeight).padRight(20);
+			fleetTable.add(w).width(buttonWidth).height(buttonHeight).padRight(buttonPad);
 		}		
 	}
 
 	protected void loadFleet(String text) {
-		final Fleet fleet = new Fleet(this, text);
-		fleets.add(fleet);
-		File f = new File(text);
-		TextButton button = new TextButton((f.getName()).replace(".xml", ""), skin);
-		button.addListener(new ChangeListener() {
-			public void changed(ChangeEvent event, Actor actor) {
-				displayFleet(fleet);	
-			}
-		});
-		actors.add(button);
-		fleetTable.reset();
-		recreateTable();
+		try {
+			FileHandle handle = Gdx.files.absolute(text);
+			XmlReader xml = new XmlReader();
+			xml.parse(handle);
+			final Fleet fleet = new Fleet(this, text);
+			fleets.add(fleet);
+			File f = new File(text);
+			TextButton button = new TextButton((f.getName()).replace(".xml", ""), skin);
+			button.addListener(new ChangeListener() {
+				public void changed(ChangeEvent event, Actor actor) {
+					displayFleet(fleet);	
+				}
+			});
+			actors.add(button);
+			fleetTable.reset();
+			recreateTable();
+			centerTable.clear();
+		}
+		catch (Exception e) {
+			addError("Unable to Parse File", "Belay that Order");
+		}
 	}
 	
 	public void displayFleet(Fleet fleet) {
@@ -222,7 +181,7 @@ public class GameScreen implements Screen{
 					displayShip((ShipCard) ship);	
 				}
 			});
-			shipTable.add(button).width(buttonWidth).height(buttonHeight).padRight(20);
+			shipTable.add(button).width(buttonWidth).height(buttonHeight).padRight(buttonPad);
 		}
 	}
 	
@@ -234,32 +193,25 @@ public class GameScreen implements Screen{
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		stage.dispose();
 	}
 	
 	public void addError(String errorString, String okString) {
 		Dialog d = new Dialog(errorString, skin);
 		d.button(okString);
-		bottomTable.add(d).width(buttonWidth).height(buttonHeight);
+		bottomTable.add(d).width(buttonWidth * 2).height(buttonHeight * 2);
 	}
 	
 	public void addCards(Card card) {
@@ -272,6 +224,90 @@ public class GameScreen implements Screen{
 		leftTable.clear();
 		rightTable.clear();
 		startingCard = 0;
+	}
+	
+	private int resizeX(int positionX) {
+		float x = Gdx.graphics.getWidth();
+		float changeX = x / assumeX;
+		return (int) ( positionX * changeX);
+		
+	}
+	
+	private int resizeY(int positionY) {
+		float y = Gdx.graphics.getHeight();
+		float changeY = y / assumeY;
+		return (int) ( positionY * changeY);
+		
+	}
+	
+	private void makeFileChooser() {		
+
+		centerTable.setBounds(resizeX(300), resizeY(100), resizeX(400), resizeY(500));
+		
+		final TextField currentDirectoryText = new TextField(currentDirectory.path(), skin);
+		
+		final TextButton exitButton = new TextButton("Exit", skin);
+		exitButton.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				centerTable.clear();
+			}
+		});
+		
+		TextButton backDirectory = new TextButton("Move Up", skin);
+		backDirectory.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				currentDirectory = currentDirectory.parent();
+				loadFiles(currentDirectory);
+				currentDirectoryText.setText(currentDirectory.path());
+			}
+		});
+		
+		TextButton openFile = new TextButton("openFile", skin);
+		openFile.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				FileHandle newFile = Gdx.files.absolute(currentDirectory + directoryList.getSelected() + "/");
+				if (newFile.isDirectory()) {
+					currentDirectory = newFile;
+					loadFiles(currentDirectory);
+					currentDirectoryText.setText(newFile.path());
+				} else {
+					if (newFile.exists()) {
+	            		loadFleet(newFile.toString());
+	            	}
+				}
+				newFile = Gdx.files.absolute(currentDirectory +"/" +  directoryList.getSelected() + "/");
+				if (newFile.isDirectory()) {
+					currentDirectory = newFile;
+					loadFiles(currentDirectory);
+					currentDirectoryText.setText(newFile.path());
+				} else {
+					if (newFile.exists()) {
+	            		loadFleet(newFile.toString());
+	            	}
+				}
+			}
+		});
+		
+		loadFiles(currentDirectory);
+		
+		ScrollPane scrollPane = new ScrollPane(directoryList, skin);
+		centerTable.add(scrollPane).width(resizeX(200)).height(resizeY(300));
+		centerTable.add(currentDirectoryText).width(buttonWidth).height(buttonHeight);
+		centerTable.add(exitButton).width(buttonWidth).height(buttonHeight);
+		centerTable.add(backDirectory).width(buttonWidth).height(buttonHeight);
+		centerTable.add(openFile).width(buttonWidth).height(buttonHeight);
+		
+	}
+	
+	public void loadFiles(FileHandle file) {
+		FileHandle[] files = file.list();
+		ArrayList<String> stringFiles = new ArrayList<String>();
+		for (FileHandle f : files) {
+			stringFiles.add(f.name());
+		}
+		String[] filesArray = new String[ stringFiles.size() ];
+		stringFiles.toArray(filesArray);
+		directoryList.setItems(filesArray);
 	}
 
 }
