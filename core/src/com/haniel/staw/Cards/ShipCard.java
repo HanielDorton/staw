@@ -36,11 +36,25 @@ public class ShipCard extends Card{
 	
 	private void loadTexture() {
 		if (!textureLoaded) {
-			if (Assets.manager.isLoaded(faction + "/" + shipClass + ".png")) {
+			if (Assets.manager.isLoaded(faction + "/" + name + ".png")) {
+				this.texture = Assets.manager.get(faction + "/" + name + ".png", Texture.class);
+				this.textureLoaded = true;
+			}	
+			else if (Assets.manager.isLoaded(faction + "/" + shipClass + " " + source + ".png")) {
+				this.texture = Assets.manager.get(faction + "/" + shipClass + " " + source + ".png", Texture.class);
+				this.textureLoaded = true;
+			}
+
+			else if (Assets.manager.isLoaded(faction + "/" + shipClass + ".png")) {
 				texture = Assets.manager.get(faction + "/" + shipClass + ".png", Texture.class);
 				//System.out.println(name + ": texture loaded");
 				textureLoaded = true;
 			}
+			else{
+				System.out.println("Unable to load" + name);
+				System.out.println("Class: " + shipClass);
+			}
+
 		}
 		
 		

@@ -7,8 +7,11 @@ import java.util.ArrayList;
 
 
 
+
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,7 +20,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -45,6 +47,8 @@ public class GameScreen implements Screen{
 	List<String> directoryList;
 	private ArrayList<Fleet> fleets = new ArrayList<Fleet>();	
 	private ArrayList<TextButton> fleetButtons = new ArrayList<TextButton>();
+	private ArrayList<TextButton> fleetButtonsActive = new ArrayList<TextButton>();
+	private int activeFleet = 5;
 	private ArrayList<TextButton> shipButtons = new ArrayList<TextButton>();
 	public ArrayList<Card> currentCards = new ArrayList<Card>();
 	private int startingCard = 0;
@@ -54,6 +58,11 @@ public class GameScreen implements Screen{
 	private int buttonPad = resizeX(20);
 	private FileHandle currentDirectory = Gdx.files.absolute("/");
 	private Texture backgroundPanel = Assets.manager.get("backgroundpanel.png", Texture.class);
+	private Sound doubleBeep = Assets.manager.get("doublebeep.mp3", Sound.class);
+	private Sound error = Assets.manager.get("error.wav", Sound.class);
+	//private Sound highpitch = Assets.manager.get("highpitch.wav", Sound.class);
+	private Sound noeffect = Assets.manager.get("noeffect.mp3", Sound.class);
+	private Sound quickbeep = Assets.manager.get("quickbeep.mp3", Sound.class);
 
 
     
@@ -77,6 +86,10 @@ public class GameScreen implements Screen{
 			if (i < size) {
 				if (currentCards.get(i).hasTexture()) {
 					game.batch.draw(currentCards.get(i).getTexture(), x, resizeY(106), resizeX(200), resizeY(278));
+					x += resizeX(220);
+				}
+				else {
+					game.font.draw(game.batch, currentCards.get(i).getName(), x, resizeY(200));
 					x += resizeX(220);
 				}
 			}
@@ -117,30 +130,37 @@ public class GameScreen implements Screen{
 		bottomTable.setBounds(0, 0, stage.getWidth(), resizeY(80));
 		centerTable.setBounds(resizeX(300), resizeY(100), resizeX(400), resizeY(500));
 		Gdx.input.setInputProcessor(stage);
-						
-		loadFile = new TextButton("Add Fleet", skin);
-		loadFile.addListener(new ChangeListener() {
-			public void changed(ChangeEvent event, Actor actor) {
-				centerTable.clear();
-				makeFileChooser();
-			}
-		});
+		
+		for (int i = 0; i < 4; i++) {
+			final int current = i;
+			loadFile = new TextButton("Load Fleet", skin);
+			loadFile.addListener(new ChangeListener() {
+				public void changed(ChangeEvent event, Actor actor) {
+					centerTable.clear();
+					makeFileChooser(current);
+					doubleBeep.play();
+				}
+			});
+			fleetButtons.add(loadFile);
+			fleetButtonsActive.add(loadFile);
+		}
 		
 		buttonMore = new TextButton("+", skin);
 		buttonMore.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-
+				noeffect.play();
 			}
 		});
 		buttonLess = new TextButton("-", skin);
 		buttonLess.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-
+				noeffect.play();
 			}
 		});
 		buttonMoreActive = new TextButton("+", skin2);
 		buttonMoreActive.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
+				quickbeep.play();
 				startingCard += numberOfCards;
 				leftTable.clear();
 				leftTable.add(buttonLessActive).width(buttonHeight - resizeX(22) ).height(buttonWidth + resizeY(8));
@@ -154,6 +174,7 @@ public class GameScreen implements Screen{
 		buttonLessActive = new TextButton("-", skin2);
 		buttonLessActive.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
+				quickbeep.play();
 				startingCard -= numberOfCards;
 				if (startingCard == 0) {
 					leftTable.clear();
@@ -161,25 +182,24 @@ public class GameScreen implements Screen{
 				}
 				if (startingCard + numberOfCards < currentCards.size()) {
 					rightTable.clear();
-					rightTable.add(buttonMore).width(buttonHeight- resizeX(22)).height(buttonWidth + resizeY(9));
+					rightTable.add(buttonMoreActive).width(buttonHeight- resizeX(22)).height(buttonWidth + resizeY(9));
 				}
 			}
 		});
-		fleetButtons.add(loadFile);
 		leftTable.add(buttonLess).width(buttonHeight - resizeX(22) ).height(buttonWidth + resizeY(8));
 		rightTable.add(buttonMore).width(buttonHeight- resizeX(22)).height(buttonWidth + resizeY(9));
-		recreateTable();
+		recreateFleetTable();
 		
 	}
 
-	private void recreateTable() {
-		if (fleetButtons.size() > 4) fleetButtons.remove(0);
-		for (TextButton w : fleetButtons) {
-			fleetTable.add(w).width(buttonWidth).height(buttonHeight).padRight(buttonPad);
+	private void recreateFleetTable() {
+		for (int i = 0; i < fleetButtons.size(); i++) {
+			if (i != activeFleet ) fleetTable.add(fleetButtons.get(i)).width(buttonWidth).height(buttonHeight).padRight(buttonPad);
+			else fleetTable.add(fleetButtonsActive.get(i)).width(buttonWidth).height(buttonHeight).padRight(buttonPad);
 		}		
 	}
 
-	protected void loadFleet(String text) {
+	protected void loadFleet(String text, final int fleetButton) {
 		try {
 			FileHandle handle = Gdx.files.absolute(text);
 			XmlReader xml = new XmlReader();
@@ -187,23 +207,32 @@ public class GameScreen implements Screen{
 			final Fleet fleet = new Fleet(this, text);
 			fleets.add(fleet);
 			File f = new File(text);
-			final TextButton button = new TextButton((f.getName()).replace(".xml", ""), skin2);
+
+			fleetButtons.remove(fleetButton);
+
+			final TextButton button = new TextButton((f.getName()).replace(".xml", ""), skin);
 			button.addListener(new ChangeListener() {
 				public void changed(ChangeEvent event, Actor actor) {
-					displayFleet(fleet);	
-					for (TextButton a : fleetButtons) {
-						if (a != button) {
-						}
-					}
-					
+					displayFleet(fleet);
+					activeFleet = fleetButton;
+					fleetTable.reset();
+					recreateFleetTable();
+					doubleBeep.play();
 				}
 			});
-			fleetButtons.add(button);
+			fleetButtons.add(fleetButton, button);
+			fleetButtonsActive.remove(fleetButton);
+			final TextButton button2 = new TextButton((f.getName()).replace(".xml", ""), skin2);
+			fleetButtonsActive.add(fleetButton, button2);
+			activeFleet = fleetButton;
+			displayFleet(fleet);
 			fleetTable.reset();
-			recreateTable();
+			recreateFleetTable();
+			doubleBeep.play();
 			centerTable.clear();
 		}
 		catch (Exception e) {
+			System.out.println(e);
 			addError("Unable to Parse File", "Belay that Order");
 		}
 	}
@@ -218,10 +247,7 @@ public class GameScreen implements Screen{
 			button.addListener(new ChangeListener() {
 				public void changed(ChangeEvent event, Actor actor) {
 					displayShip((ShipCard) ship);
-					for (TextButton a : shipButtons) {
-						a.setSkin(skin);
-					}
-					button.setSkin(skin2);
+					quickbeep.play();
 				}
 			});
 			shipButtons.add(button);
@@ -258,6 +284,7 @@ public class GameScreen implements Screen{
 	}
 	
 	public void addError(String errorString, String okString) {
+		error.play();
 		Dialog d = new Dialog(errorString, skin);
 		d.button(okString);
 		bottomTable.add(d).width(buttonWidth * 2).height(buttonHeight * 2);
@@ -291,7 +318,7 @@ public class GameScreen implements Screen{
 		
 	}
 	
-	private void makeFileChooser() {		
+	private void makeFileChooser(final int fleetButton) {		
 
 		centerTable.setBounds(resizeX(300), resizeY(100), resizeX(400), resizeY(500));
 		
@@ -300,6 +327,7 @@ public class GameScreen implements Screen{
 		final TextButton exitButton = new TextButton("Exit", skin);
 		exitButton.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
+				quickbeep.play();
 				centerTable.clear();
 			}
 		});
@@ -307,6 +335,7 @@ public class GameScreen implements Screen{
 		TextButton backDirectory = new TextButton("Move Up", skin);
 		backDirectory.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
+				quickbeep.play();
 				currentDirectory = currentDirectory.parent();
 				loadFiles(currentDirectory);
 				currentDirectoryText.setText(currentDirectory.path());
@@ -318,25 +347,27 @@ public class GameScreen implements Screen{
 			public void changed(ChangeEvent event, Actor actor) {
 				FileHandle newFile = Gdx.files.absolute(currentDirectory + directoryList.getSelected() + "/");
 				if (newFile.isDirectory()) {
+					quickbeep.play();
 					currentDirectory = newFile;
 					loadFiles(currentDirectory);
 					currentDirectoryText.setText(newFile.path());
 					return;
 				} else {
 					if (newFile.exists()) {
-	            		loadFleet(newFile.toString());
+	            		loadFleet(newFile.toString(), fleetButton);
 	            		return;
 	            	}
 				}
 				newFile = Gdx.files.absolute(currentDirectory +"/" +  directoryList.getSelected() + "/");
 				if (newFile.isDirectory()) {
+					quickbeep.play();
 					currentDirectory = newFile;
 					loadFiles(currentDirectory);
 					currentDirectoryText.setText(newFile.path());
 					return;
 				} else {
 					if (newFile.exists()) {
-	            		loadFleet(newFile.toString());
+	            		loadFleet(newFile.toString(), fleetButton);
 	            		return;
 	            	}
 				}

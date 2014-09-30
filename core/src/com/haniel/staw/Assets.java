@@ -2,6 +2,7 @@ package com.haniel.staw;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
 public class Assets {
@@ -20,6 +21,11 @@ public class Assets {
 		//other resources first
 		manager.load("Star Trek_ TNG USS-Enterprise D Bridge Background Ambience.mp3", Music.class);
 		manager.load("backgroundpanel.png", Texture.class);
+		manager.load("error.wav", Sound.class);
+		manager.load("highpitch.wav", Sound.class);
+		manager.load("noeffect.mp3", Sound.class);
+		manager.load("quickbeep.mp3", Sound.class);
+		manager.load("doublebeep.mp3", Sound.class);
 		
 		//Dominion Ships
 		manager.load("Dominion/3rd Wing Patrol Ship.png", Texture.class);
@@ -99,24 +105,89 @@ public class Assets {
 		manager.load("Independent/Vic Fontaine.png", Texture.class);	
 		
 		//Klingon Ships
+		manager.load("Klingon/B’Rel-Class Manuevers.png", Texture.class);
+		manager.load("Klingon/D7-Class Manuevers.png", Texture.class);
+		manager.load("Klingon/D7-Class.png", Texture.class);
 		manager.load("Klingon/IKS B'Moth.png", Texture.class);
-		manager.load("Klingon/K'T'Inga Class.png", Texture.class);
+		manager.load("Klingon/B’Rel-Class.png", Texture.class);
+		manager.load("Klingon/IKS ChTang.png", Texture.class);
+		manager.load("Klingon/IKS Gr'oth.png", Texture.class);
+		manager.load("Klingon/IKS Koraga.png", Texture.class);
+		manager.load("Klingon/IKS Kronos One.png", Texture.class);
+		manager.load("Klingon/IKS Maht-H'A.png", Texture.class);
+		manager.load("Klingon/Negh'Var.png", Texture.class);
+		manager.load("Klingon/IKS Somraw.png", Texture.class);
+		manager.load("Klingon/K'T'Inga Class Dominion War Month 2 LE.png", Texture.class);
 		manager.load("Klingon/K'T'Inga Class Manuevers.png", Texture.class);
+		manager.load("Klingon/K'T'Inga Class.png", Texture.class);
+		manager.load("Klingon/K'Vort Class Manuevers.png", Texture.class);
+		manager.load("Klingon/K'Vort Class.png", Texture.class);
+		manager.load("Klingon/Negh'Var Class Manuevers.png", Texture.class);
+		manager.load("Klingon/Negh'Var Class.png", Texture.class);
+		manager.load("Klingon/Raptor Class Manuevers.png", Texture.class);
+		manager.load("Klingon/Raptor Class.png", Texture.class);
+		manager.load("Klingon/Vor'cha Class Manuevers.png", Texture.class);
+		manager.load("Klingon/Vor'cha Class.png", Texture.class);
 		
 		//Klingon Captains
+		manager.load("Klingon/Chang.png", Texture.class);
+		manager.load("Klingon/Gorkon.png", Texture.class);
+		manager.load("Klingon/Gowron.png", Texture.class);
+		manager.load("Klingon/Klingon Captain.png", Texture.class);
 		manager.load("Klingon/K'Nera.png", Texture.class);
+		manager.load("Klingon/Koloth.png", Texture.class);
+		manager.load("Klingon/Krell.png", Texture.class);
+		manager.load("Klingon/Kurn.png", Texture.class);
+		manager.load("Klingon/Martok LE Ch'Tang Pack.png", Texture.class);
+		manager.load("Klingon/Martok.png", Texture.class);
+		manager.load("Klingon/Nu'Daq.png", Texture.class);
+		manager.load("Klingon/Somraw Commander.png", Texture.class);
+		manager.load("Klingon/Worf.png", Texture.class);
 		
 		//Klingon Elite
+		manager.load("Klingon/Defense Condition One.png", Texture.class);
+		manager.load("Klingon/In'Cha.png", Texture.class);
+		manager.load("Klingon/Klingon Honor.png", Texture.class);
+		manager.load("Klingon/Once More Unto The Breach.png", Texture.class);
 		manager.load("Klingon/Qapla'.png", Texture.class);
+		manager.load("Klingon/Sabotage.png", Texture.class);
 		
 		//Klingon Crew		
+		manager.load("Klingon/Alexander.png", Texture.class);
+		manager.load("Klingon/Bu'Kah.png", Texture.class);
+		manager.load("Klingon/Drex.png", Texture.class);
+		manager.load("Klingon/Kerla.png", Texture.class);
+		manager.load("Klingon/Klag.png", Texture.class);
+		manager.load("Klingon/Klingon Boarding Party.png", Texture.class);
+		manager.load("Klingon/Konmel.png", Texture.class);
+		manager.load("Klingon/Korax.png", Texture.class);
 		manager.load("Klingon/Kunivas.png", Texture.class);
+		manager.load("Klingon/N'Garen.png", Texture.class);
+		manager.load("Klingon/Stex.png", Texture.class);
+		manager.load("Klingon/Synon.png", Texture.class);
+		manager.load("Klingon/T'Kar.png", Texture.class);
 		
 		//Klingon Weapons
+		manager.load("Klingon/Barrage of Fire.png", Texture.class);
+		manager.load("Klingon/Concussive Charges.png", Texture.class);
+		manager.load("Klingon/Magnetic Pulse.png", Texture.class);
 		manager.load("Klingon/Photon Torpedoes Collective OP Blind Booster.png", Texture.class);
+		manager.load("Klingon/Photon Torpedoes IKS Kronos One Koranga Expansion.png", Texture.class);
+		manager.load("Klingon/Photon Torpedoes IKS GrOth Expansion.png", Texture.class);
+		manager.load("Klingon/Photon Torpedoes NeghVah Expansion.png", Texture.class);
+		manager.load("Klingon/Photon Torpedoes Starter Set.png", Texture.class);
 		
 		//Klingon Tech
+		manager.load("Klingon/Advanced Weapon System.png", Texture.class);
+		manager.load("Klingon/EM Pulse.png", Texture.class);
+		manager.load("Klingon/Projected Stasis Field.png", Texture.class);
+		manager.load("Klingon/Secondary Shield Emitters.png", Texture.class);
+		manager.load("Klingon/Shockwave.png", Texture.class);
+		manager.load("Klingon/Tactical Sensors.png", Texture.class);
+		manager.load("Klingon/Tractor Beam.png", Texture.class);
 		manager.load("Klingon/Tritium Intermix.png", Texture.class);
+
+		
 		
 		
 		
