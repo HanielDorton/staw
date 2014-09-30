@@ -19,6 +19,7 @@ public class Assets {
 	public static void queueLoading(){
 		//other resources first
 		manager.load("Star Trek_ TNG USS-Enterprise D Bridge Background Ambience.mp3", Music.class);
+		manager.load("backgroundpanel.png", Texture.class);
 		
 		//Dominion Ships
 		manager.load("Dominion/3rd Wing Patrol Ship.png", Texture.class);
