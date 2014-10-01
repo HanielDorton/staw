@@ -10,8 +10,10 @@ import java.util.ArrayList;
 
 
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
@@ -40,12 +42,12 @@ public class GameScreen implements Screen{
 	private static int assumeX = 1000;
     private static int assumeY = 600;    
 	private Stage stage;
-	private Skin skin, skin2;
+	public Skin skin, skin2;
 	private Table fleetTable, shipTable, leftTable, rightTable, bottomTable, centerTable;
 	private TextureAtlas atlas, atlas2;
 	private TextButton loadFile;
 	private Button buttonMore, buttonLess, buttonMoreActive, buttonLessActive, buttonExit;
-	List<String> directoryList;
+	public List<String> directoryList;
 	private ArrayList<Fleet> fleets = new ArrayList<Fleet>();	
 	private ArrayList<TextButton> fleetButtons = new ArrayList<TextButton>();
 	private ArrayList<TextButton> fleetButtonsActive = new ArrayList<TextButton>();
@@ -57,13 +59,16 @@ public class GameScreen implements Screen{
 	private int buttonWidth = resizeX(200);
 	private int buttonHeight = resizeY(60);
 	private int buttonPad = resizeX(20);
-	private FileHandle currentDirectory = Gdx.files.absolute("/");
+	public FileHandle currentDirectory = Gdx.files.absolute("/");
 	private Texture backgroundPanel = Assets.manager.get("backgroundpanel.png", Texture.class);
+	private Texture cardBorder = Assets.manager.get("CardBorder.png", Texture.class); 
 	private Sound doubleBeep = Assets.manager.get("doublebeep.mp3", Sound.class);
 	private Sound error = Assets.manager.get("error.wav", Sound.class);
-	//private Sound highpitch = Assets.manager.get("highpitch.wav", Sound.class);
+	//private Sound highpitch = Assets.manager.get("highpitch.wav", Sound.class); // use for clicking on cards?
 	private Sound noeffect = Assets.manager.get("noeffect.mp3", Sound.class);
 	private Sound quickbeep = Assets.manager.get("quickbeep.mp3", Sound.class);
+	private Sound openScreen = Assets.manager.get("openscreen.mp3", Sound.class);
+	private Music backgroundMusic = Assets.manager.get("tng_bridge_2.mp3", Music.class);
 
 
     
@@ -80,18 +85,19 @@ public class GameScreen implements Screen{
 		camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 		game.batch.begin();
-		int x = resizeX(70);
+		int x = resizeX(80);
 		int size = currentCards.size();
 		game.batch.draw(backgroundPanel, 0, 0, resizeX(assumeX), resizeY(assumeY));
 		for (int i = startingCard; i < startingCard + numberOfCards; i++) {
 			if (i < size) {
 				if (currentCards.get(i).hasTexture()) {
 					game.batch.draw(currentCards.get(i).getTexture(), x, resizeY(106), resizeX(200), resizeY(278));
-					x += resizeX(220);
+					game.batch.draw(cardBorder, x, resizeY(106), resizeX(200), resizeY(278));
+					x += resizeX(210);
 				}
 				else {
 					game.font.draw(game.batch, currentCards.get(i).getName(), x, resizeY(200));
-					x += resizeX(220);
+					x += resizeX(210);
 				}
 			}
 		}
@@ -106,6 +112,9 @@ public class GameScreen implements Screen{
 
 	@Override
 	public void show() {
+		openScreen.play();
+		backgroundMusic.setLooping(true);
+		backgroundMusic.play();
 		atlas = new TextureAtlas("uiskin.atlas");
 		atlas2 = new TextureAtlas("uiskin2.atlas");
 		skin = new Skin(Gdx.files.internal("uiskin.json"), atlas);
@@ -126,11 +135,13 @@ public class GameScreen implements Screen{
 		stage.addActor(centerTable);
 		shipTable.setBounds(0, resizeY(415), stage.getWidth(), resizeY(60));
 		fleetTable.setBounds(0, resizeY(495), stage.getWidth(), resizeY(60));
-		rightTable.setBounds(resizeX(950), resizeY(-56), resizeX(40), stage.getHeight());
-		leftTable.setBounds(-1, resizeY(-56), resizeX(60), stage.getHeight());
+		rightTable.setBounds(resizeX(940), resizeY(-56), resizeX(40), stage.getHeight());
+		leftTable.setBounds(resizeX(10), resizeY(-56), resizeX(60), stage.getHeight());
 		bottomTable.setBounds(0, resizeY(45), stage.getWidth(), resizeY(40));
-		centerTable.setBounds(resizeX(300), resizeY(100), resizeX(400), resizeY(500));
+		centerTable.setBounds(resizeX(150), resizeY(100), resizeX(700), resizeY(100));
 		Gdx.input.setInputProcessor(stage);
+		
+		final GameScreen g = this;
 		
 		for (int i = 0; i < 4; i++) {
 			final int current = i;
@@ -138,13 +149,13 @@ public class GameScreen implements Screen{
 			loadFile.addListener(new ChangeListener() {
 				public void changed(ChangeEvent event, Actor actor) {
 					centerTable.clear();
-					makeFileChooser(current);
+					new LoadFileMenu(g, centerTable, current);
 					doubleBeep.play();
 					clearBoard();
 					leftTable.clear();
 					rightTable.clear();
-					leftTable.add(buttonLess).width(buttonHeight - resizeX(22) ).height(buttonWidth - resizeY(5));
-					rightTable.add(buttonMore).width(buttonHeight- resizeX(22)).height(buttonWidth- resizeY(5));
+					leftTable.add(buttonLess).width(buttonHeight ).height(buttonWidth - resizeY(5));
+					rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth- resizeY(5));
 				}
 			});
 			fleetButtons.add(loadFile);
@@ -169,10 +180,10 @@ public class GameScreen implements Screen{
 				quickbeep.play();
 				startingCard += numberOfCards;
 				leftTable.clear();
-				leftTable.add(buttonLessActive).width(buttonHeight - resizeX(22) ).height(buttonWidth - resizeY(5));
-				if (startingCard + numberOfCards > currentCards.size()) {
+				leftTable.add(buttonLessActive).width(buttonHeight).height(buttonWidth - resizeY(5));
+				if (startingCard + numberOfCards >= currentCards.size()) {
 					rightTable.clear();
-					rightTable.add(buttonMore).width(buttonHeight- resizeX(22)).height(buttonWidth - resizeY(5));
+					rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth - resizeY(5));
 					
 				}
 			}
@@ -184,25 +195,26 @@ public class GameScreen implements Screen{
 				startingCard -= numberOfCards;
 				if (startingCard == 0) {
 					leftTable.clear();
-					leftTable.add(buttonLess).width(buttonHeight- resizeX(22)).height(buttonWidth - resizeY(5));
+					leftTable.add(buttonLess).width(buttonHeight).height(buttonWidth - resizeY(5));
 				}
 				if (startingCard + numberOfCards < currentCards.size()) {
 					rightTable.clear();
-					rightTable.add(buttonMoreActive).width(buttonHeight- resizeX(22)).height(buttonWidth - resizeY(5));
+					rightTable.add(buttonMoreActive).width(buttonHeight).height(buttonWidth - resizeY(5));
 				}
 			}
 		});
 		buttonExit = new TextButton("Abort", skin);
 		buttonExit.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
+				backgroundMusic.stop();
 				quickbeep.play();
 				game.setScreen(new ShutdownScreen(game));
 			}
 		});
 		
 		bottomTable.add(buttonExit).width(buttonWidth).height(resizeY(40));
-		leftTable.add(buttonLess).width(buttonHeight - resizeX(22) ).height(buttonWidth - resizeY(5));
-		rightTable.add(buttonMore).width(buttonHeight- resizeX(22)).height(buttonWidth - resizeY(5));
+		leftTable.add(buttonLess).width(buttonHeight).height(buttonWidth - resizeY(5));
+		rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth - resizeY(5));
 		recreateFleetTable();
 		
 	}
@@ -276,9 +288,10 @@ public class GameScreen implements Screen{
 		ship.displayShip(this);
 		leftTable.clear();
 		rightTable.clear();
-		leftTable.add(buttonLess).width(buttonHeight - resizeX(22) ).height(buttonWidth - resizeY(5));
-		if (currentCards.size() > numberOfCards) rightTable.add(buttonMoreActive).width(buttonHeight- resizeX(22)).height(buttonWidth - resizeY(5));
-		else rightTable.add(buttonMore).width(buttonHeight- resizeX(22)).height(buttonWidth - resizeY(5));
+		startingCard = 0;
+		leftTable.add(buttonLess).width(buttonHeight).height(buttonWidth);
+		if (currentCards.size() > numberOfCards) rightTable.add(buttonMoreActive).width(buttonHeight).height(buttonWidth - resizeY(5));
+		else rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth - resizeY(5));
 				
 	}
 
@@ -315,115 +328,23 @@ public class GameScreen implements Screen{
 		currentCards.clear();
 		leftTable.clear();
 		rightTable.clear();
-		leftTable.add(buttonLess).width(buttonHeight - resizeX(22) ).height(buttonWidth - resizeY(5));
-		rightTable.add(buttonMore).width(buttonHeight- resizeX(22)).height(buttonWidth - resizeY(5));
+		leftTable.add(buttonLess).width(buttonHeight).height(buttonWidth - resizeY(5));
+		rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth - resizeY(5));
 		startingCard = 0;
 	}
 	
-	private int resizeX(int positionX) {
+	public int resizeX(int positionX) {
 		float x = Gdx.graphics.getWidth();
 		float changeX = x / assumeX;
-		return (int) ( positionX * changeX);
-		
+		return (int) ( positionX * changeX);		
 	}
 	
-	private int resizeY(int positionY) {
+	public int resizeY(int positionY) {
 		float y = Gdx.graphics.getHeight();
 		float changeY = y / assumeY;
-		return (int) ( positionY * changeY);
-		
+		return (int) ( positionY * changeY);		
 	}
 	
-	private void makeFileChooser(final int fleetButton) {		
-
-		centerTable.setBounds(resizeX(300), resizeY(100), resizeX(400), resizeY(500));
-		
-		final TextField currentDirectoryText = new TextField(currentDirectory.path(), skin);
-		
-		currentDirectoryText.addListener(new ChangeListener() {
-
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				quickbeep.play();
-				
-			}
-			
-		});
-		
-		final TextButton exitButton = new TextButton("Exit", skin);
-		exitButton.addListener(new ChangeListener() {
-			public void changed(ChangeEvent event, Actor actor) {
-				quickbeep.play();
-				centerTable.clear();
-			}
-		});
-		
-		TextButton backDirectory = new TextButton("Back", skin);
-		backDirectory.addListener(new ChangeListener() {
-			public void changed(ChangeEvent event, Actor actor) {
-				quickbeep.play();
-				currentDirectory = currentDirectory.parent();
-				loadFiles(currentDirectory);
-				currentDirectoryText.setText(currentDirectory.path());
-			}
-		});
-		
-		TextButton openFile = new TextButton("Access", skin);
-		openFile.addListener(new ChangeListener() {
-			public void changed(ChangeEvent event, Actor actor) {
-				openFile(currentDirectoryText, fleetButton);
-			}
-		});
-		
-		loadFiles(currentDirectory);
-		
-		ScrollPane scrollPane = new ScrollPane(directoryList, skin);
-		centerTable.add(scrollPane).width(resizeX(200)).height(resizeY(300));
-		centerTable.add(currentDirectoryText).width(buttonWidth).height(buttonHeight);
-		centerTable.add(exitButton).width(buttonWidth).height(buttonHeight);
-		centerTable.add(backDirectory).width(buttonWidth).height(buttonHeight);
-		centerTable.add(openFile).width(buttonWidth).height(buttonHeight);
-		
-	}
 	
-	public void openFile(TextField currentDirectoryText, int fleetButton) {
-		FileHandle newFile = Gdx.files.absolute(currentDirectory + directoryList.getSelected() + "/");
-		if (newFile.isDirectory()) {
-			quickbeep.play();
-			currentDirectory = newFile;
-			loadFiles(currentDirectory);
-			currentDirectoryText.setText(newFile.path());
-			return;
-		} else {
-			if (newFile.exists()) {
-        		loadFleet(newFile.toString(), fleetButton);
-        		return;
-        	}
-		}
-		newFile = Gdx.files.absolute(currentDirectory +"/" +  directoryList.getSelected() + "/");
-		if (newFile.isDirectory()) {
-			quickbeep.play();
-			currentDirectory = newFile;
-			loadFiles(currentDirectory);
-			currentDirectoryText.setText(newFile.path());
-			return;
-		} else {
-			if (newFile.exists()) {
-        		loadFleet(newFile.toString(), fleetButton);
-        		return;
-        	}
-		}
-	}
-	
-	public void loadFiles(FileHandle file) {
-		FileHandle[] files = file.list();
-		ArrayList<String> stringFiles = new ArrayList<String>();
-		for (FileHandle f : files) {
-			stringFiles.add(f.name());
-		}
-		String[] filesArray = new String[ stringFiles.size() ];
-		stringFiles.toArray(filesArray);
-		directoryList.setItems(filesArray);
-	}
 
 }

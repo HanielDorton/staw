@@ -19,13 +19,16 @@ public class Assets {
 	
 	public static void queueLoading(){
 		//other resources first
-		//manager.load("Star Trek_ TNG USS-Enterprise D Bridge Background Ambience.mp3", Music.class);
+		manager.load("tng_bridge_2.mp3", Music.class);
 		manager.load("backgroundpanel.png", Texture.class);
 		manager.load("error.wav", Sound.class);
 		manager.load("highpitch.wav", Sound.class);
 		manager.load("noeffect.mp3", Sound.class);
 		manager.load("quickbeep.mp3", Sound.class);
 		manager.load("doublebeep.mp3", Sound.class);
+		manager.load("openscreen.mp3", Sound.class);
+		manager.load("alert23.mp3", Sound.class);
+		manager.load("CardBorder.png", Texture.class);
 		
 		for (int i = 0; i < 12; i ++) {
 			manager.load("shutdown-" + i + ".png", Texture.class);
@@ -77,21 +80,97 @@ public class Assets {
 		
 		
 		//Dominion Ships
+		manager.load("Dominion/2nd Division Cruiser.png", Texture.class);
 		manager.load("Dominion/3rd Wing Patrol Ship.png", Texture.class);
-		manager.load("Dominion/Jem'Hadar Attack Ship.png", Texture.class);
+		manager.load("Dominion/4th Division Battleship.png", Texture.class);
+		manager.load("Dominion/5th Wing Patrol Ship.png", Texture.class);
+		manager.load("Dominion/Breen Battle Cruiser Tech,Weapon,Weapon,Crew.png", Texture.class);
+		manager.load("Dominion/Breen Battle Cruiser Weapon,Weapon,Weapon,Crew.png", Texture.class);
+		manager.load("Dominion/Breen Battle Cruiser Manuevers.png", Texture.class);
+		manager.load("Dominion/Cardassian Galor Class Manuevers.png", Texture.class);
+		manager.load("Dominion/Cardassian Galor Class.png", Texture.class);
+		manager.load("Dominion/Cardassian Keldon Class Manuevers.png", Texture.class);
+		manager.load("Dominion/Cardassian Keldon Class.png", Texture.class);
+		manager.load("Dominion/Gor Portas.png", Texture.class);
 		manager.load("Dominion/Jem'Hadar Attack Ship Manuevers.png", Texture.class);
+		manager.load("Dominion/Jem'Hadar Attack Ship.png", Texture.class);
+		manager.load("Dominion/Jem'Hadar Battle Cruiser Manuevers.png", Texture.class);
+		manager.load("Dominion/Jem'Hadar Battle Cruiser.png", Texture.class);
+		manager.load("Dominion/Jem'Hadar Battleship Manuevers.png", Texture.class);
+		manager.load("Dominion/Jem'Hadar Battleship.png", Texture.class);
+		manager.load("Dominion/Koranak.png", Texture.class);
+		manager.load("Dominion/Kraxon.png", Texture.class);
+		manager.load("Dominion/Rav Laerst.png", Texture.class);
+
+		
 		
 		//Dominion Captains
+		manager.load("Dominion/Breen Captain.png", Texture.class);
+		manager.load("Dominion/Gelnon.png", Texture.class);
 		manager.load("Dominion/Gul Damar.png", Texture.class);
-		//Dominion Elite
-		manager.load("Dominion/First Strike.png", Texture.class);
-		//Dominion Crew		
-		manager.load("Dominion/Seskal.png", Texture.class);
-		//Dominion Weapons
-		manager.load("Dominion/Photon Torpedoes Collective OP Blind Booster.png", Texture.class);
-		//Dominion Tech
-		manager.load("Dominion/Ion Thrusters.png", Texture.class);			
+		manager.load("Dominion/Gul Danar.png", Texture.class);
+		manager.load("Dominion/Gul Dukat.png", Texture.class);
+		manager.load("Dominion/Gul Evek.png", Texture.class);
+		manager.load("Dominion/Gul Ranor.png", Texture.class);
+		manager.load("Dominion/Keevan.png", Texture.class);
+		manager.load("Dominion/Luaran.png", Texture.class);
+		manager.load("Dominion/Sar.png", Texture.class);
+		manager.load("Dominion/Toth Gor.png", Texture.class);
+		manager.load("Dominion/Thot Pran.png", Texture.class);
+		manager.load("Dominion/Weyoun 2nd Division Battle Cruiser Expansion.png", Texture.class);
+		manager.load("Dominion/Weyoun 4th Division Battleship.png", Texture.class);
+		manager.load("Dominion/Weyoun 5th Wing Patrol Ship Expansion.png", Texture.class);
 		
+		//Dominion Elite
+		manager.load("Dominion/Captured Intelligence.png", Texture.class);
+		manager.load("Dominion/First Strike.png", Texture.class);
+		manager.load("Dominion/Invaluable Advice.png", Texture.class);
+		manager.load("Dominion/Ketracell-White.png", Texture.class);
+		manager.load("Dominion/Unnecessary Bloodshed.png", Texture.class);
+		
+		//Dominion Crew		
+		manager.load("Dominion/Amat'Igan.png", Texture.class);
+		manager.load("Dominion/Boheeka.png", Texture.class);
+		manager.load("Dominion/Breen Aide.png", Texture.class);
+		manager.load("Dominion/Breen Guards.png", Texture.class);
+		manager.load("Dominion/Elim Garak DS9 GenCon CrewPack.png", Texture.class);
+		manager.load("Dominion/Glinn Telle.png", Texture.class);
+		manager.load("Dominion/Ikat'Ika.png", Texture.class);
+		manager.load("Dominion/Ixtana'Rax.png", Texture.class);
+		manager.load("Dominion/Kudak'Etan.png", Texture.class);
+		manager.load("Dominion/Lamat'Ukan.png", Texture.class);
+		manager.load("Dominion/Omet'Iklan.png", Texture.class);
+		manager.load("Dominion/Remata'Klan.png", Texture.class);
+		manager.load("Dominion/Seskal.png", Texture.class);
+		manager.load("Dominion/Toman'Torax.png", Texture.class);
+		manager.load("Dominion/Virak'Kara.png", Texture.class);
+		
+		//Dominion Weapons
+		manager.load("Dominion/Dorsal Weapons Array.png", Texture.class);
+		manager.load("Dominion/Energy Dissipator.png", Texture.class);
+		manager.load("Dominion/Enhanced Weaponry.png", Texture.class);
+		manager.load("Dominion/Forward Weapons Grid.png", Texture.class);
+		manager.load("Dominion/Phased Polaron Beam 4th Division Battleship 2nd Division Cruiser.png", Texture.class);
+		manager.load("Dominion/Phased Polaron Beam 5th Wing Patrol Ship Expansion.png", Texture.class);
+		manager.load("Dominion/Photon Torpedoes 2nd Division Cruiser.png", Texture.class);
+		manager.load("Dominion/Photon Torpedoes 4th Division Battleship.png", Texture.class);
+		manager.load("Dominion/Photon Torpedoes Collective OP Blind Booster.png", Texture.class);
+		manager.load("Dominion/Photon Torpedoes Gor Portas 5th Wing Patrol Ship.png", Texture.class);
+		manager.load("Dominion/Volley of Torpedoes.png", Texture.class);
+		
+		//Dominion Tech
+		manager.load("Dominion/Antiproton Scan.png", Texture.class);
+		manager.load("Dominion/Cloaking Device.png", Texture.class);
+		manager.load("Dominion/Cold Storage Units.png", Texture.class);
+		manager.load("Dominion/EM Pulse.png", Texture.class);
+		manager.load("Dominion/Ion Thrusters.png", Texture.class);
+		manager.load("Dominion/Long Range Tachyon Scan.png", Texture.class);
+		manager.load("Dominion/Sensor Array.png", Texture.class);
+		manager.load("Dominion/Shroud.png", Texture.class);
+		manager.load("Dominion/Suicide Attack.png", Texture.class);
+		manager.load("Dominion/Tetryon Emissions.png", Texture.class);
+		
+		/*
 		//Federation Ships-- ship named, then generic, then manuevers
 		manager.load("Federation/USS Yeager.png", Texture.class);
 		manager.load("Federation/Saber Class.png", Texture.class);
@@ -129,6 +208,7 @@ public class Assets {
 		manager.load("Independent/Gorn Starship.png", Texture.class);
 		manager.load("Independent/Gorn Raider Manuevers.png", Texture.class);
 		manager.load("Independent/Maquis Raider Manuevers.png", Texture.class);
+		manager.load("Independent/Maquis Raider.png", Texture.class);
 		manager.load("Independent/S'Gorn.png", Texture.class);
 		
 		//Independent Captains
@@ -333,7 +413,7 @@ public class Assets {
 		manager.load("Romulan/Ultritium Explosives.png", Texture.class);
 		
 		
-		
+		*/
 
 		
 		

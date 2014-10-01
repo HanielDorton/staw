@@ -2,6 +2,7 @@ package com.haniel.staw;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,9 +15,11 @@ public class ShutdownScreen implements Screen{
     private static int assumeY = 600; 
 	private int start = 0;
 	private int finish = 12;
-	private float count = .35f;
+	private float count = .25f;
 	private float counting = 0;
 	private Texture background = Assets.manager.get("shutdown-0.png", Texture.class);
+	private Sound alert = Assets.manager.get("alert23.mp3", Sound.class);
+	private boolean alertPlayed = false;
 	
 	public ShutdownScreen(staw game) {
 		this.game = game;
@@ -41,6 +44,10 @@ public class ShutdownScreen implements Screen{
 				background = Assets.manager.get("shutdown-" + start + ".png", Texture.class);
 			}
 		}
+		if (start == 8 && !alertPlayed) {
+			alert.play();
+			alertPlayed = true;
+		}
 		game.batch.draw(background, 0 , 0, resizeX(1000), resizeY(600));
 		game.batch.end();
 		
@@ -57,6 +64,7 @@ public class ShutdownScreen implements Screen{
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
+		alert.play();
 		
 	}
 
