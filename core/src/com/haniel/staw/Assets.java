@@ -19,13 +19,62 @@ public class Assets {
 	
 	public static void queueLoading(){
 		//other resources first
-		manager.load("Star Trek_ TNG USS-Enterprise D Bridge Background Ambience.mp3", Music.class);
+		//manager.load("Star Trek_ TNG USS-Enterprise D Bridge Background Ambience.mp3", Music.class);
 		manager.load("backgroundpanel.png", Texture.class);
 		manager.load("error.wav", Sound.class);
 		manager.load("highpitch.wav", Sound.class);
 		manager.load("noeffect.mp3", Sound.class);
 		manager.load("quickbeep.mp3", Sound.class);
 		manager.load("doublebeep.mp3", Sound.class);
+		
+		for (int i = 0; i < 12; i ++) {
+			manager.load("shutdown-" + i + ".png", Texture.class);
+		}
+		
+		
+		//Bajoran Ships
+		manager.load("Bajoran/Akorem.png", Texture.class);
+		manager.load("Bajoran/Bajoran Scout Ship Manuevers.png", Texture.class);
+		manager.load("Bajoran/Bajoran Scout Ship.png", Texture.class);
+		
+		//Bajoran Captains
+		manager.load("Bajoran/Kira Nerys OP6 Prize.png", Texture.class);
+		manager.load("Bajoran/Tahna Los.png", Texture.class);
+		
+		//Bajoran Elite
+		manager.load("Bajoran/Blockade.png", Texture.class);
+		manager.load("Bajoran/I Am Kohn-Ma.png", Texture.class);
+		
+		//Bajoran Crew		
+		manager.load("Bajoran/Day Kannu.png", Texture.class);
+		manager.load("Bajoran/Li Nalas.png", Texture.class);
+		
+		//Bajoran Weapons
+		
+		//Bajoran Tech
+		
+		//Ferengi Ships
+		manager.load("Ferengi/Krayton.png", Texture.class);
+		manager.load("Ferengi/D'Kora Class.png", Texture.class);
+		manager.load("Ferengi/D'Kora Class Manuevers.png", Texture.class);
+		
+		//Ferengi Captains
+		manager.load("Ferengi/Daimon Tog.png", Texture.class);
+		manager.load("Ferengi/Ferengi Captain.png", Texture.class);
+		
+		//Ferengi Elite
+		manager.load("Ferengi/Conditional Surrender.png", Texture.class);
+		
+		//Ferengi Crew		
+		manager.load("Ferengi/Quark.png", Texture.class);
+		manager.load("Ferengi/Farek.png", Texture.class);
+		
+		//Ferengi Weapons
+		manager.load("Ferengi/Missile Launchers.png", Texture.class);
+		
+		//Ferengi Tech
+		manager.load("Ferengi/EM Pulse.png", Texture.class);
+		
 		
 		//Dominion Ships
 		manager.load("Dominion/3rd Wing Patrol Ship.png", Texture.class);
@@ -47,16 +96,33 @@ public class Assets {
 		manager.load("Federation/USS Yeager.png", Texture.class);
 		manager.load("Federation/Saber Class.png", Texture.class);
 		manager.load("Federation/Saber Class Manuevers.png", Texture.class);
+		
 		//Federation Captains
 		manager.load("Federation/Benjamin Maxwell.png", Texture.class);
+		
 		//Federation Elite
 		manager.load("Federation/Preemptive Strike.png", Texture.class);
+		
 		//Federation Crew		
 		manager.load("Federation/Elizabeth Shelby.png", Texture.class);
 		manager.load("Federation/Reginald Barclay.png", Texture.class);
+		
 		//Federation Weapons
 		manager.load("Federation/Photon Torpedoes Collective OP Blind Booster USS Enterprise Refit.png", Texture.class);
+		
 		//Federation Tech
+		
+		//Ferengi Ships
+		
+		//Ferengi Captains
+		
+		//Ferengi Elite
+		
+		//Ferengi Crew		
+		
+		//Ferengi Weapons
+		
+		//Ferengi Tech
 		
 		//Independent Ships
 		manager.load("Independent/Gavroche.png", Texture.class);
@@ -105,11 +171,11 @@ public class Assets {
 		manager.load("Independent/Vic Fontaine.png", Texture.class);	
 		
 		//Klingon Ships
-		manager.load("Klingon/B’Rel-Class Manuevers.png", Texture.class);
+		manager.load("Klingon/BRel-Class Manuevers.png", Texture.class);
 		manager.load("Klingon/D7-Class Manuevers.png", Texture.class);
 		manager.load("Klingon/D7-Class.png", Texture.class);
 		manager.load("Klingon/IKS B'Moth.png", Texture.class);
-		manager.load("Klingon/B’Rel-Class.png", Texture.class);
+		manager.load("Klingon/BRel-Class.png", Texture.class);
 		manager.load("Klingon/IKS ChTang.png", Texture.class);
 		manager.load("Klingon/IKS Gr'oth.png", Texture.class);
 		manager.load("Klingon/IKS Koraga.png", Texture.class);
@@ -189,6 +255,82 @@ public class Assets {
 
 		
 		
+		//Romulan Ships
+		manager.load("Romulan/PWB Aj'Rmr.png", Texture.class);
+		manager.load("Romulan/Dderidex 1412113108336.png", Texture.class);
+		manager.load("Romulan/Dderidex 1411968925549.png", Texture.class);
+		manager.load("Romulan/Dderidex Manuevers.png", Texture.class);
+		manager.load("Romulan/IRW Gal Gath'Thong.png", Texture.class);
+		manager.load("Romulan/IRW Khazara.png", Texture.class);
+		manager.load("Romulan/IRW Praetus.png", Texture.class);
+		manager.load("Romulan/IRW Valdore.png", Texture.class);
+		manager.load("Romulan/IRW Vorta Vor.png", Texture.class);
+		manager.load("Romulan/RIS Apnex.png", Texture.class);
+		manager.load("Romulan/RIS Vo.png", Texture.class);
+		manager.load("Romulan/Romulan Bird of Prey 1412113113968.png", Texture.class);
+		manager.load("Romulan/Romulan Bird of Prey 1412113123776 Manuevers.png", Texture.class);
+		manager.load("Romulan/Romulan Bird of Prey 1412113123776.png", Texture.class);
+		manager.load("Romulan/Romulan Bird of Prey Manuevers.png", Texture.class);
+		manager.load("Romulan/Romulan Bird of Prey.png", Texture.class);
+		manager.load("Romulan/Romulan Science Vessel Manuevers.png", Texture.class);
+		manager.load("Romulan/Romulan Science Vessel.png", Texture.class);
+		manager.load("Romulan/Romulan Scout Vessel Manuevers.png", Texture.class);
+		manager.load("Romulan/Romulan Scout Vessel.png", Texture.class);
+		manager.load("Romulan/Valdore Manuevers.png", Texture.class);
+		manager.load("Romulan/Valdore.png", Texture.class);
+		
+		//Romulan Captains
+		manager.load("Romulan/Alidar Jarok.png", Texture.class);
+		manager.load("Romulan/Donatra.png", Texture.class);
+		manager.load("Romulan/Letant.png", Texture.class);
+		manager.load("Romulan/Livianna Charvanek.png", Texture.class);
+		manager.load("Romulan/Mirok.png", Texture.class);
+		manager.load("Romulan/Romulan Captain.png", Texture.class);
+		manager.load("Romulan/Romulan Commander.png", Texture.class);
+		manager.load("Romulan/Tomalak.png", Texture.class);
+		manager.load("Romulan/Toreth.png", Texture.class);
+		manager.load("Romulan/Valdore Captain.png", Texture.class);
+		
+		//Romulan Elite
+		manager.load("Romulan/All Forward Disruptor Banks.png", Texture.class);
+		manager.load("Romulan/Counter Attack.png", Texture.class);
+		manager.load("Romulan/Decoy.png", Texture.class);
+		manager.load("Romulan/Direct Command.png", Texture.class);
+		manager.load("Romulan/Double Back.png", Texture.class);
+		manager.load("Romulan/Invasion Plans.png", Texture.class);
+		manager.load("Romulan/Massacre.png", Texture.class);
+		
+		//Romulan Crew		
+		manager.load("Romulan/Bochra.png", Texture.class);
+		manager.load("Romulan/Centurion.png", Texture.class);
+		manager.load("Romulan/N'Vek.png", Texture.class);
+		manager.load("Romulan/Parem.png", Texture.class);
+		manager.load("Romulan/Romulan Officer.png", Texture.class);
+		manager.load("Romulan/Romulan Pilot.png", Texture.class);
+		manager.load("Romulan/Selok.png", Texture.class);
+		manager.load("Romulan/Tactical Officer.png", Texture.class);
+		manager.load("Romulan/Tal.png", Texture.class);
+		manager.load("Romulan/T'Rul.png", Texture.class);
+		manager.load("Romulan/Varel.png", Texture.class);
+		
+		//Romulan Weapons
+		manager.load("Romulan/Additional Weapons Array.png", Texture.class);
+		manager.load("Romulan/Nuclear Missiles.png", Texture.class);
+		manager.load("Romulan/Nuclear Warhead.png", Texture.class);
+		manager.load("Romulan/Photon Torpedoes.png", Texture.class);
+		manager.load("Romulan/Plasma Torpedoes Collective OP Blind Booster.png", Texture.class);
+		manager.load("Romulan/Plasma Torpedoes IRW Gal Gath'Thong.png", Texture.class);
+		manager.load("Romulan/Plasma Torpedoes IRW Valdore Starter Set.png", Texture.class);
+		
+		//Romulan Tech
+		manager.load("Romulan/Advanced Cloaking.png", Texture.class);
+		manager.load("Romulan/Artificial Quantum Singularity.png", Texture.class);
+		manager.load("Romulan/Cloaked Mines.png", Texture.class);
+		manager.load("Romulan/Interphase Generator.png", Texture.class);
+		manager.load("Romulan/Muon Feedback Wave.png", Texture.class);
+		manager.load("Romulan/Nullifier Core.png", Texture.class);
+		manager.load("Romulan/Polarized Hull Plating.png", Texture.class);
+		manager.load("Romulan/Ultritium Explosives.png", Texture.class);
 		
 		
 		

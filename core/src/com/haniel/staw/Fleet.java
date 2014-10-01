@@ -30,7 +30,8 @@ public class Fleet {
 				Array<Element> child = root.getChildrenByName("Ships");
 				for (Element fleet : child) {
 					for (int i = 0; i< fleet.getChildCount(); i++) {
-						ships.add(new ShipCard(fleet.getChild(i)));					
+						ships.add(new ShipCard(fleet.getChild(i)));	
+						System.out.println(i);
 					}
 					
 				}
@@ -43,6 +44,8 @@ public class Fleet {
 						
 				
 			} catch (Exception e) {
+				System.out.println(e);
+				System.out.println("error2");
 				gameScreen.addError("Unable to Parse File", "Belay that Order");
 			}
 	}

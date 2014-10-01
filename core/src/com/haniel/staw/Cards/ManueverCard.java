@@ -5,7 +5,7 @@ import com.haniel.staw.Assets;
 
 
 public class ManueverCard extends Card{
-
+	
 	public ManueverCard(String faction, String shipClass){
 		super(faction, shipClass);
 		if (Assets.manager.isLoaded(faction + "/" + shipClass + " Manuevers.png")) {
@@ -13,6 +13,4 @@ public class ManueverCard extends Card{
 			this.textureLoaded = true;
 		}
 	}
-
 }
-

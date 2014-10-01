@@ -15,6 +15,7 @@ public class ShipCard extends Card{
 	private String shipActions, shipUpgrades, firingArc, shipClass;
 	private List<Card> upgrades = new ArrayList<Card>();
 	private ManueverCard manueverCard;
+	private String id;
 
 	public ShipCard(Element ship) {
 		super(ship);
@@ -27,8 +28,10 @@ public class ShipCard extends Card{
 			else if (text.equals("Actions")) this.shipActions = (ship.getChildByName("Actions")).getText();
 			else if (text.equals("Upgrades")) this.shipUpgrades = (ship.getChildByName("Upgrades")).getText();
 			else if (text.equals("FiringArc")) this.firingArc = (ship.getChildByName("FiringArc")).getText();
-			else if (text.equals("Class")) this.shipClass = (ship.getChildByName("Class")).getText();
+			else if (text.equals("Class")) this.shipClass = (ship.getChildByName("Class")).getText().replace("’", "");
+			else if (text.equals("ID")) this.id = (ship.getChildByName("ID")).getText();
 		}
+		if (unique.equals("No")) name = shipClass;
 		getUpgrades(ship);
 		loadTexture();
 		this.manueverCard = new ManueverCard(faction, shipClass);
@@ -36,7 +39,11 @@ public class ShipCard extends Card{
 	
 	private void loadTexture() {
 		if (!textureLoaded) {
-			if (Assets.manager.isLoaded(faction + "/" + name + ".png")) {
+			if (Assets.manager.isLoaded(faction + "/" + shipClass + " " + id + ".png")) {
+				this.texture = Assets.manager.get(faction + "/" + shipClass + " " + id + ".png", Texture.class);
+				this.textureLoaded = true;
+			}	
+			else if (Assets.manager.isLoaded(faction + "/" + name + ".png")) {
 				this.texture = Assets.manager.get(faction + "/" + name + ".png", Texture.class);
 				this.textureLoaded = true;
 			}	
@@ -51,8 +58,10 @@ public class ShipCard extends Card{
 				textureLoaded = true;
 			}
 			else{
-				System.out.println("Unable to load" + name);
+				System.out.println("----");
+				System.out.println("Unable to load Ship: " + name);
 				System.out.println("Class: " + shipClass);
+				System.out.println("Id: " + id);
 			}
 
 		}
@@ -88,6 +97,10 @@ public class ShipCard extends Card{
 	}
 	public List<Card> getUpgrades() {
 		return upgrades;
+	}
+	
+	public String getId() {
+		return id;
 	}
 	
 	public void displayManueverCard(GameScreen g) {

@@ -23,7 +23,7 @@ public class Card {
 		this.cardType = element.getName();
 		for (int i = 0; i< element.getChildCount(); i++) {
 			String text = element.getChild(i).getName();			
-			if (text.equals("Name")) this.name = (element.getChildByName("Name")).getText().replace(".", "");
+			if (text.equals("Name")) this.name = (element.getChildByName("Name")).getText().replace(".", "").replace("’",  "");
 			else if (text.equals("Source")) this.source = (element.getChildByName("Source")).getText().replace(".", "").replace(" / ", " ").replace("/", " ");
 			else if (text.equals("CardText")) this.cardText = (element.getChildByName("CardText")).getText();
 			else if (text.equals("Faction")) this.faction = (element.getChildByName("Faction")).getText();
@@ -49,6 +49,7 @@ public class Card {
 			this.textureLoaded = true;
 		}
 		else {
+			System.out.println("----");
 			System.out.println("Unable to Load: " + name);
 			System.out.println("Source: " + source);
 			System.out.println("CardText: " + cardText);

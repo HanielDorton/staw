@@ -19,6 +19,7 @@ public class CaptainCard extends Card{
 			//if (text.equals("FleetCaptain")) fleetCaptain = true;
 		}
 		parseTalents(element);
+		//if (name.equals("Valdore")) this.texture = Assets.manager.get(faction + "/" + name + " Captain.png", Texture.class);
 	}
 	
 	private void parseTalents(Element element) {
