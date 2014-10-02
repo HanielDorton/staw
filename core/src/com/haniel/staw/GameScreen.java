@@ -37,7 +37,7 @@ public class GameScreen implements Screen{
 	private Table fleetTable, shipTable, leftTable, rightTable, bottomTable, centerTable, topLeftTable, topRightTable;
 	private TextureAtlas atlas, atlas2;
 	private TextButton loadFile;
-	private Button buttonMore, buttonLess, buttonMoreActive, buttonLessActive, buttonExit;
+	private Button buttonMore, buttonLess, buttonMoreActive, buttonLessActive, buttonMenu;
 	private Button shipButtonMore, shipButtonLess, shipButtonMoreActive, shipButtonLessActive;
 	public List<String> directoryList;
 	private ArrayList<Fleet> fleets = new ArrayList<Fleet>();	
@@ -56,15 +56,16 @@ public class GameScreen implements Screen{
 	private int buttonHeight = resizeY(60);
 	private int buttonPad = resizeX(20);
 	public FileHandle currentDirectory = Gdx.files.absolute("/");
+	public boolean playSounds = true;
 	private Texture backgroundPanel = Assets.manager.get("backgroundpanel.png", Texture.class);
 	private Texture cardBorder = Assets.manager.get("CardBorder.png", Texture.class); 
 	private Sound doubleBeep = Assets.manager.get("doublebeep.mp3", Sound.class);
 	private Sound error = Assets.manager.get("error.wav", Sound.class);
 	//private Sound highpitch = Assets.manager.get("highpitch.wav", Sound.class); // use for clicking on cards?
 	private Sound noeffect = Assets.manager.get("noeffect.mp3", Sound.class);
-	private Sound quickbeep = Assets.manager.get("quickbeep.mp3", Sound.class);
+	public Sound quickbeep = Assets.manager.get("quickbeep.mp3", Sound.class);
 	private Sound openScreen = Assets.manager.get("openscreen.mp3", Sound.class);
-	private Music backgroundMusic = Assets.manager.get("tng_bridge_2.mp3", Music.class);
+	public Music backgroundMusic = Assets.manager.get("tng_bridge_2.mp3", Music.class);
 
 
     
@@ -108,7 +109,7 @@ public class GameScreen implements Screen{
 
 	@Override
 	public void show() {
-		openScreen.play();
+		if (playSounds) openScreen.play();
 		backgroundMusic.setLooping(true);
 		backgroundMusic.play();
 		atlas = new TextureAtlas("uiskin.atlas");
@@ -152,12 +153,9 @@ public class GameScreen implements Screen{
 				public void changed(ChangeEvent event, Actor actor) {
 					centerTable.clear();
 					new LoadFileMenu(g, centerTable, current);
-					doubleBeep.play();
-					clearBoard();
-					leftTable.clear();
-					rightTable.clear();
-					leftTable.add(buttonLess).width(buttonHeight ).height(buttonWidth - resizeY(5));
-					rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth- resizeY(5));
+					if (playSounds) doubleBeep.play();
+					resetCardsandSideButtons();
+
 				}
 			});
 			fleetButtons.add(loadFile);
@@ -167,33 +165,33 @@ public class GameScreen implements Screen{
 		buttonMore = new TextButton("+", skin);
 		buttonMore.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				noeffect.play();
+				if (playSounds) noeffect.play();
 			}
 		});
 		buttonLess = new TextButton("-", skin);
 		buttonLess.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				noeffect.play();
+				if (playSounds) noeffect.play();
 			}
 		});
 		
 		shipButtonMore = new TextButton("+", skin);
 		shipButtonMore.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				noeffect.play();
+				if (playSounds) noeffect.play();
 			}
 		});
 		shipButtonLess = new TextButton("-", skin);
 		shipButtonLess.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				noeffect.play();
+				if (playSounds) noeffect.play();
 			}
 		});
 		
 		buttonMoreActive = new TextButton("+", skin2);
 		buttonMoreActive.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				quickbeep.play();
+				if (playSounds) quickbeep.play();
 				startingCard += numberOfCards;
 				resetSideButtons();
 			}
@@ -201,7 +199,7 @@ public class GameScreen implements Screen{
 		buttonLessActive = new TextButton("-", skin2);
 		buttonLessActive.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				quickbeep.play();
+				if (playSounds) quickbeep.play();
 				startingCard -= numberOfCards;
 				resetSideButtons();
 			}
@@ -209,7 +207,7 @@ public class GameScreen implements Screen{
 		shipButtonMoreActive = new TextButton("+", skin2);
 		shipButtonMoreActive.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				quickbeep.play();
+				if (playSounds) quickbeep.play();
 				startingShip += numberOfShips;
 				resetSideButtons();
 			}
@@ -217,21 +215,22 @@ public class GameScreen implements Screen{
 		shipButtonLessActive = new TextButton("-", skin2);
 		shipButtonLessActive.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				quickbeep.play();
+				if (playSounds) quickbeep.play();
 				startingShip -= numberOfShips;
 				resetSideButtons();
 			}
 		});
-		buttonExit = new TextButton("Abort", skin);
-		buttonExit.addListener(new ChangeListener() {
+		
+		buttonMenu = new TextButton("Menu", skin);
+		buttonMenu.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				backgroundMusic.stop();
-				quickbeep.play();
-				game.setScreen(new ShutdownScreen(game));
+				centerTable.clear();
+				new SettingsMenu(g, centerTable);
+				if (playSounds) doubleBeep.play();
+				resetCardsandSideButtons();				
 			}
 		});
-		
-		bottomTable.add(buttonExit).width(buttonWidth).height(resizeY(40));
+		bottomTable.add(buttonMenu).width(buttonWidth).height(resizeX(40));
 		resetSideButtons();
 		recreateFleetTable();
 		
@@ -262,7 +261,7 @@ public class GameScreen implements Screen{
 					activeFleet = fleetButton;
 					fleetTable.reset();
 					recreateFleetTable();
-					doubleBeep.play();
+					if (playSounds) doubleBeep.play();
 				}
 			});
 			fleetButtons.add(fleetButton, button);
@@ -273,7 +272,7 @@ public class GameScreen implements Screen{
 			displayFleet(fleet);
 			fleetTable.reset();
 			recreateFleetTable();
-			doubleBeep.play();
+			if (playSounds) doubleBeep.play();
 			centerTable.clear();
 		}
 		catch (Exception e) {
@@ -285,7 +284,7 @@ public class GameScreen implements Screen{
 	
 	public void displayFleet(Fleet fleet) {
 		//separate fleet by ships and make a display button for each one
-		clearBoard();
+		resetCardsandSideButtons();
 		shipTable.clear();
 		shipButtons.clear();
 		for (final Card ship : fleet.getShips()) {
@@ -294,7 +293,7 @@ public class GameScreen implements Screen{
 				public void changed(ChangeEvent event, Actor actor) {
 					centerTable.clear();
 					displayShip((ShipCard) ship);
-					quickbeep.play();
+					if (playSounds) quickbeep.play();
 				}
 			});
 			shipButtons.add(button);
@@ -329,9 +328,8 @@ public class GameScreen implements Screen{
 	
 	public void addError(String errorString, String okString) {
 		error.play();
-		Dialog d = new Dialog(errorString, skin);
-		d.button(okString);
-		bottomTable.add(d).width(buttonWidth * 2).height(buttonHeight * 2);
+		centerTable.clear();
+		//add customer error thing...
 	}
 	
 	public void addCards(Card card) {
@@ -339,7 +337,7 @@ public class GameScreen implements Screen{
 	}
 	
 
-	public void clearBoard() {
+	public void resetCardsandSideButtons() {
 		currentCards.clear();
 		startingCard = 0;
 		startingShip = 0;

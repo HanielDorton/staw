@@ -20,9 +20,11 @@ public class ShutdownScreen implements Screen{
 	private Texture background = Assets.manager.get("shutdown-0.png", Texture.class);
 	private Sound alert = Assets.manager.get("alert23.mp3", Sound.class);
 	private boolean alertPlayed = false;
+	private boolean playSounds;
 	
-	public ShutdownScreen(staw game) {
+	public ShutdownScreen(staw game, boolean playSounds) {
 		this.game = game;
+		this.playSounds = playSounds;
 		camera = new OrthographicCamera();
 	    camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
@@ -44,9 +46,11 @@ public class ShutdownScreen implements Screen{
 				background = Assets.manager.get("shutdown-" + start + ".png", Texture.class);
 			}
 		}
-		if (start == 8 && !alertPlayed) {
-			alert.play();
-			alertPlayed = true;
+		if (playSounds) {
+			if (start == 8 && !alertPlayed) {
+				alert.play();
+				alertPlayed = true;
+			}
 		}
 		game.batch.draw(background, 0 , 0, resizeX(1000), resizeY(600));
 		game.batch.end();
@@ -64,7 +68,7 @@ public class ShutdownScreen implements Screen{
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		alert.play();
+		if (playSounds) alert.play();
 		
 	}
 

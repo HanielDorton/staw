@@ -34,7 +34,7 @@ public class Assets {
 			manager.load("shutdown-" + i + ".png", Texture.class);
 		}
 		
-		/*
+		
 		//Bajoran Ships
 		manager.load("Bajoran/Akorem.png", Texture.class);
 		manager.load("Bajoran/Bajoran Scout Ship Manuevers.png", Texture.class);
@@ -59,6 +59,7 @@ public class Assets {
 
 		
 		
+		/*
 		//Dominion Ships
 		manager.load("Dominion/2nd Division Cruiser.png", Texture.class);
 		manager.load("Dominion/3rd Wing Patrol Ship.png", Texture.class);
@@ -150,7 +151,7 @@ public class Assets {
 		manager.load("Dominion/Suicide Attack.png", Texture.class);
 		manager.load("Dominion/Tetryon Emissions.png", Texture.class);
 		
-		*/
+		
 		//Federation Ships
 		manager.load("Federation/Aerie Class Manuevers.png", Texture.class);
 		manager.load("Federation/Aerie Class.png", Texture.class);
@@ -309,7 +310,7 @@ public class Assets {
 		manager.load("Federation/Secondary Impusle Reactor.png", Texture.class);
 		manager.load("Federation/Transwarp Drive.png", Texture.class);
 		
-		/*
+		
 		//Ferengi Ships
 		manager.load("Ferengi/Krayton.png", Texture.class);
 		manager.load("Ferengi/D'Kora Class.png", Texture.class);

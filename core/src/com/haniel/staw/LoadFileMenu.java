@@ -3,7 +3,6 @@ package com.haniel.staw;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -15,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 public class LoadFileMenu {
 	
 	private GameScreen g;
-	private Sound quickbeep = Assets.manager.get("quickbeep.mp3", Sound.class);
 	private Table centerTable;
 	
 	private int buttonWidth, buttonHeight; 
@@ -25,8 +23,7 @@ public class LoadFileMenu {
 		this.centerTable = centerTable;
 		buttonWidth = g.resizeX(200);
 		buttonHeight = g.resizeY(60);
-		makeFileChooser(fleetButton);
-		
+		makeFileChooser(fleetButton);		
 	}
 
 	private void makeFileChooser(final int fleetButton) {		
@@ -36,7 +33,7 @@ public class LoadFileMenu {
 		final TextButton exitButton = new TextButton("Exit", g.skin);
 		exitButton.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				quickbeep.play();
+				if (g.playSounds) g.quickbeep.play();
 				centerTable.clear();
 			}
 		});
@@ -44,7 +41,7 @@ public class LoadFileMenu {
 		TextButton backDirectory = new TextButton("Back", g.skin);
 		backDirectory.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				quickbeep.play();
+				if (g.playSounds) g.quickbeep.play();
 				g.currentDirectory = g.currentDirectory.parent();
 				loadFiles(g.currentDirectory);
 				currentDirectoryText.setText(g.currentDirectory.path());
@@ -83,7 +80,7 @@ public class LoadFileMenu {
 	public void openFile(TextField currentDirectoryText, int fleetButton) {
 		FileHandle newFile = Gdx.files.absolute(g.currentDirectory + g.directoryList.getSelected() + "/");
 		if (newFile.isDirectory()) {
-			quickbeep.play();
+			if (g.playSounds) g.quickbeep.play();
 			g.currentDirectory = newFile;
 			loadFiles(g.currentDirectory);
 			currentDirectoryText.setText(newFile.path());
@@ -96,7 +93,7 @@ public class LoadFileMenu {
 		}
 		newFile = Gdx.files.absolute(g.currentDirectory +"/" +  g.directoryList.getSelected() + "/");
 		if (newFile.isDirectory()) {
-			quickbeep.play();
+			if (g.playSounds) g.quickbeep.play();
 			g.currentDirectory = newFile;
 			loadFiles(g.currentDirectory);
 			currentDirectoryText.setText(newFile.path());
