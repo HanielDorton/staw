@@ -4,13 +4,6 @@ package com.haniel.staw;
 import java.io.File;
 import java.util.ArrayList;
 
-
-
-
-
-
-
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -25,11 +18,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.XmlReader;
 import com.haniel.staw.Cards.Card;
@@ -43,19 +34,24 @@ public class GameScreen implements Screen{
     private static int assumeY = 600;    
 	private Stage stage;
 	public Skin skin, skin2;
-	private Table fleetTable, shipTable, leftTable, rightTable, bottomTable, centerTable;
+	private Table fleetTable, shipTable, leftTable, rightTable, bottomTable, centerTable, topLeftTable, topRightTable;
 	private TextureAtlas atlas, atlas2;
 	private TextButton loadFile;
 	private Button buttonMore, buttonLess, buttonMoreActive, buttonLessActive, buttonExit;
+	private Button shipButtonMore, shipButtonLess, shipButtonMoreActive, shipButtonLessActive;
 	public List<String> directoryList;
 	private ArrayList<Fleet> fleets = new ArrayList<Fleet>();	
 	private ArrayList<TextButton> fleetButtons = new ArrayList<TextButton>();
 	private ArrayList<TextButton> fleetButtonsActive = new ArrayList<TextButton>();
 	private int activeFleet = 5;
+	private int activeShip = 50;
 	private ArrayList<TextButton> shipButtons = new ArrayList<TextButton>();
+	private ArrayList<TextButton> shipButtonsActive = new ArrayList<TextButton>();
 	public ArrayList<Card> currentCards = new ArrayList<Card>();
 	private int startingCard = 0;
 	private int numberOfCards = 4;
+	private int startingShip = 0;
+	private int numberOfShips = 4;
 	private int buttonWidth = resizeX(200);
 	private int buttonHeight = resizeY(60);
 	private int buttonPad = resizeX(20);
@@ -127,18 +123,24 @@ public class GameScreen implements Screen{
 		leftTable = new Table(skin);
 		bottomTable = new Table(skin);
 		centerTable = new Table(skin);
+		topLeftTable = new Table(skin);
+		topRightTable = new Table(skin);
 		stage.addActor(fleetTable);
 		stage.addActor(shipTable);
 		stage.addActor(rightTable);
 		stage.addActor(leftTable);
 		stage.addActor(bottomTable);
 		stage.addActor(centerTable);
-		shipTable.setBounds(0, resizeY(415), stage.getWidth(), resizeY(60));
-		fleetTable.setBounds(0, resizeY(495), stage.getWidth(), resizeY(60));
+		stage.addActor(topLeftTable);
+		stage.addActor(topRightTable);
+		shipTable.setBounds(resizeX(110), resizeY(415), resizeX(800), resizeY(60));
+		fleetTable.setBounds(resizeX(110), resizeY(495), resizeX(800), resizeY(60));
 		rightTable.setBounds(resizeX(940), resizeY(-56), resizeX(40), stage.getHeight());
 		leftTable.setBounds(resizeX(10), resizeY(-56), resizeX(60), stage.getHeight());
 		bottomTable.setBounds(0, resizeY(45), stage.getWidth(), resizeY(40));
-		centerTable.setBounds(resizeX(150), resizeY(100), resizeX(700), resizeY(100));
+		centerTable.setBounds(resizeX(200), resizeY(106), resizeX(600), resizeY(278));
+		topRightTable.setBounds(resizeX(950), resizeY(415), resizeX(40), resizeY(60));
+		topLeftTable.setBounds(0, resizeY(415), resizeX(60), resizeY(60));
 		Gdx.input.setInputProcessor(stage);
 		
 		final GameScreen g = this;
@@ -174,18 +176,26 @@ public class GameScreen implements Screen{
 				noeffect.play();
 			}
 		});
+		
+		shipButtonMore = new TextButton("+", skin);
+		shipButtonMore.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				noeffect.play();
+			}
+		});
+		shipButtonLess = new TextButton("-", skin);
+		shipButtonLess.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				noeffect.play();
+			}
+		});
+		
 		buttonMoreActive = new TextButton("+", skin2);
 		buttonMoreActive.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				quickbeep.play();
 				startingCard += numberOfCards;
-				leftTable.clear();
-				leftTable.add(buttonLessActive).width(buttonHeight).height(buttonWidth - resizeY(5));
-				if (startingCard + numberOfCards >= currentCards.size()) {
-					rightTable.clear();
-					rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth - resizeY(5));
-					
-				}
+				resetSideButtons();
 			}
 		});
 		buttonLessActive = new TextButton("-", skin2);
@@ -193,14 +203,23 @@ public class GameScreen implements Screen{
 			public void changed(ChangeEvent event, Actor actor) {
 				quickbeep.play();
 				startingCard -= numberOfCards;
-				if (startingCard == 0) {
-					leftTable.clear();
-					leftTable.add(buttonLess).width(buttonHeight).height(buttonWidth - resizeY(5));
-				}
-				if (startingCard + numberOfCards < currentCards.size()) {
-					rightTable.clear();
-					rightTable.add(buttonMoreActive).width(buttonHeight).height(buttonWidth - resizeY(5));
-				}
+				resetSideButtons();
+			}
+		});
+		shipButtonMoreActive = new TextButton("+", skin2);
+		shipButtonMoreActive.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				quickbeep.play();
+				startingShip += numberOfShips;
+				resetSideButtons();
+			}
+		});
+		shipButtonLessActive = new TextButton("-", skin2);
+		shipButtonLessActive.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				quickbeep.play();
+				startingShip -= numberOfShips;
+				resetSideButtons();
 			}
 		});
 		buttonExit = new TextButton("Abort", skin);
@@ -213,8 +232,7 @@ public class GameScreen implements Screen{
 		});
 		
 		bottomTable.add(buttonExit).width(buttonWidth).height(resizeY(40));
-		leftTable.add(buttonLess).width(buttonHeight).height(buttonWidth - resizeY(5));
-		rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth - resizeY(5));
+		resetSideButtons();
 		recreateFleetTable();
 		
 	}
@@ -274,24 +292,21 @@ public class GameScreen implements Screen{
 			final TextButton button = new TextButton(ship.getName(), skin);
 			button.addListener(new ChangeListener() {
 				public void changed(ChangeEvent event, Actor actor) {
+					centerTable.clear();
 					displayShip((ShipCard) ship);
 					quickbeep.play();
 				}
 			});
 			shipButtons.add(button);
-			shipTable.add(button).width(buttonWidth).height(buttonHeight).padRight(buttonPad);
+			resetSideButtons();
 		}
 	}
 	
 	public void displayShip(ShipCard ship) {
-		clearBoard();
+		currentCards.clear();
 		ship.displayShip(this);
-		leftTable.clear();
-		rightTable.clear();
 		startingCard = 0;
-		leftTable.add(buttonLess).width(buttonHeight).height(buttonWidth);
-		if (currentCards.size() > numberOfCards) rightTable.add(buttonMoreActive).width(buttonHeight).height(buttonWidth - resizeY(5));
-		else rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth - resizeY(5));
+		resetSideButtons();
 				
 	}
 
@@ -326,11 +341,35 @@ public class GameScreen implements Screen{
 
 	public void clearBoard() {
 		currentCards.clear();
+		startingCard = 0;
+		startingShip = 0;
+		activeShip = 50;
+		resetSideButtons();
+
+	}
+	
+	public void resetSideButtons() {
 		leftTable.clear();
 		rightTable.clear();
-		leftTable.add(buttonLess).width(buttonHeight).height(buttonWidth - resizeY(5));
-		rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth - resizeY(5));
-		startingCard = 0;
+		if (startingCard == 0) leftTable.add(buttonLess).width(buttonHeight).height(buttonWidth - resizeY(5));
+		else leftTable.add(buttonLessActive).width(buttonHeight).height(buttonWidth - resizeY(5));
+		if (currentCards.size() > startingCard + numberOfCards) rightTable.add(buttonMoreActive).width(buttonHeight).height(buttonWidth - resizeY(5));
+		else rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth - resizeY(5));
+		
+		
+		topRightTable.clear();
+		topLeftTable.clear();
+		if (startingShip == 0) topLeftTable.add(shipButtonLess).width(buttonHeight-resizeX(10)).height(buttonHeight);
+		else topLeftTable.add(shipButtonLessActive).width(buttonHeight-resizeX(10)).height(buttonHeight);
+		if (shipButtons.size() > startingShip + numberOfShips) topRightTable.add(shipButtonMoreActive).width(buttonHeight-resizeX(10)).height(buttonHeight);
+		else topRightTable.add(shipButtonMore).width(buttonHeight-resizeX(10)).height(buttonHeight);
+		
+		shipTable.clear();
+		for (int i = startingShip; i < startingShip + numberOfShips; i++) {
+			if (i < shipButtons.size()) shipTable.add(shipButtons.get(i)).width(buttonWidth).height(buttonHeight).padRight(buttonPad);
+		}
+		
+		
 	}
 	
 	public int resizeX(int positionX) {

@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -16,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class LoadFileMenu {
 	
-	private int fleetButton;
 	private GameScreen g;
 	private Sound quickbeep = Assets.manager.get("quickbeep.mp3", Sound.class);
 	private Table centerTable;
@@ -25,7 +22,6 @@ public class LoadFileMenu {
 	
 	public LoadFileMenu(GameScreen g, Table centerTable, int fleetButton) {
 		this.g = g;
-		this.fleetButton = fleetButton;
 		this.centerTable = centerTable;
 		buttonWidth = g.resizeX(200);
 		buttonHeight = g.resizeY(60);
@@ -34,20 +30,8 @@ public class LoadFileMenu {
 	}
 
 	private void makeFileChooser(final int fleetButton) {		
-	
-		centerTable.setBounds(g.resizeX(300), g.resizeY(100), g.resizeX(400), g.resizeY(500));
-		
-		final TextField currentDirectoryText = new TextField(g.currentDirectory.path(), g.skin);
-		
-		currentDirectoryText.addListener(new ChangeListener() {
-	
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				quickbeep.play();
-				
-			}
 			
-		});
+		final TextField currentDirectoryText = new TextField(g.currentDirectory.path(), g.skin);
 		
 		final TextButton exitButton = new TextButton("Exit", g.skin);
 		exitButton.addListener(new ChangeListener() {
@@ -75,14 +59,25 @@ public class LoadFileMenu {
 		});
 		
 		loadFiles(g.currentDirectory);
-		
+
 		ScrollPane scrollPane = new ScrollPane(g.directoryList, g.skin);
-		centerTable.add(scrollPane).width(g.resizeX(200)).height(g.resizeY(300));
-		centerTable.add(currentDirectoryText).width(buttonWidth).height(buttonHeight);
-		centerTable.add(exitButton).width(buttonWidth).height(buttonHeight);
-		centerTable.add(backDirectory).width(buttonWidth).height(buttonHeight);
-		centerTable.add(openFile).width(buttonWidth).height(buttonHeight);
 		
+		centerTable.add(scrollPane).width(g.resizeX(300)).height(g.resizeY(250));
+		
+		Table newTable = new Table();	
+		//g.stage.addActor(newTable);
+		//newTable.setBounds(g.resizeX(500), g.resizeY(106), g.resizeX(300), g.resizeY(278));
+		centerTable.add(newTable);
+		
+		newTable.add(currentDirectoryText).width(buttonWidth);
+		newTable.row().pad(g.resizeY(10));
+		newTable.add(exitButton).width(buttonWidth).height(buttonHeight);
+		newTable.row().pad(g.resizeY(10));
+		newTable.add(backDirectory).width(buttonWidth).height(buttonHeight);
+		newTable.row().pad(g.resizeY(10));
+		newTable.add(openFile).width(buttonWidth).height(buttonHeight);
+
+
 	}
 	
 	public void openFile(TextField currentDirectoryText, int fleetButton) {

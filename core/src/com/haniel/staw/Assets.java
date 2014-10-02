@@ -34,7 +34,7 @@ public class Assets {
 			manager.load("shutdown-" + i + ".png", Texture.class);
 		}
 		
-		
+		/*
 		//Bajoran Ships
 		manager.load("Bajoran/Akorem.png", Texture.class);
 		manager.load("Bajoran/Bajoran Scout Ship Manuevers.png", Texture.class);
@@ -170,25 +170,18 @@ public class Assets {
 		manager.load("Dominion/Suicide Attack.png", Texture.class);
 		manager.load("Dominion/Tetryon Emissions.png", Texture.class);
 		
-		/*
-		//Federation Ships-- ship named, then generic, then manuevers
-		manager.load("Federation/USS Yeager.png", Texture.class);
-		manager.load("Federation/Saber Class.png", Texture.class);
-		manager.load("Federation/Saber Class Manuevers.png", Texture.class);
+		
+		//Federation Ships
 		
 		//Federation Captains
-		manager.load("Federation/Benjamin Maxwell.png", Texture.class);
 		
 		//Federation Elite
-		manager.load("Federation/Preemptive Strike.png", Texture.class);
 		
 		//Federation Crew		
-		manager.load("Federation/Elizabeth Shelby.png", Texture.class);
-		manager.load("Federation/Reginald Barclay.png", Texture.class);
+		
 		
 		//Federation Weapons
-		manager.load("Federation/Photon Torpedoes Collective OP Blind Booster USS Enterprise Refit.png", Texture.class);
-		
+				
 		//Federation Tech
 		
 		//Ferengi Ships
@@ -337,8 +330,8 @@ public class Assets {
 		
 		//Romulan Ships
 		manager.load("Romulan/PWB Aj'Rmr.png", Texture.class);
-		manager.load("Romulan/Dderidex 1412113108336.png", Texture.class);
-		manager.load("Romulan/Dderidex 1411968925549.png", Texture.class);
+		manager.load("Romulan/Dderidex Tech,Weapon,Weapon,Crew.png", Texture.class);
+		manager.load("Romulan/Dderidex Tech,Weapon,Crew,Crew.png", Texture.class);
 		manager.load("Romulan/Dderidex Manuevers.png", Texture.class);
 		manager.load("Romulan/IRW Gal Gath'Thong.png", Texture.class);
 		manager.load("Romulan/IRW Khazara.png", Texture.class);
@@ -412,8 +405,8 @@ public class Assets {
 		manager.load("Romulan/Polarized Hull Plating.png", Texture.class);
 		manager.load("Romulan/Ultritium Explosives.png", Texture.class);
 		
-		
 		*/
+
 
 		
 		
