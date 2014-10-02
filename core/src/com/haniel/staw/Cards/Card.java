@@ -49,11 +49,13 @@ public class Card {
 			this.textureLoaded = true;
 		}
 		else {
+			/*
 			System.out.println("----");
 			System.out.println("Unable to Load: " + name);
 			System.out.println("Source: " + source);
 			System.out.println("CardText: " + cardText);
 			System.out.println("PointCost: " + cost);
+			*/
 		}
 	}
 

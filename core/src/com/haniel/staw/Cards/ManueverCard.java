@@ -11,6 +11,8 @@ public class ManueverCard extends Card{
 		if (Assets.manager.isLoaded(faction + "/" + shipClass + " Manuevers.png")) {
 			this.texture = Assets.manager.get(faction + "/" + shipClass + " Manuevers.png", Texture.class);
 			this.textureLoaded = true;
+		} else {
+			System.out.println("Unable to load manuever card:" + shipClass);
 		}
 	}
 }

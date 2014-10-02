@@ -15,6 +15,7 @@ public class ShipCard extends Card{
 	private String shipActions, shipUpgrades, firingArc, shipClass;
 	private List<Card> upgrades = new ArrayList<Card>();
 	private ManueverCard manueverCard;
+	private boolean hasManuevers = false;
 
 	public ShipCard(Element ship) {
 		super(ship);
@@ -32,7 +33,10 @@ public class ShipCard extends Card{
 		if (unique.equals("No")) name = shipClass;
 		getUpgrades(ship);
 		loadTexture();
-		this.manueverCard = new ManueverCard(faction, shipClass);
+		if (!(name.equals("Deep Space 9"))) {
+			this.manueverCard = new ManueverCard(faction, shipClass);
+			hasManuevers = true;
+		}
 	}
 	
 	private void loadTexture() {
@@ -40,6 +44,10 @@ public class ShipCard extends Card{
 
 			if (Assets.manager.isLoaded(faction + "/" + name + ".png")) {
 				this.texture = Assets.manager.get(faction + "/" + name + ".png", Texture.class);
+				this.textureLoaded = true;
+			}	
+			else if (Assets.manager.isLoaded(faction + "/" + name + " " + shipClass + ".png")) {
+				this.texture = Assets.manager.get(faction + "/" + name + " " + shipClass + ".png", Texture.class);
 				this.textureLoaded = true;
 			}	
 			else if (Assets.manager.isLoaded(faction + "/" + shipClass + " " + shipUpgrades + ".png")) {
@@ -98,12 +106,12 @@ public class ShipCard extends Card{
 	}
 	
 	
-	public void displayManueverCard(GameScreen g) {
-		g.addCards(manueverCard);
-	}
+	//public void displayManueverCard(GameScreen g) {
+	//	g.addCards(manueverCard);
+	//}
 	public void displayShip(GameScreen g){
 		g.addCards(this);
-		g.addCards(manueverCard);
+		if (hasManuevers) g.addCards(manueverCard);
 		for (Card upgrade : upgrades) {
 			upgrade.displayCard(g);
 			if (upgrade instanceof CaptainCard) {

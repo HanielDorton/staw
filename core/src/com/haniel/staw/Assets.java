@@ -56,27 +56,7 @@ public class Assets {
 		
 		//Bajoran Tech
 		
-		//Ferengi Ships
-		manager.load("Ferengi/Krayton.png", Texture.class);
-		manager.load("Ferengi/D'Kora Class.png", Texture.class);
-		manager.load("Ferengi/D'Kora Class Manuevers.png", Texture.class);
-		
-		//Ferengi Captains
-		manager.load("Ferengi/Daimon Tog.png", Texture.class);
-		manager.load("Ferengi/Ferengi Captain.png", Texture.class);
-		
-		//Ferengi Elite
-		manager.load("Ferengi/Conditional Surrender.png", Texture.class);
-		
-		//Ferengi Crew		
-		manager.load("Ferengi/Quark.png", Texture.class);
-		manager.load("Ferengi/Farek.png", Texture.class);
-		
-		//Ferengi Weapons
-		manager.load("Ferengi/Missile Launchers.png", Texture.class);
-		
-		//Ferengi Tech
-		manager.load("Ferengi/EM Pulse.png", Texture.class);
+
 		
 		
 		//Dominion Ships
@@ -170,31 +150,187 @@ public class Assets {
 		manager.load("Dominion/Suicide Attack.png", Texture.class);
 		manager.load("Dominion/Tetryon Emissions.png", Texture.class);
 		
-		
+		*/
 		//Federation Ships
+		manager.load("Federation/Aerie Class Manuevers.png", Texture.class);
+		manager.load("Federation/Aerie Class.png", Texture.class);
+		manager.load("Federation/Constellation Class Manuevers.png", Texture.class);
+		manager.load("Federation/Constellation  Class Manuevers.png", Texture.class);
+		manager.load("Federation/Constellation Class.png", Texture.class);
+		manager.load("Federation/Constitution Class Manuevers.png", Texture.class);
+		manager.load("Federation/Constitution Class.png", Texture.class);
+		manager.load("Federation/Constitution Refit Class Manuevers.png", Texture.class);
+		manager.load("Federation/Constitution Refit Class.png", Texture.class);
+		manager.load("Federation/Deep Space 9.png", Texture.class);
+		manager.load("Federation/Defiant Class Manuevers.png", Texture.class);
+		manager.load("Federation/Defiant Class.png", Texture.class);
+		manager.load("Federation/Enterprise NX-01.png", Texture.class);
+		manager.load("Federation/Excelsior Class Manuevers.png", Texture.class);
+		manager.load("Federation/Excelsior Class.png", Texture.class);
+		manager.load("Federation/Federation NX Class Manuevers.png", Texture.class);
+		manager.load("Federation/Federation NX Class.png", Texture.class);
+		manager.load("Federation/Galaxy Class Manuevers.png", Texture.class);
+		manager.load("Federation/Galaxy Class.png", Texture.class);
+		manager.load("Federation/Intrepid Class Manuevers.png", Texture.class);
+		manager.load("Federation/Intrepid Class.png", Texture.class);
+		manager.load("Federation/Miranda Class Manuevers.png", Texture.class);
+		manager.load("Federation/Miranda Class.png", Texture.class);
+		manager.load("Federation/Nebula Class Manuevers.png", Texture.class);
+		manager.load("Federation/Nebula Class.png", Texture.class);
+		manager.load("Federation/Nova Class.png", Texture.class);
+		manager.load("Federation/Nova Class Manuevers.png", Texture.class);
+		manager.load("Federation/Saber Class Manuevers.png", Texture.class);
+		manager.load("Federation/Saber Class.png", Texture.class);
+		manager.load("Federation/USS Enterprise-D.png", Texture.class);
+		manager.load("Federation/USS Defiant.png", Texture.class);
+		manager.load("Federation/USS Enterprise Constitution Class.png", Texture.class);
+		manager.load("Federation/USS Enterprise Constitution Refit Class.png", Texture.class);
+		manager.load("Federation/USS Equinox.png", Texture.class);
+		manager.load("Federation/USS Excelsior.png", Texture.class);
+		manager.load("Federation/USS Raven.png", Texture.class);
+		manager.load("Federation/USS Reliant.png", Texture.class);
+		manager.load("Federation/USS Stargazer.png", Texture.class);
+		manager.load("Federation/USS Sutherland.png", Texture.class);
+		manager.load("Federation/USS Voyager.png", Texture.class);
+		manager.load("Federation/USS Yeager.png", Texture.class);
 		
 		//Federation Captains
+		manager.load("Federation/Benjamin Maxwell.png", Texture.class);
+		manager.load("Federation/Benjamin Sisko DS9 GenCon CrewPack.png", Texture.class);
+		manager.load("Federation/Benjamin Sisko USS Defiant Expansion.png", Texture.class);
+		manager.load("Federation/Chakotay.png", Texture.class);
+		manager.load("Federation/Christopher Pike.png", Texture.class);
+		manager.load("Federation/Clark Terrell.png", Texture.class);
+		manager.load("Federation/Data OP4 Sutherland Prize.png", Texture.class);
+		manager.load("Federation/Federation Captain.png", Texture.class);
+		manager.load("Federation/Hikaru Sulu USS Excelsior Expansion.png", Texture.class);
+		manager.load("Federation/J Hayes.png", Texture.class);
+		manager.load("Federation/James T Kirk.png", Texture.class);
+		manager.load("Federation/Jean-Luc Picard Starter Set.png", Texture.class);
+		manager.load("Federation/Jean-Luc Picard USS Stargazer.png", Texture.class);
+		manager.load("Federation/Jonathan Archer.png", Texture.class);
+		manager.load("Federation/Kathryn Janeway.png", Texture.class);
+		manager.load("Federation/Maxwell Burke.png", Texture.class);
+		manager.load("Federation/Mr Spock USS Enterprise Refit Expansion.png", Texture.class);
+		manager.load("Federation/Rudolph Ransom.png", Texture.class);
+		manager.load("Federation/Styles.png", Texture.class);
+		manager.load("Federation/William T Riker Starter Set.png", Texture.class);
+		manager.load("Federation/Will Decker.png", Texture.class);
+
 		
 		//Federation Elite
+		manager.load("Federation/Attack Pattern Delta.png", Texture.class);
+		manager.load("Federation/Attack Pattern Omega.png", Texture.class);
+		manager.load("Federation/Cheat Death.png", Texture.class);
+		manager.load("Federation/Cochrane Deceleration Maneuver.png", Texture.class);
+		manager.load("Federation/Corbomite Maneuver.png", Texture.class);
+		manager.load("Federation/Disobey Orders.png", Texture.class);
+		manager.load("Federation/Engage.png", Texture.class);
+		manager.load("Federation/Feint.png", Texture.class);
+		manager.load("Federation/Full Alert.png", Texture.class);
+		manager.load("Federation/Picard Maneuever.png", Texture.class);
+		manager.load("Federation/Preemptive Strike.png", Texture.class);
+		manager.load("Federation/Red Alert.png", Texture.class);
+		manager.load("Federation/Sacrifice.png", Texture.class);
+		manager.load("Federation/Self-Destruct Sequence.png", Texture.class);
+		manager.load("Federation/Tactical Alert.png", Texture.class);
+		manager.load("Federation/The Needs of the Many.png", Texture.class);
 		
 		//Federation Crew		
+		manager.load("Federation/B'Elanna Torres.png", Texture.class);
+		manager.load("Federation/Charles Tucker III.png", Texture.class);
+		manager.load("Federation/Christopher Hobson.png", Texture.class);
+		manager.load("Federation/Data Starter Set.png", Texture.class);
+		manager.load("Federation/Dmitri Valtane.png", Texture.class);
+		manager.load("Federation/Elizabeth Shelby.png", Texture.class);
+		manager.load("Federation/Emergency Medical Hologram.png", Texture.class);
+		manager.load("Federation/Geordi LaForge Starter Set.png", Texture.class);
+		manager.load("Federation/Harry Kim.png", Texture.class);
+		manager.load("Federation/Hikaru Sulu USS Enterprise Expansion.png", Texture.class);
+		manager.load("Federation/Hikaru Sulu USS Enterprise Refit Expansion.png", Texture.class);
+		manager.load("Federation/Hoshi Sato.png", Texture.class);
+		manager.load("Federation/Ilia.png", Texture.class);
+		manager.load("Federation/Jack Crusher.png", Texture.class);
+		manager.load("Federation/Jadzia Dax.png", Texture.class);
+		manager.load("Federation/Janice Rand.png", Texture.class);
+		manager.load("Federation/Julian Bashir.png", Texture.class);
+		manager.load("Federation/Kyle.png", Texture.class);
+		manager.load("Federation/Leonard McCoy USS Enterprise Expansion.png", Texture.class);
+		manager.load("Federation/Leonard McCoy USS Enterprise Refit Expansion.png", Texture.class);
+		manager.load("Federation/Lojour.png", Texture.class);
+		manager.load("Federation/Malcom Reed.png", Texture.class);
+		manager.load("Federation/Marla Gilmore.png", Texture.class);
+		manager.load("Federation/Miles O'Brien Starter Set.png", Texture.class);
+		manager.load("Federation/Miles O'Brien USS Defiant Expansion.png", Texture.class);
+		manager.load("Federation/Montgomery Scott USS Enterprise Expansion.png", Texture.class);
+		manager.load("Federation/Montgomery Scott USS Enterprise Refit Expansion.png", Texture.class);
+		manager.load("Federation/Mr Spock USS Enterprise Expansion.png", Texture.class);
+		manager.load("Federation/Noah Lessing.png", Texture.class);
+		manager.load("Federation/Nyota Uhuru USS Enterprise Expansion.png", Texture.class);
+		manager.load("Federation/Nyota Uhuru USS Enterprise Refit Expansion.png", Texture.class);
+		manager.load("Federation/Pavel Checkov USS Enterprise Refit Expansion.png", Texture.class);
+		manager.load("Federation/Pavel Chekov USS Reliant Expansion.png", Texture.class);
+		manager.load("Federation/Phlox.png", Texture.class);
+		manager.load("Federation/Red Shirt.png", Texture.class);
+		manager.load("Federation/Reginald Barclay.png", Texture.class);
+		manager.load("Federation/Saavik.png", Texture.class);
+		manager.load("Federation/Seven of Nine.png", Texture.class);
+		manager.load("Federation/T'Pol.png", Texture.class);
+		manager.load("Federation/The Doctor.png", Texture.class);
+		manager.load("Federation/Tom Paris.png", Texture.class);
+		manager.load("Federation/Travis Mayweather.png", Texture.class);
+		manager.load("Federation/Tuvok.png", Texture.class);
+		manager.load("Federation/Worf Starter Set.png", Texture.class);
+		manager.load("Federation/Worf USS Defiant Expansion.png", Texture.class);
 		
 		
 		//Federation Weapons
-				
-		//Federation Tech
+		manager.load("Federation/Aft Phase Cannon.png", Texture.class);
+		manager.load("Federation/Antimatter Mines.png", Texture.class);
+		manager.load("Federation/Photon Torpedoes Collective OP Blind Booster USS Enterprise Refit.png", Texture.class);
+		manager.load("Federation/Photon Torpedoes USS Defiant, Voyager and Starter.png", Texture.class);
+		manager.load("Federation/Photon Torpedoes USS Enterprise Reliant Excelsior Expansion.png", Texture.class);
+		manager.load("Federation/Photonic Torpedoes.png", Texture.class);
+		manager.load("Federation/Quantum Torpedoes.png", Texture.class);
+		manager.load("Federation/Secondary Torpedo Launcher.png", Texture.class);
+		manager.load("Federation/Tactical Station.png", Texture.class);
+		manager.load("Federation/Transphasic Torpedoes.png", Texture.class);
 		
+		//Federation Tech
+		manager.load("Federation/Ablative Generator.png", Texture.class);
+		manager.load("Federation/Bio-Neural Circuitry.png", Texture.class);
+		manager.load("Federation/Cloaking Device.png", Texture.class);
+		manager.load("Federation/Enhanced Hull Plating.png", Texture.class);
+		manager.load("Federation/High Energy Sensor Sweep.png", Texture.class);
+		manager.load("Federation/Multi-Adaptive Shields.png", Texture.class);
+		manager.load("Federation/Navigational Deflector.png", Texture.class);
+		manager.load("Federation/Positron Beam.png", Texture.class);
+		manager.load("Federation/Reinforced Structural Integrity.png", Texture.class);
+		manager.load("Federation/Secondary Impusle Reactor.png", Texture.class);
+		manager.load("Federation/Transwarp Drive.png", Texture.class);
+		
+		/*
 		//Ferengi Ships
+		manager.load("Ferengi/Krayton.png", Texture.class);
+		manager.load("Ferengi/D'Kora Class.png", Texture.class);
+		manager.load("Ferengi/D'Kora Class Manuevers.png", Texture.class);
 		
 		//Ferengi Captains
+		manager.load("Ferengi/Daimon Tog.png", Texture.class);
+		manager.load("Ferengi/Ferengi Captain.png", Texture.class);
 		
 		//Ferengi Elite
+		manager.load("Ferengi/Conditional Surrender.png", Texture.class);
 		
 		//Ferengi Crew		
+		manager.load("Ferengi/Quark.png", Texture.class);
+		manager.load("Ferengi/Farek.png", Texture.class);
 		
 		//Ferengi Weapons
+		manager.load("Ferengi/Missile Launchers.png", Texture.class);
 		
 		//Ferengi Tech
+		manager.load("Ferengi/EM Pulse.png", Texture.class);
 		
 		//Independent Ships
 		manager.load("Independent/Gavroche.png", Texture.class);
@@ -405,7 +541,7 @@ public class Assets {
 		manager.load("Romulan/Polarized Hull Plating.png", Texture.class);
 		manager.load("Romulan/Ultritium Explosives.png", Texture.class);
 		
-		*/
+		
 
 
 		
@@ -423,7 +559,7 @@ public class Assets {
 		//Klingon Tech
 		
 		
-		
+		*/
 	}
 	
     public static boolean update() {
