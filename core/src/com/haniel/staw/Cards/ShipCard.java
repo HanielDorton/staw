@@ -3,9 +3,9 @@ package com.haniel.staw.Cards;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.XmlReader.Element;
-import com.haniel.staw.Assets;
 import com.haniel.staw.GameScreen;
 
 
@@ -17,8 +17,8 @@ public class ShipCard extends Card{
 	private ManueverCard manueverCard;
 	private boolean hasManuevers = false;
 
-	public ShipCard(Element ship) {
-		super(ship);
+	public ShipCard(Element ship, GameScreen g) {
+		super(ship, g);
 		for (int i = 0; i< ship.getChildCount(); i++) {
 			String text = ship.getChild(i).getName();
 			if (text.equals("AttackDice")) this.attack = Integer.parseInt((ship.getChildByName("AttackDice")).getText());
@@ -33,8 +33,8 @@ public class ShipCard extends Card{
 		if (unique.equals("No")) name = shipClass;
 		getUpgrades(ship);
 		loadTexture();
-		if (!(name.equals("Deep Space 9"))) {
-			this.manueverCard = new ManueverCard(faction, shipClass);
+		if (!(shipClass.equals("Nor Class Orbital Space Station"))) {
+			this.manueverCard = new ManueverCard(faction, shipClass, g);
 			hasManuevers = true;
 		}
 	}
@@ -42,25 +42,25 @@ public class ShipCard extends Card{
 	private void loadTexture() {
 		if (!textureLoaded) {
 
-			if (Assets.manager.isLoaded(faction + "/" + name + ".png")) {
-				this.texture = Assets.manager.get(faction + "/" + name + ".png", Texture.class);
+			if (Gdx.files.internal(faction + "/" + name + ".png").exists()) {
+				this.texture = new Texture(Gdx.files.internal(faction + "/" + name + ".png"));
 				this.textureLoaded = true;
 			}	
-			else if (Assets.manager.isLoaded(faction + "/" + name + " " + shipClass + ".png")) {
-				this.texture = Assets.manager.get(faction + "/" + name + " " + shipClass + ".png", Texture.class);
+			else if (Gdx.files.internal(faction + "/" + name + " " + shipClass + ".png").exists()) {
+				this.texture = new Texture(Gdx.files.internal(faction + "/" + name + " " + shipClass + ".png"));
 				this.textureLoaded = true;
 			}	
-			else if (Assets.manager.isLoaded(faction + "/" + shipClass + " " + shipUpgrades + ".png")) {
-				this.texture = Assets.manager.get(faction + "/" + shipClass + " " + shipUpgrades + ".png", Texture.class);
+			else if (Gdx.files.internal(faction + "/" + shipClass + " " + shipUpgrades + ".png").exists()) {
+				this.texture = new Texture(Gdx.files.internal(faction + "/" + shipClass + " " + shipUpgrades + ".png"));
 				this.textureLoaded = true;
 			}	
-			else if (Assets.manager.isLoaded(faction + "/" + shipClass + " " + source + ".png")) {
-				this.texture = Assets.manager.get(faction + "/" + shipClass + " " + source + ".png", Texture.class);
+			else if (Gdx.files.internal(faction + "/" + shipClass + " " + source + ".png").exists()) {
+				this.texture = new Texture(Gdx.files.internal(faction + "/" + shipClass + " " + source + ".png"));
 				this.textureLoaded = true;
 			}
 
-			else if (Assets.manager.isLoaded(faction + "/" + shipClass + ".png")) {
-				texture = Assets.manager.get(faction + "/" + shipClass + ".png", Texture.class);
+			else if (Gdx.files.internal(faction + "/" + shipClass + ".png").exists()) {
+				this.texture = new Texture(Gdx.files.internal(faction + "/" + shipClass + ".png"));
 				textureLoaded = true;
 			}
 			else{
@@ -82,21 +82,26 @@ public class ShipCard extends Card{
 		for (int i = 0; i< ship.getChildCount(); i++) {
 			String text = ship.getChild(i).getName();
 			if (text.equals("Captain")) {
-				upgrades.add(new CaptainCard(ship.getChild(i)));
+				upgrades.add(new CaptainCard(ship.getChild(i), g));
 			}
 			if (text.equals("Crewmen")) {
 				for(int c = 0; c < (ship.getChild(i)).getChildCount(); c++) {
-					upgrades.add(new Card((ship.getChild(i)).getChild(c)));
+					upgrades.add(new Card((ship.getChild(i)).getChild(c), g));
 				}
 			}
 			if (text.equals("Weapons")) {
 				for(int w = 0; w < (ship.getChild(i)).getChildCount(); w++) {
-					upgrades.add(new WeaponCard((ship.getChild(i)).getChild(w)));
+					upgrades.add(new WeaponCard((ship.getChild(i)).getChild(w), g));
 				}
 			}
 			if (text.equals("Technology")) {
 				for(int t = 0; t < (ship.getChild(i)).getChildCount(); t++) {
-					upgrades.add(new WeaponCard((ship.getChild(i)).getChild(t)));
+					upgrades.add(new WeaponCard((ship.getChild(i)).getChild(t), g));
+				}
+			}
+			if (text.equals("BorgTechnology")) {
+				for(int t = 0; t < (ship.getChild(i)).getChildCount(); t++) {
+					upgrades.add(new Card((ship.getChild(i)).getChild(t), g));
 				}
 			}
 		}

@@ -1,18 +1,23 @@
 package com.haniel.staw.Cards;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.haniel.staw.Assets;
+import com.haniel.staw.GameScreen;
 
 
 public class ManueverCard extends Card{
 	
-	public ManueverCard(String faction, String shipClass){
-		super(faction, shipClass);
-		if (Assets.manager.isLoaded(faction + "/" + shipClass + " Manuevers.png")) {
-			this.texture = Assets.manager.get(faction + "/" + shipClass + " Manuevers.png", Texture.class);
+	public ManueverCard(String faction, String shipClass, GameScreen g){
+		super(faction, shipClass, g);
+		if (Gdx.files.internal(faction + "/" + shipClass + " Manuevers.png").exists()) {
+			this.texture = new Texture(Gdx.files.internal(faction + "/" + shipClass + " Manuevers.png"));
 			this.textureLoaded = true;
 		} else {
 			//System.out.println("Unable to load manuever card:" + shipClass);
 		}
+	}
+	
+	public void focusCardDetails() {
+		//blank override cause there are no details to show.
 	}
 }

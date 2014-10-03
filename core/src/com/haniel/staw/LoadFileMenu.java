@@ -127,7 +127,7 @@ public class LoadFileMenu {
 			File f = new File(text);
 
 			g.fleetButtons.remove(fleetButton);
-
+			g.lastAction.setText("Fleet " + f.getName().replace(".xml", "") + " Loaded");
 			final TextButton button = new TextButton((f.getName()).replace(".xml", ""), g.skin);
 			button.addListener(new ChangeListener() {
 				public void changed(ChangeEvent event, Actor actor) {

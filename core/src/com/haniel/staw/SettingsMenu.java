@@ -27,8 +27,14 @@ public class SettingsMenu {
 				if (g.playSounds) g.quickbeep.play();
 				if (g.backgroundMusic.isPlaying()) g.backgroundMusic.stop();
 				else g.backgroundMusic.play();
-				if (g.playSounds)g.playSounds = false;
-				else g.playSounds = true;
+				if (g.playSounds) {
+					g.playSounds = false;
+					g.lastAction.setText("Sound Muted");
+				}
+				else {
+					g.playSounds = true;
+					g.lastAction.setText("Sound Restored");
+				}
 
 			}
 		});
@@ -56,7 +62,7 @@ public class SettingsMenu {
 				if (g.playSounds) g.quickbeep.play();
 				centerTable.clear();
 				g.createFleetTable();
-				
+				g.lastAction.setText("All Fleets Removed");				
 			}
 		});
 		

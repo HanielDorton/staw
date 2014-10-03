@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -19,13 +20,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.haniel.staw.Cards.Card;
 import com.haniel.staw.Cards.ShipCard;
 
 
 public class GameScreen implements Screen{
-	final staw game;
+	public final staw game;
 	public OrthographicCamera camera;
 	public static int assumeX = 1000;
     public static int assumeY = 600;    
@@ -34,7 +36,8 @@ public class GameScreen implements Screen{
 	public Table fleetTable, shipTable, leftTable, rightTable, bottomTable, centerTable, topLeftTable, topRightTable;
 	public TextureAtlas atlas, atlas2;
 	public TextButton loadFile;
-	public Button buttonMore, buttonLess, buttonMoreActive, buttonLessActive, buttonMenu;
+	public TextField lastAction;
+	public Button buttonMore, buttonLess, buttonMoreActive, buttonLessActive, buttonMenu, buttonBottomRight, buttonBottomLeft;
 	public Button shipButtonMore, shipButtonLess, shipButtonMoreActive, shipButtonLessActive;
 	public List<String> directoryList;
 	public ArrayList<Fleet> fleets = new ArrayList<Fleet>();	
@@ -45,6 +48,7 @@ public class GameScreen implements Screen{
 	public ArrayList<TextButton> shipButtons = new ArrayList<TextButton>();
 	public ArrayList<TextButton> shipButtonsActive = new ArrayList<TextButton>();
 	public ArrayList<Card> currentCards = new ArrayList<Card>();
+	public ArrayList<Card> focusedCard = new ArrayList<Card>();
 	public int startingCard = 0;
 	public int numberOfCards = 4;
 	public int startingShip = 0;
@@ -55,14 +59,15 @@ public class GameScreen implements Screen{
 	public FileHandle currentDirectory = Gdx.files.absolute("/");
 	public boolean playSounds = true;
 	public Texture backgroundPanel = Assets.manager.get("backgroundpanel.png", Texture.class);
-	public Texture cardBorder = Assets.manager.get("CardBorder.png", Texture.class); 
+	public Texture cardBorder = Assets.manager.get("CardBorder.png", Texture.class);
 	public Sound doubleBeep = Assets.manager.get("doublebeep.mp3", Sound.class);
 	public Sound error = Assets.manager.get("error.wav", Sound.class);
-	//public Sound highpitch = Assets.manager.get("highpitch.wav", Sound.class); // use for clicking on cards?
+	public Sound highpitch = Assets.manager.get("touchcard.mp3", Sound.class); 
 	public Sound noeffect = Assets.manager.get("noeffect.mp3", Sound.class);
 	public Sound quickbeep = Assets.manager.get("quickbeep.mp3", Sound.class);
 	public Sound openScreen = Assets.manager.get("openscreen.mp3", Sound.class);
 	public Music backgroundMusic = Assets.manager.get("tng_bridge_2.mp3", Music.class);
+	private Vector2 touchPos = new Vector2(0, 0);
 
     
 	public GameScreen(final staw gam) {
@@ -81,8 +86,15 @@ public class GameScreen implements Screen{
 		int x = resizeX(80);
 		int size = currentCards.size();
 		game.batch.draw(backgroundPanel, 0, 0, resizeX(assumeX), resizeY(assumeY));
+    	
+    	if (Gdx.input.isTouched()) {
+    		
+		    touchPos.set(Gdx.input.getX(), Math.abs(600 - Gdx.input.getY()));
+		    //camera.unproject(touchPos);
+    	}
 		for (int i = startingCard; i < startingCard + numberOfCards; i++) {
 			if (i < size) {
+				currentCards.get(i).getRect().setPosition(x, resizeY(106));
 				if (currentCards.get(i).hasTexture()) {
 					game.batch.draw(currentCards.get(i).getTexture(), x, resizeY(106), resizeX(200), resizeY(278));
 					game.batch.draw(cardBorder, x, resizeY(106), resizeX(200), resizeY(278));
@@ -92,11 +104,27 @@ public class GameScreen implements Screen{
 					game.font.draw(game.batch, currentCards.get(i).getName(), x, resizeY(200));
 					x += resizeX(210);
 				}
+				if (Gdx.input.isTouched()) {
+					if (currentCards.get(i).getRect().contains(touchPos)) {
+						//System.out.println(touchPos.x + "" +touchPos.y);
+						//System.out.println("Touched: " + i);
+						if (playSounds) highpitch.play();
+						currentCards.get(i).focusCard();
+						break;
+					}
+				}
 			}
+		}
+		if (focusedCard.size() > 0) {
+			if (focusedCard.get(0).hasTexture()) game.batch.draw(focusedCard.get(0).getTexture(), resizeX(150), resizeY(95), resizeX(222), resizeY(315));
+			game.batch.draw(cardBorder, resizeX(150), resizeY(95), resizeX(222), resizeY(315));
+			focusedCard.get(0).focusCardDetails();
+			
 		}
 		game.batch.end();
     	stage.act(Gdx.graphics.getDeltaTime());
     	stage.draw();
+   	
 	}
 
 	@Override
@@ -210,6 +238,22 @@ public class GameScreen implements Screen{
 				resetCardsandSideButtons();				
 			}
 		});
+		buttonBottomLeft = new TextButton("", skin);
+		buttonBottomLeft.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (playSounds) doubleBeep.play();			
+			}
+		});
+		buttonBottomRight = new TextButton("", skin);
+		buttonBottomRight.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (playSounds) doubleBeep.play();			
+			}
+		});
+		lastAction = new TextField("Access Granted", skin);
+		bottomTable.add(lastAction).width(buttonWidth).height(resizeX(40)).padRight(buttonPad);
+		bottomTable.add(buttonBottomLeft).width(buttonWidth).height(resizeX(40)).padRight(buttonPad);
+		bottomTable.add(buttonBottomRight).width(buttonWidth).height(resizeX(40)).padRight(buttonPad);
 		bottomTable.add(buttonMenu).width(buttonWidth).height(resizeX(40));
 		resetSideButtons();
 	}
@@ -262,6 +306,7 @@ public class GameScreen implements Screen{
 			final TextButton button = new TextButton(fleet.getShips().get(i).getName(), skin);
 			button.addListener(new ChangeListener() {
 				public void changed(ChangeEvent event, Actor actor) {
+					focusedCard.clear();
 					activeShip = current;
 					centerTable.clear();
 					displayShip((ShipCard) fleet.getShips().get(current));
@@ -314,6 +359,7 @@ public class GameScreen implements Screen{
 		startingCard = 0;
 		startingShip = 0;
 		activeShip = 50;
+		focusedCard.clear();
 		resetSideButtons();
 	}
 	

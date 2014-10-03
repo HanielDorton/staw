@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 //public class staw extends ApplicationAdapter {
 public class staw extends Game {
-	SpriteBatch batch;
+	public SpriteBatch batch;
 	public BitmapFont font;
 	
 	@Override
