@@ -50,9 +50,20 @@ public class SettingsMenu {
 			}
 		});
 		
+		TextButton buttonResetFleets = new TextButton("Reset Fleets", g.skin);
+		buttonResetFleets.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				centerTable.clear();
+				g.createFleetTable();
+				
+			}
+		});
 		
-		centerTable.add(buttonSounds).width(buttonWidth).height(buttonHeight);
+		centerTable.add(buttonResetFleets).width(buttonWidth).height(buttonHeight);
 		centerTable.row().padBottom(10).padTop(10);
+		centerTable.add(buttonSounds).width(buttonWidth).height(buttonHeight);
+		centerTable.row().padBottom(10);
 		centerTable.add(buttonExit).width(buttonWidth).height(buttonHeight);
 		centerTable.row().padBottom(10);
 		centerTable.add(buttonExitMenu).width(buttonWidth).height(buttonHeight);

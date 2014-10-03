@@ -1,5 +1,6 @@
 package com.haniel.staw;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.XmlReader;
 
 public class LoadFileMenu {
 	
@@ -62,8 +64,6 @@ public class LoadFileMenu {
 		centerTable.add(scrollPane).width(g.resizeX(300)).height(g.resizeY(250));
 		
 		Table newTable = new Table();	
-		//g.stage.addActor(newTable);
-		//newTable.setBounds(g.resizeX(500), g.resizeY(106), g.resizeX(300), g.resizeY(278));
 		centerTable.add(newTable);
 		
 		newTable.add(currentDirectoryText).width(buttonWidth);
@@ -87,7 +87,7 @@ public class LoadFileMenu {
 			return;
 		} else {
 			if (newFile.exists()) {
-	    		g.loadFleet(newFile.toString(), fleetButton);
+	    		loadFleet(newFile.toString(), fleetButton);
 	    		return;
 	    	}
 		}
@@ -100,7 +100,7 @@ public class LoadFileMenu {
 			return;
 		} else {
 			if (newFile.exists()) {
-	    		g.loadFleet(newFile.toString(), fleetButton);
+	    		loadFleet(newFile.toString(), fleetButton);
 	    		return;
 	    	}
 		}
@@ -115,6 +115,44 @@ public class LoadFileMenu {
 		String[] filesArray = new String[ stringFiles.size() ];
 		stringFiles.toArray(filesArray);
 		g.directoryList.setItems(filesArray);
+	}
+	
+	private void loadFleet(String text, final int fleetButton) {
+		try {
+			FileHandle handle = Gdx.files.absolute(text);
+			XmlReader xml = new XmlReader();
+			xml.parse(handle);
+			final Fleet fleet = new Fleet(g, text);
+			g.fleets.add(fleet);
+			File f = new File(text);
+
+			g.fleetButtons.remove(fleetButton);
+
+			final TextButton button = new TextButton((f.getName()).replace(".xml", ""), g.skin);
+			button.addListener(new ChangeListener() {
+				public void changed(ChangeEvent event, Actor actor) {
+					g.displayFleet(fleet);
+					g.activeFleet = fleetButton;
+					g.fleetTable.reset();
+					g.redrawFleetTable();
+					if (g.playSounds) g.doubleBeep.play();
+				}
+			});
+			g.fleetButtons.add(fleetButton, button);
+			g.fleetButtonsActive.remove(fleetButton);
+			final TextButton button2 = new TextButton((f.getName()).replace(".xml", ""), g.skin2);
+			g.fleetButtonsActive.add(fleetButton, button2);
+			g.activeFleet = fleetButton;
+			g.displayFleet(fleet);
+			g.fleetTable.reset();
+			g.redrawFleetTable();
+			if (g.playSounds) g.doubleBeep.play();
+			centerTable.clear();
+		}
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+			g.addError("Unable to Parse File", "Belay that Order");
+		}
 	}
 	
 

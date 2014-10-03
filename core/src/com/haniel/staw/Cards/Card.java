@@ -60,7 +60,7 @@ public class Card {
 	}
 
 	public void displayCard(GameScreen g) {
-		g.addCards(this);
+		g.currentCards.add(this);
 	}
 	public String getName() {
 		if (name == null) return "Unable to access Name";

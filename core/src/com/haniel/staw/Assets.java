@@ -33,7 +33,7 @@ public class Assets {
 		for (int i = 0; i < 12; i ++) {
 			manager.load("shutdown-" + i + ".png", Texture.class);
 		}
-		
+		/*
 		
 		//Bajoran Ships
 		manager.load("Bajoran/Akorem.png", Texture.class);
@@ -57,9 +57,9 @@ public class Assets {
 		//Bajoran Tech
 		
 
-		
-		
 		/*
+		
+		
 		//Dominion Ships
 		manager.load("Dominion/2nd Division Cruiser.png", Texture.class);
 		manager.load("Dominion/3rd Wing Patrol Ship.png", Texture.class);
@@ -560,7 +560,7 @@ public class Assets {
 		//Klingon Tech
 		
 		
-		*/
+	*/	
 	}
 	
     public static boolean update() {

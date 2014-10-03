@@ -61,13 +61,14 @@ public class ShipCard extends Card{
 
 			else if (Assets.manager.isLoaded(faction + "/" + shipClass + ".png")) {
 				texture = Assets.manager.get(faction + "/" + shipClass + ".png", Texture.class);
-				//System.out.println(name + ": texture loaded");
 				textureLoaded = true;
 			}
 			else{
+				/*
 				System.out.println("----");
 				System.out.println("Unable to load Ship: " + name);
 				System.out.println("Class: " + shipClass);
+				*/
 			}
 
 		}
@@ -105,13 +106,10 @@ public class ShipCard extends Card{
 		return upgrades;
 	}
 	
-	
-	//public void displayManueverCard(GameScreen g) {
-	//	g.addCards(manueverCard);
-	//}
+
 	public void displayShip(GameScreen g){
-		g.addCards(this);
-		if (hasManuevers) g.addCards(manueverCard);
+		g.currentCards.add(this);
+		if (hasManuevers) g.currentCards.add(manueverCard);
 		for (Card upgrade : upgrades) {
 			upgrade.displayCard(g);
 			if (upgrade instanceof CaptainCard) {
