@@ -21,14 +21,70 @@ public class ShipCard extends Card{
 		super(ship, g);
 		for (int i = 0; i< ship.getChildCount(); i++) {
 			String text = ship.getChild(i).getName();
-			if (text.equals("AttackDice")) this.attack = Integer.parseInt((ship.getChildByName("AttackDice")).getText());
-			else if (text.equals("DefenseDice")) this.defense = Integer.parseInt((ship.getChildByName("DefenseDice")).getText());
-			else if (text.equals("Hull")) this.hull = Integer.parseInt((ship.getChildByName("Hull")).getText());
-			else if (text.equals("Shields")) this.shields = Integer.parseInt((ship.getChildByName("Shields")).getText());
-			else if (text.equals("Actions")) this.shipActions = (ship.getChildByName("Actions")).getText();
-			else if (text.equals("Upgrades")) this.shipUpgrades = (ship.getChildByName("Upgrades")).getText();
-			else if (text.equals("FiringArc")) this.firingArc = (ship.getChildByName("FiringArc")).getText();
-			else if (text.equals("Class")) this.shipClass = (ship.getChildByName("Class")).getText().replace("’", "");
+			if (text.equals("AttackDice")) {
+					try {
+					this.attack = Integer.parseInt((ship.getChildByName("AttackDice")).getText());
+				}
+				catch (Exception e) {
+					this.attack = 0;
+				}
+			}
+			else if (text.equals("DefenseDice")) {		
+				try {
+					this.defense = Integer.parseInt((ship.getChildByName("DefenseDice")).getText());
+				}
+				catch (Exception e) {
+					this.defense = 0;
+				}
+			}
+			else if (text.equals("Hull"))  {
+				try {
+					this.hull = Integer.parseInt((ship.getChildByName("Hull")).getText());
+				}
+				catch (Exception e) {
+					this.hull = 0;
+				}
+			}
+			else if (text.equals("Shields")) {
+				try {
+					this.shields = Integer.parseInt((ship.getChildByName("Shields")).getText());
+				}
+				catch (Exception e) {
+					this.shields = 0;
+				}
+			}
+			else if (text.equals("Actions")) {
+				try {
+					this.shipActions = (ship.getChildByName("Actions")).getText();
+				}
+				catch (Exception e) {
+					this.shipActions = "";
+				}
+			}
+			else if (text.equals("Upgrades")) {
+				try {
+					this.shipUpgrades = (ship.getChildByName("Upgrades")).getText();
+				}
+				catch (Exception e) {
+					this.shipUpgrades = "";
+				}
+			}
+			else if (text.equals("FiringArc")) {
+				try {
+					this.firingArc = (ship.getChildByName("FiringArc")).getText();
+				}
+				catch (Exception e) {
+					this.firingArc = "";
+				}
+			}
+			else if (text.equals("Class")) {
+				try {
+					this.shipClass = (ship.getChildByName("Class")).getText().replace("’", "");
+				}
+				catch (Exception e) {
+					this.shipClass = "";
+				}
+			}
 		}
 		if (unique.equals("No")) name = shipClass;
 		getUpgrades(ship);

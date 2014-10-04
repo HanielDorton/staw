@@ -12,8 +12,22 @@ public class WeaponCard extends Card{
 		super(element, g);
 		for (int i = 0; i< element.getChildCount(); i++) {
 			String text = element.getChild(i).getName();
-			if (text.equals("AttackDice")) this.attack = Integer.parseInt((element.getChildByName("AttackDice")).getText());
-			else if (text.equals("Range")) this.range = (element.getChildByName("Range")).getText();
+			if (text.equals("AttackDice"))  {
+				try {
+					this.attack = Integer.parseInt((element.getChildByName("AttackDice")).getText());
+				}
+				catch (Exception e) {
+					this.attack = 0;
+				}
+			}
+			else if (text.equals("Range")) {
+				try {
+					this.range = (element.getChildByName("Range")).getText();
+				}
+				catch (Exception e) {
+					this.range = "";
+				}
+			}
 		}
 	}
 

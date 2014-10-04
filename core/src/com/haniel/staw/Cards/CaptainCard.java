@@ -3,6 +3,8 @@ package com.haniel.staw.Cards;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.haniel.staw.GameScreen;
 
@@ -16,11 +18,18 @@ public class CaptainCard extends Card{
 		super(element, g);
 		for (int i = 0; i< element.getChildCount(); i++) {
 			String text = element.getChild(i).getName();
-			if (text.equals("Skill")) this.skill = Integer.parseInt((element.getChildByName("Skill")).getText());
+			if (text.equals("Skill")) {
+				try {
+					this.skill = Integer.parseInt((element.getChildByName("Skill")).getText());
+				}
+				catch (Exception e) {
+					this.skill = 0;
+				}
+			}
 			//if (text.equals("FleetCaptain")) fleetCaptain = true;
 		}
 		parseTalents(element);
-		//if (name.equals("Valdore")) this.texture = Assets.manager.get(faction + "/" + name + " Captain.png", Texture.class);
+		if (name.equals("Valdore")) this.texture = new Texture(Gdx.files.internal(faction + "/" + name + " Captain.png"));
 	}
 	
 	private void parseTalents(Element element) {

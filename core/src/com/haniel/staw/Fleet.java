@@ -44,7 +44,7 @@ public class Fleet {
 				
 			} catch (Exception e) {
 				System.out.println(e);
-				g.addError("Unable to Parse File", "Belay that Order");
+				//g.addError("Unable to Parse File");
 			}
 	}
 	public List<Card> getShips() {

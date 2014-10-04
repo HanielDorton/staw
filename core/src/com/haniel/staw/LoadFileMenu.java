@@ -127,10 +127,11 @@ public class LoadFileMenu {
 			File f = new File(text);
 
 			g.fleetButtons.remove(fleetButton);
-			g.lastAction.setText("Fleet " + f.getName().replace(".xml", "") + " Loaded");
+			
 			final TextButton button = new TextButton((f.getName()).replace(".xml", ""), g.skin);
 			button.addListener(new ChangeListener() {
 				public void changed(ChangeEvent event, Actor actor) {
+					g.centerTable.clear();
 					g.displayFleet(fleet);
 					g.activeFleet = fleetButton;
 					g.fleetTable.reset();
@@ -141,6 +142,16 @@ public class LoadFileMenu {
 			g.fleetButtons.add(fleetButton, button);
 			g.fleetButtonsActive.remove(fleetButton);
 			final TextButton button2 = new TextButton((f.getName()).replace(".xml", ""), g.skin2);
+			button2.addListener(new ChangeListener() {
+				public void changed(ChangeEvent event, Actor actor) {
+					g.centerTable.clear();
+					g.displayFleet(fleet);
+					g.activeFleet = fleetButton;
+					g.fleetTable.reset();
+					g.redrawFleetTable();
+					if (g.playSounds) g.doubleBeep.play();
+				}
+			});
 			g.fleetButtonsActive.add(fleetButton, button2);
 			g.activeFleet = fleetButton;
 			g.displayFleet(fleet);
@@ -148,10 +159,11 @@ public class LoadFileMenu {
 			g.redrawFleetTable();
 			if (g.playSounds) g.doubleBeep.play();
 			centerTable.clear();
+			g.lastAction.setText("Fleet " + f.getName().replace(".xml", "") + " Loaded");
 		}
 		catch (Exception e) {
 			System.out.println(e.getMessage());
-			g.addError("Unable to Parse File", "Belay that Order");
+			g.addError("Unable to Parse File");
 		}
 	}
 	

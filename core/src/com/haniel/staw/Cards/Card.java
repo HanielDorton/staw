@@ -12,12 +12,7 @@ public class Card {
 	// Card is extended for Ship, Captain, Admiral and Weapons
 	// Generic cards are Techs, Talents and Crew
 	
-	protected String cardType = "";
-	protected String name = "";
-	protected String unique = "";
-	protected String source = "";
-	protected String cardText = "";
-	protected String faction = "";
+	protected String cardType, name, unique, source, cardText, faction;
 	protected int cost;
 	protected boolean disabled = false;
 	protected boolean discardedByUse = false;
@@ -50,11 +45,46 @@ public class Card {
 		for (int i = 0; i< element.getChildCount(); i++) {
 			String text = element.getChild(i).getName();			
 			if (text.equals("Name")) this.name = (element.getChildByName("Name")).getText().replace(".", "").replace("’",  "");
-			else if (text.equals("Source")) this.source = (element.getChildByName("Source")).getText().replace(".", "").replace(" / ", " ").replace("/", " ");
-			else if (text.equals("CardText")) this.cardText = (element.getChildByName("CardText")).getText();
-			else if (text.equals("Faction")) this.faction = (element.getChildByName("Faction")).getText();
-			else if (text.equals("Unique")) this.unique = (element.getChildByName("Unique")).getText();
-			else if (text.equals("PointCost")) this.cost = Integer.parseInt((element.getChildByName("PointCost")).getText());
+			else if (text.equals("Source")) {
+				try {
+					this.source = (element.getChildByName("Source")).getText().replace(".", "").replace(" / ", " ").replace("/", " ");
+				}
+				catch (Exception n) {
+					this.source = "";
+				}
+			}
+			else if (text.equals("CardText")) {
+				try {
+					this.cardText = (element.getChildByName("CardText")).getText();
+				}
+				catch (Exception e) {
+					this.cardText = "";
+				}
+			}
+			else if (text.equals("Faction")) {
+				try {
+					this.faction = (element.getChildByName("Faction")).getText();
+				}
+				catch (Exception e) {
+					this.faction = "";
+				}
+			}
+			else if (text.equals("Unique")) {
+				try {
+					this.unique = (element.getChildByName("Unique")).getText();
+				}
+				catch (Exception e) {
+					this.unique = "";
+				}
+			}
+			else if (text.equals("PointCost")) {
+				try {
+					this.cost = Integer.parseInt((element.getChildByName("PointCost")).getText());
+				}
+				catch (Exception e) {
+					this.cost = 0;
+				}
+			}
 		}
 		if (unique != null) {
 			if (unique.equals("Yes")) uniqueString = "Unique";
@@ -138,6 +168,9 @@ public class Card {
 		g.focusedCard.clear();
 		g.startingCard = 0;
 		g.activeShip = 500;
+		g.activeFleet = 5;
+		g.fleetTable.clear();
+		g.redrawFleetTable();
 		g.resetSideButtons();
 		g.focusedCard.add(this);
 	}

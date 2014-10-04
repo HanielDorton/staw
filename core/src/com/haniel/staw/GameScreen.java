@@ -280,6 +280,9 @@ public class GameScreen implements Screen{
 			loadFile.addListener(new ChangeListener() {
 				public void changed(ChangeEvent event, Actor actor) {
 					centerTable.clear();
+					shipTable.clear();
+					shipButtons.clear();
+					shipButtonsActive.clear();
 					new LoadFileMenu(g, centerTable, current);
 					if (playSounds) doubleBeep.play();
 					resetCardsandSideButtons();
@@ -317,6 +320,11 @@ public class GameScreen implements Screen{
 			final TextButton buttonActive = new TextButton(fleet.getShips().get(i).getName(), skin2);
 			button.addListener(new ChangeListener() {
 				public void changed(ChangeEvent event, Actor actor) {
+					focusedCard.clear();
+					activeShip = current;
+					centerTable.clear();
+					displayShip((ShipCard) fleet.getShips().get(current));
+					if (playSounds) quickbeep.play();
 				}
 			});
 			shipButtonsActive.add(buttonActive);
@@ -348,10 +356,10 @@ public class GameScreen implements Screen{
 		stage.dispose();
 	}
 	
-	public void addError(String errorString, String okString) {
+	public void addError(String errorString) {
 		if (playSounds) error.play();
 		centerTable.clear();
-		//add custom error thing...
+		lastAction.setText(errorString);
 	}
 
 	public void resetCardsandSideButtons() {
