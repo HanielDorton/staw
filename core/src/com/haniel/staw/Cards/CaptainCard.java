@@ -47,5 +47,12 @@ public class CaptainCard extends Card{
 	public int getSkill() {
 		return skill;
 	}
+	
+	
+	public void focusCardDetails() {
+		startingPixels = g.resizeY(300);
+		g.game.font.draw(g.game.batch, "Skill: " +  skill, xLine, startingPixels);
+		super.focusCardDetails();		
+	}
 
 }

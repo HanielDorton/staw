@@ -179,6 +179,16 @@ public class ShipCard extends Card{
 				}
 			}
 		}
-	}	
+	}
+	
+	public void focusCardDetails() {
+		startingPixels = g.resizeY(360);
+		g.game.font.draw(g.game.batch, shipClass + " | " + firingArc, xLine, startingPixels);
+		startingPixels -= newLine;
+		g.game.font.draw(g.game.batch, "Attack: " +  attack + " | Agility: " + defense + " | Hull: " + hull + " | Shields: " + shields, xLine, startingPixels);
+		startingPixels -= newLine;
+		g.game.font.draw(g.game.batch, shipActions + " | " + shipUpgrades, xLine, startingPixels);
+		super.focusCardDetails();		
+	}
 }
 

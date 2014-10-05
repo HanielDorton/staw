@@ -21,13 +21,13 @@ public class Card {
 	protected boolean textureLoaded = false;
 	private Rectangle rect;
 	protected GameScreen g;
-	private int newLine;
+	protected int newLine;
 	private int newTextLine;
-	private float xLine;
-	private float startingPixels;
+	protected float xLine;
+	protected float startingPixels;
 	private String uniqueString = "";
 	private int startingCharacter = 0;
-	private int lineLength = 70;
+	private int lineLength = 80;
 	private String currenText1 = "";
 	private String currenText2 = "";
 	private String currenText3 = "";
@@ -40,7 +40,7 @@ public class Card {
 		this.g = g;
 		newLine = g.resizeY(30);
 		newTextLine = g.resizeY(18);
-		xLine = g.resizeX(400);
+		xLine = g.resizeX(335);
 		this.cardType = element.getName();
 		for (int i = 0; i< element.getChildCount(); i++) {
 			String text = element.getChild(i).getName();			
@@ -178,9 +178,9 @@ public class Card {
 	public void focusCardDetails() {
 		// name cardType, faction, cardtext, source
 		startingCharacter = 0;
-		startingPixels = g.resizeY(270);
+		startingPixels = g.resizeY(390);
 		g.game.font.draw(g.game.batch, name + " - " + uniqueString, xLine, startingPixels);
-		startingPixels -= newLine;
+		startingPixels = g.resizeY(270);
 		g.game.font.draw(g.game.batch, currenText1, xLine, startingPixels);
 		startingPixels -= newTextLine;
 		g.game.font.draw(g.game.batch, currenText2, xLine, startingPixels);
@@ -193,7 +193,8 @@ public class Card {
 		startingPixels -= newTextLine;
 		g.game.font.draw(g.game.batch, currenText6, xLine, startingPixels);
 		startingPixels -= newLine;
-		g.game.font.draw(g.game.batch, faction + " " + cardType + " from " + source, xLine, startingPixels);
+		if (source != null) g.game.font.draw(g.game.batch, faction + " " + cardType + " from " + source, xLine, startingPixels);
+		else g.game.font.draw(g.game.batch, faction + " " + cardType, xLine, startingPixels);
 	}
 
 }

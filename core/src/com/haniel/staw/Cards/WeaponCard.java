@@ -30,5 +30,12 @@ public class WeaponCard extends Card{
 			}
 		}
 	}
+	public void focusCardDetails() {
+		startingPixels = g.resizeY(330);
+		g.game.font.draw(g.game.batch, "Attack: " + attack, xLine, startingPixels);
+		startingPixels -= newLine;
+		g.game.font.draw(g.game.batch, "Range: " + range, xLine, startingPixels);
+		super.focusCardDetails();		
+	}
 
 }

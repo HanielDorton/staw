@@ -87,10 +87,8 @@ public class GameScreen implements Screen{
 		int size = currentCards.size();
 		game.batch.draw(backgroundPanel, 0, 0, resizeX(assumeX), resizeY(assumeY));
     	
-    	if (Gdx.input.isTouched()) {
-    		
+    	if (Gdx.input.isTouched()) {    		
 		    touchPos.set(Gdx.input.getX(), Math.abs(600 - Gdx.input.getY()));
-		    //camera.unproject(touchPos);
     	}
 		for (int i = startingCard; i < startingCard + numberOfCards; i++) {
 			if (i < size) {
@@ -116,8 +114,8 @@ public class GameScreen implements Screen{
 			}
 		}
 		if (focusedCard.size() > 0) {
-			if (focusedCard.get(0).hasTexture()) game.batch.draw(focusedCard.get(0).getTexture(), resizeX(150), resizeY(95), resizeX(222), resizeY(315));
-			game.batch.draw(cardBorder, resizeX(150), resizeY(95), resizeX(222), resizeY(315));
+			if (focusedCard.get(0).hasTexture()) game.batch.draw(focusedCard.get(0).getTexture(), resizeX(105), resizeY(95), resizeX(222), resizeY(315));
+			game.batch.draw(cardBorder, resizeX(105), resizeY(95), resizeX(222), resizeY(315));
 			focusedCard.get(0).focusCardDetails();
 			
 		}
