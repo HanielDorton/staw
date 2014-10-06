@@ -69,6 +69,7 @@ public class GameScreen implements Screen{
 	public Music backgroundMusic = Assets.manager.get("tng_bridge_2.mp3", Music.class);
 	private Vector2 touchPos = new Vector2(0, 0);
 
+
     
 	public GameScreen(final staw gam) {
 		this.game = gam;
@@ -116,9 +117,9 @@ public class GameScreen implements Screen{
 		if (focusedCard.size() > 0) {
 			if (focusedCard.get(0).hasTexture()) game.batch.draw(focusedCard.get(0).getTexture(), resizeX(105), resizeY(95), resizeX(222), resizeY(315));
 			game.batch.draw(cardBorder, resizeX(105), resizeY(95), resizeX(222), resizeY(315));
-			focusedCard.get(0).focusCardDetails();
-			
+			focusedCard.get(0).focusCardDetails();			
 		}
+		
 		game.batch.end();
     	stage.act(Gdx.graphics.getDeltaTime());
     	stage.draw();
@@ -316,7 +317,7 @@ public class GameScreen implements Screen{
 			});
 			shipButtons.add(button);
 			final TextButton buttonActive = new TextButton(fleet.getShips().get(i).getName(), skin2);
-			button.addListener(new ChangeListener() {
+			buttonActive.addListener(new ChangeListener() {
 				public void changed(ChangeEvent event, Actor actor) {
 					focusedCard.clear();
 					activeShip = current;

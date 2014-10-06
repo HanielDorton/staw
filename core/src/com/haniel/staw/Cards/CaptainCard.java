@@ -5,6 +5,10 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.haniel.staw.GameScreen;
 
@@ -40,6 +44,29 @@ public class CaptainCard extends Card{
 		}
 		
 	}
+	
+	public void setupCardActions() {
+				
+		TextButton buttonIncreaseSkill = new TextButton("Increase Skill", g.skin);
+		buttonIncreaseSkill.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("Capt Skill Increase");
+			}
+		});
+		actionButtons.add(buttonIncreaseSkill);
+		
+		TextButton buttonDecreaseSkill = new TextButton("Decrease Skill", g.skin);
+		buttonDecreaseSkill.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("Capt Skill Decrease");
+			}
+		});
+		actionButtons.add(buttonDecreaseSkill);
+		
+		super.setupCardActions();
+	}
 	public List<Card> getTalents() {
 		return talents;
 	}
@@ -50,8 +77,10 @@ public class CaptainCard extends Card{
 	
 	
 	public void focusCardDetails() {
-		startingPixels = g.resizeY(300);
-		g.game.font.draw(g.game.batch, "Skill: " +  skill, xLine, startingPixels);
+		if (!focusCardActions) {
+			startingPixels = g.resizeY(300);
+			g.game.font.draw(g.game.batch, "Skill: " +  skill, xLine, startingPixels);
+		}
 		super.focusCardDetails();		
 	}
 

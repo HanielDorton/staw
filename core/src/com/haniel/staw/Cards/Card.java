@@ -1,8 +1,14 @@
 package com.haniel.staw.Cards;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.haniel.staw.GameScreen;
 
@@ -34,14 +40,20 @@ public class Card {
 	private String currenText4 = "";
 	private String currenText5 = "";
 	private String currenText6 = "";
+	protected Button buttonActions;
+	protected boolean focusCardActions = false;
+	protected ArrayList<TextButton> actionButtons = new ArrayList<TextButton>();
+	protected int startingActionButton = 0;
+	protected int actionButtonsPerScreen = 4;
+	protected TextButton buttonMoreActions, buttonLessActions;
 	
-	
-	public Card(Element element, GameScreen g){
+	public Card(Element element, final GameScreen g){
 		this.g = g;
 		newLine = g.resizeY(30);
 		newTextLine = g.resizeY(18);
 		xLine = g.resizeX(335);
 		this.cardType = element.getName();
+		setupCardActions();
 		for (int i = 0; i< element.getChildCount(); i++) {
 			String text = element.getChild(i).getName();			
 			if (text.equals("Name")) this.name = (element.getChildByName("Name")).getText().replace(".", "").replace("’",  "");
@@ -113,11 +125,69 @@ public class Card {
 				currenText6 += cardText.charAt(c  + (lineLength * 5));
 			}
 		}
+		
+		buttonMoreActions = new TextButton("More...", g.skin);
+		buttonMoreActions.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				startingActionButton += actionButtonsPerScreen;
+				showActions();
+			}
+		});
+		
+		buttonLessActions = new TextButton("Back", g.skin);
+		buttonLessActions.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				startingActionButton -= actionButtonsPerScreen;
+				showActions();
+			}
+		});
+		
 	}
 	
 	public Card(String faction, String shipClass, GameScreen g){
 		this.g = g;
 		this.rect = new Rectangle(0, 0, g.resizeX(200), g.resizeY(278));
+		setupCardActions();
+	}
+	
+	public void setupCardActions() {
+		TextButton buttonUse = new TextButton("Use Card Action", g.skin);
+		buttonUse.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("Use Card as Action");
+			}
+		});
+		actionButtons.add(buttonUse);
+		
+		TextButton buttonDisable = new TextButton("Toggle Disable", g.skin);
+		buttonDisable.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("ToggleDisable");
+			}
+		});
+		actionButtons.add(buttonDisable);
+		
+		TextButton buttonDiscard = new TextButton("Discard Card under Ship", g.skin);
+		buttonDiscard.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("Discard Card by Use");
+			}
+		});
+		actionButtons.add(buttonDiscard);
+		
+		TextButton buttonStolen = new TextButton("Card Stolen/Discarded", g.skin);
+		buttonStolen.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("Card Stolen/Discarded by Opponent");
+			}
+		});
+		actionButtons.add(buttonStolen);
 	}
 
 	
@@ -164,37 +234,72 @@ public class Card {
 	}
 
 	public void focusCard() {
+		focusCardActions = false;
 		g.currentCards.clear();
 		g.focusedCard.clear();
 		g.startingCard = 0;
-		g.activeShip = 500;
-		g.activeFleet = 5;
-		g.fleetTable.clear();
-		g.redrawFleetTable();
 		g.resetSideButtons();
 		g.focusedCard.add(this);
+		
+		buttonActions = new TextButton("Actions", g.skin);
+		buttonActions.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				startingActionButton = 0;
+				showActions();
+				buttonActions.remove();
+			}
+		});
+		g.centerTable.add(buttonActions).width(g.buttonWidth).height(g.buttonHeight).padLeft(500).padTop(200);
 	}
 	
 	public void focusCardDetails() {
 		// name cardType, faction, cardtext, source
-		startingCharacter = 0;
-		startingPixels = g.resizeY(390);
-		g.game.font.draw(g.game.batch, name + " - " + uniqueString, xLine, startingPixels);
-		startingPixels = g.resizeY(270);
-		g.game.font.draw(g.game.batch, currenText1, xLine, startingPixels);
-		startingPixels -= newTextLine;
-		g.game.font.draw(g.game.batch, currenText2, xLine, startingPixels);
-		startingPixels -= newTextLine;
-		g.game.font.draw(g.game.batch, currenText3, xLine, startingPixels);
-		startingPixels -= newTextLine;
-		g.game.font.draw(g.game.batch, currenText4, xLine, startingPixels);
-		startingPixels -= newTextLine;
-		g.game.font.draw(g.game.batch, currenText5, xLine, startingPixels);
-		startingPixels -= newTextLine;
-		g.game.font.draw(g.game.batch, currenText6, xLine, startingPixels);
-		startingPixels -= newLine;
-		if (source != null) g.game.font.draw(g.game.batch, faction + " " + cardType + " from " + source, xLine, startingPixels);
-		else g.game.font.draw(g.game.batch, faction + " " + cardType, xLine, startingPixels);
+		if (!focusCardActions) {
+			startingCharacter = 0;
+			startingPixels = g.resizeY(390);
+			g.game.font.draw(g.game.batch, name + " - " + uniqueString, xLine, startingPixels);
+			startingPixels = g.resizeY(270);
+			g.game.font.draw(g.game.batch, currenText1, xLine, startingPixels);
+			startingPixels -= newTextLine;
+			g.game.font.draw(g.game.batch, currenText2, xLine, startingPixels);
+			startingPixels -= newTextLine;
+			g.game.font.draw(g.game.batch, currenText3, xLine, startingPixels);
+			startingPixels -= newTextLine;
+			g.game.font.draw(g.game.batch, currenText4, xLine, startingPixels);
+			startingPixels -= newTextLine;
+			g.game.font.draw(g.game.batch, currenText5, xLine, startingPixels);
+			startingPixels -= newTextLine;
+			g.game.font.draw(g.game.batch, currenText6, xLine, startingPixels);
+			startingPixels -= newLine;
+			if (source != null) g.game.font.draw(g.game.batch, faction + " " + cardType + " from " + source, xLine, startingPixels);
+			else g.game.font.draw(g.game.batch, faction + " " + cardType, xLine, startingPixels);
+		}
+	}
+	
+	public void showActions() {
+		g.centerTable.clear();
+		focusCardActions = true;
+		for (int i = startingActionButton; i < startingActionButton + actionButtonsPerScreen; i++) {
+			if (i < actionButtons.size()) {
+				if (i % 2 == 0) {
+					g.centerTable.add(actionButtons.get(i)).width(g.buttonWidth).height(g.buttonHeight).padLeft(g.resizeX(260)).padRight(g.resizeX(50));
+				}
+				else {
+					g.centerTable.add(actionButtons.get(i)).width(g.buttonWidth).height(g.buttonHeight);
+					g.centerTable.row().padTop(g.resizeY(30));
+				}
+				
+			}
+		}
+		if (startingActionButton + actionButtonsPerScreen < actionButtons.size() && startingActionButton > 0) {
+			g.centerTable.add(buttonLessActions).width(g.buttonWidth).height(g.buttonHeight).padLeft(g.resizeX(260)).padRight(g.resizeX(50));
+			g.centerTable.add(buttonMoreActions).width(g.buttonWidth).height(g.buttonHeight);
+		} else if (startingActionButton > 0) {
+			g.centerTable.add(buttonLessActions).width(g.buttonWidth).height(g.buttonHeight).padLeft(g.resizeX(260)).padRight(g.resizeX(50));
+		} else if (startingActionButton + actionButtonsPerScreen < actionButtons.size()) {
+			g.centerTable.add(buttonMoreActions).width(g.buttonWidth).height(g.buttonHeight).padLeft(g.resizeX(260)).padRight(g.resizeX(50));
+		}
 	}
 
 }

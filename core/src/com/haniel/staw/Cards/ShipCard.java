@@ -5,6 +5,10 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.haniel.staw.GameScreen;
 
@@ -163,6 +167,98 @@ public class ShipCard extends Card{
 		}
 		
 	}
+	
+	public void setupCardActions() {
+		TextButton buttonAddAux = new TextButton("Add Auxilary Power", g.skin);
+		buttonAddAux.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("Add Auxilary Power");
+			}
+		});
+		actionButtons.add(buttonAddAux);
+		
+		TextButton buttonRemoveAux = new TextButton("Remove Auxilary Power", g.skin);
+		buttonRemoveAux.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("Remove Auxilary Power");
+			}
+		});
+		actionButtons.add(buttonRemoveAux);
+		
+		TextButton buttonScan = new TextButton("Scan", g.skin);
+		buttonScan.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("Scan");
+			}
+		});
+		actionButtons.add(buttonScan);
+		
+		TextButton buttonEvade = new TextButton("Evade", g.skin);
+		buttonEvade.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("Evade");
+			}
+		});
+		actionButtons.add(buttonEvade);
+		
+		TextButton buttonTL = new TextButton("Target Lock", g.skin);
+		buttonTL.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("Target Lock");
+			}
+		});
+		actionButtons.add(buttonTL);
+		
+		TextButton buttonBS = new TextButton("BattleStations", g.skin);
+		buttonBS.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("BattleStations");
+			}
+		});
+		actionButtons.add(buttonBS);
+		
+		TextButton buttonCloak = new TextButton("Cloak", g.skin);
+		buttonCloak.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("Cloak");
+			}
+		});
+		actionButtons.add(buttonCloak);
+		
+		TextButton buttonSensorEcho = new TextButton("Sensor Echo", g.skin);
+		buttonSensorEcho.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("Sensor Echo");
+			}
+		});
+		actionButtons.add(buttonSensorEcho);
+		
+		TextButton buttonRegen = new TextButton("Regenerate", g.skin);
+		buttonRegen.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("Regenerate");
+			}
+		});
+		actionButtons.add(buttonRegen);
+		
+		TextButton buttonShipAction = new TextButton("Ship Action", g.skin);
+		buttonShipAction.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				System.out.println("Ship Action");
+			}
+		});
+		actionButtons.add(buttonShipAction);
+	}
 	public List<Card> getUpgrades() {
 		return upgrades;
 	}
@@ -182,12 +278,14 @@ public class ShipCard extends Card{
 	}
 	
 	public void focusCardDetails() {
-		startingPixels = g.resizeY(360);
-		g.game.font.draw(g.game.batch, shipClass + " | " + firingArc, xLine, startingPixels);
-		startingPixels -= newLine;
-		g.game.font.draw(g.game.batch, "Attack: " +  attack + " | Agility: " + defense + " | Hull: " + hull + " | Shields: " + shields, xLine, startingPixels);
-		startingPixels -= newLine;
-		g.game.font.draw(g.game.batch, shipActions + " | " + shipUpgrades, xLine, startingPixels);
+		if (!focusCardActions) {
+			startingPixels = g.resizeY(360);
+			g.game.font.draw(g.game.batch, shipClass + " | " + firingArc, xLine, startingPixels);
+			startingPixels -= newLine;
+			g.game.font.draw(g.game.batch, "Attack: " +  attack + " | Agility: " + defense + " | Hull: " + hull + " | Shields: " + shields, xLine, startingPixels);
+			startingPixels -= newLine;
+			g.game.font.draw(g.game.batch, shipActions + " | " + shipUpgrades, xLine, startingPixels);
+		}
 		super.focusCardDetails();		
 	}
 }
