@@ -37,7 +37,7 @@ public class GameScreen implements Screen{
 	public TextureAtlas atlas, atlas2;
 	public TextButton loadFile;
 	public TextField lastAction;
-	public Button buttonMore, buttonLess, buttonMoreActive, buttonLessActive, buttonMenu, buttonBottomRight, buttonBottomLeft;
+	public Button buttonMore, buttonLess, buttonMoreActive, buttonLessActive, buttonMenu, buttonNextShip;
 	public Button shipButtonMore, shipButtonLess, shipButtonMoreActive, shipButtonLessActive;
 	public List<String> directoryList;
 	public ArrayList<Fleet> fleets = new ArrayList<Fleet>();	
@@ -68,7 +68,7 @@ public class GameScreen implements Screen{
 	public Sound openScreen = Assets.manager.get("openscreen.mp3", Sound.class);
 	public Music backgroundMusic = Assets.manager.get("tng_bridge_2.mp3", Music.class);
 	private Vector2 touchPos = new Vector2(0, 0);
-
+	public boolean gameStarted = false;
 
     
 	public GameScreen(final staw gam) {
@@ -237,22 +237,15 @@ public class GameScreen implements Screen{
 				resetCardsandSideButtons();				
 			}
 		});
-		buttonBottomLeft = new TextButton("", skin);
-		buttonBottomLeft.addListener(new ChangeListener() {
-			public void changed(ChangeEvent event, Actor actor) {
-				if (playSounds) doubleBeep.play();			
-			}
-		});
-		buttonBottomRight = new TextButton("", skin);
-		buttonBottomRight.addListener(new ChangeListener() {
+		buttonNextShip = new TextButton("Start Game", skin);
+		buttonNextShip.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (playSounds) doubleBeep.play();			
 			}
 		});
 		lastAction = new TextField("Access Granted", skin);
-		bottomTable.add(lastAction).width(buttonWidth).height(resizeX(40)).padRight(buttonPad);
-		bottomTable.add(buttonBottomLeft).width(buttonWidth).height(resizeX(40)).padRight(buttonPad);
-		bottomTable.add(buttonBottomRight).width(buttonWidth).height(resizeX(40)).padRight(buttonPad);
+		bottomTable.add(lastAction).width((buttonWidth * 2) + buttonPad).height(resizeX(40)).padRight(buttonPad);
+		bottomTable.add(buttonNextShip).width(buttonWidth).height(resizeX(40)).padRight(buttonPad);
 		bottomTable.add(buttonMenu).width(buttonWidth).height(resizeX(40));
 		resetSideButtons();
 	}

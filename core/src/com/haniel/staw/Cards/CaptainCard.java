@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.haniel.staw.GameScreen;
 
@@ -51,7 +50,8 @@ public class CaptainCard extends Card{
 		buttonIncreaseSkill.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("Capt Skill Increase");
+				g.lastAction.setText(name + " skill increased");
+				skill += 1;
 			}
 		});
 		actionButtons.add(buttonIncreaseSkill);
@@ -60,7 +60,8 @@ public class CaptainCard extends Card{
 		buttonDecreaseSkill.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("Capt Skill Decrease");
+				g.lastAction.setText(name + " skill decreased");
+				skill -= 1;
 			}
 		});
 		actionButtons.add(buttonDecreaseSkill);

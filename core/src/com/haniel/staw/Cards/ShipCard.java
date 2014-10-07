@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.haniel.staw.GameScreen;
 
@@ -20,8 +19,13 @@ public class ShipCard extends Card{
 	private List<Card> upgrades = new ArrayList<Card>();
 	private ManueverCard manueverCard;
 	private boolean hasManuevers = false;
-
-	public ShipCard(Element ship, GameScreen g) {
+	private int auxTokens = 0;
+	private int disabledShields = 0;
+	protected ArrayList<TextButton> shipConditionButtons = new ArrayList<TextButton>();
+	protected TextButton buttonShipCondition, buttonMoreConditions, buttonLessConditions;
+	protected boolean focusedShipConditions = false;
+	
+	public ShipCard(Element ship, final GameScreen g) {
 		super(ship, g);
 		for (int i = 0; i< ship.getChildCount(); i++) {
 			String text = ship.getChild(i).getName();
@@ -97,6 +101,26 @@ public class ShipCard extends Card{
 			this.manueverCard = new ManueverCard(faction, shipClass, g);
 			hasManuevers = true;
 		}
+
+		
+		setupShipConditionsButtons();
+		buttonMoreConditions = new TextButton("More...", g.skin);
+		buttonMoreConditions.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				startingActionButton += actionButtonsPerScreen;
+				showShipConditions();
+			}
+		});
+		
+		buttonLessConditions = new TextButton("Back", g.skin);
+		buttonLessConditions.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				startingActionButton -= actionButtonsPerScreen;
+				showShipConditions();
+			}
+		});
 	}
 	
 	private void loadTexture() {
@@ -168,21 +192,97 @@ public class ShipCard extends Card{
 		
 	}
 	
+	public void setupShipConditionsButtons() {
+		TextButton buttonDisableShield = new TextButton("Disable Shield", g.skin);
+		buttonDisableShield.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				g.lastAction.setText(name + ": Disable Shield");
+				shields -= 1;
+				disabledShields += 1;
+			}
+		});
+		shipConditionButtons.add(buttonDisableShield);
+		
+		TextButton buttonUndisableShield = new TextButton("Undisable Shield", g.skin);
+		buttonUndisableShield.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				g.lastAction.setText(name + ": Undisable Shield");
+				shields += 1;
+				disabledShields -= 1;
+			}
+		});
+		shipConditionButtons.add(buttonUndisableShield);
+		
+		TextButton buttonAddShield = new TextButton("Add Shield", g.skin);
+		buttonAddShield.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				g.lastAction.setText(name + ": Add Shield");
+				shields += 1;
+			}
+		});
+		shipConditionButtons.add(buttonAddShield);
+		
+		TextButton buttonDestroyShield = new TextButton("Destroy Shield", g.skin);
+		buttonDestroyShield.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				g.lastAction.setText(name + ": Shield Destroyed");
+				shields += 1;
+			}
+		});
+		shipConditionButtons.add(buttonDestroyShield);
+		
+		TextButton buttonAddHull = new TextButton("Repair Hull", g.skin);
+		buttonAddHull.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				g.lastAction.setText(name + ": Repair Hull");
+				hull += 1;
+			}
+		});
+		shipConditionButtons.add(buttonAddHull);
+		
+		TextButton buttonDamageHull = new TextButton("Damage Hull", g.skin);
+		buttonDamageHull.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				g.lastAction.setText(name + ": Damage Hull");
+				hull -= 1;
+			}
+		});
+		shipConditionButtons.add(buttonDamageHull);
+		
+		TextButton buttonCritical = new TextButton("Receive Critical", g.skin);
+		buttonCritical.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				g.lastAction.setText(name + ": Receive Critical");
+				hull -= 1;
+			}
+		});
+		shipConditionButtons.add(buttonCritical);
+	}
+	
 	public void setupCardActions() {
-		TextButton buttonAddAux = new TextButton("Add Auxilary Power", g.skin);
+		TextButton buttonAddAux = new TextButton("Add Auxilary Token", g.skin);
 		buttonAddAux.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("Add Auxilary Power");
+				g.lastAction.setText(name + ": Add Auxilary Token");
+				auxTokens += 1;
 			}
 		});
 		actionButtons.add(buttonAddAux);
 		
-		TextButton buttonRemoveAux = new TextButton("Remove Auxilary Power", g.skin);
+		TextButton buttonRemoveAux = new TextButton("Remove Auxilary Token", g.skin);
 		buttonRemoveAux.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("Remove Auxilary Power");
+				g.lastAction.setText(name + ": Remove Auxilary Token");
+				auxTokens -= 1;
 			}
 		});
 		actionButtons.add(buttonRemoveAux);
@@ -191,7 +291,7 @@ public class ShipCard extends Card{
 		buttonScan.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("Scan");
+				g.lastAction.setText(name + ": Scan");
 			}
 		});
 		actionButtons.add(buttonScan);
@@ -200,7 +300,7 @@ public class ShipCard extends Card{
 		buttonEvade.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("Evade");
+				g.lastAction.setText(name + ": Evade");
 			}
 		});
 		actionButtons.add(buttonEvade);
@@ -209,7 +309,7 @@ public class ShipCard extends Card{
 		buttonTL.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("Target Lock");
+				g.lastAction.setText(name + ": Target Lock");
 			}
 		});
 		actionButtons.add(buttonTL);
@@ -218,7 +318,7 @@ public class ShipCard extends Card{
 		buttonBS.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("BattleStations");
+				g.lastAction.setText(name + ": BattleStations");
 			}
 		});
 		actionButtons.add(buttonBS);
@@ -227,7 +327,7 @@ public class ShipCard extends Card{
 		buttonCloak.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("Cloak");
+				g.lastAction.setText(name + ": Cloak");
 			}
 		});
 		actionButtons.add(buttonCloak);
@@ -236,7 +336,7 @@ public class ShipCard extends Card{
 		buttonSensorEcho.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("Sensor Echo");
+				g.lastAction.setText(name + ": Sensor Echo");
 			}
 		});
 		actionButtons.add(buttonSensorEcho);
@@ -245,7 +345,7 @@ public class ShipCard extends Card{
 		buttonRegen.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("Regenerate");
+				g.lastAction.setText(name + ": Regenerate");
 			}
 		});
 		actionButtons.add(buttonRegen);
@@ -254,7 +354,7 @@ public class ShipCard extends Card{
 		buttonShipAction.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("Ship Action");
+				g.lastAction.setText(name + ": Ship Action");
 			}
 		});
 		actionButtons.add(buttonShipAction);
@@ -277,16 +377,67 @@ public class ShipCard extends Card{
 		}
 	}
 	
-	public void focusCardDetails() {
-		if (!focusCardActions) {
-			startingPixels = g.resizeY(360);
-			g.game.font.draw(g.game.batch, shipClass + " | " + firingArc, xLine, startingPixels);
-			startingPixels -= newLine;
-			g.game.font.draw(g.game.batch, "Attack: " +  attack + " | Agility: " + defense + " | Hull: " + hull + " | Shields: " + shields, xLine, startingPixels);
-			startingPixels -= newLine;
-			g.game.font.draw(g.game.batch, shipActions + " | " + shipUpgrades, xLine, startingPixels);
+	public void focusCard() {
+		focusedShipConditions = false;
+		buttonShipCondition = new TextButton("Ship Condition", g.skin);
+		buttonShipCondition.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				g.centerTable.clear();
+				if (g.playSounds) g.quickbeep.play();
+				startingActionButton = 0;
+				showShipConditions();
+				
+			}
+		});
+		g.centerTable.add(buttonShipCondition).width(g.buttonWidth).height(g.buttonHeight).padLeft(g.resizeX(500)).padBottom(g.resizeY(140));
+		g.centerTable.row();
+
+		
+		super.focusCard();
+	}
+	
+	public void showShipConditions() {
+		g.centerTable.clear();
+		focusedShipConditions = true;
+		int tempI = 0;
+		for (int i = startingActionButton; i < startingActionButton + actionButtonsPerScreen; i++) {
+			if (i < shipConditionButtons.size()) {
+				if (i % 2 == 0) {
+					g.centerTable.add(shipConditionButtons.get(i)).width(g.buttonWidth).height(g.buttonHeight).padLeft(g.resizeX(260)).padRight(g.resizeX(50));
+				}
+				else {
+					g.centerTable.add(shipConditionButtons.get(i)).width(g.buttonWidth).height(g.buttonHeight);
+					g.centerTable.row().padTop(g.resizeY(30));
+				}
+				
+			}
+			tempI = i;			
 		}
-		super.focusCardDetails();		
+		if (!(tempI % 2 == 0)) {
+			g.centerTable.row().padTop(g.resizeY(30));
+		}
+		if (startingActionButton + actionButtonsPerScreen < shipConditionButtons.size() && startingActionButton > 0) {
+			g.centerTable.add(buttonLessConditions).width(g.buttonWidth).height(g.buttonHeight).padLeft(g.resizeX(260)).padRight(g.resizeX(50));
+			g.centerTable.add(buttonMoreConditions).width(g.buttonWidth).height(g.buttonHeight);
+		} else if (startingActionButton > 0) {
+			g.centerTable.add(buttonLessConditions).width(g.buttonWidth).height(g.buttonHeight).padLeft(g.resizeX(260)).padRight(g.resizeX(50));
+		} else if (startingActionButton + actionButtonsPerScreen < shipConditionButtons.size()) {
+			g.centerTable.add(buttonMoreConditions).width(g.buttonWidth).height(g.buttonHeight).padLeft(g.resizeX(260)).padRight(g.resizeX(50));
+		}
+	}
+	
+	public void focusCardDetails() {
+		if (!focusedShipConditions) {
+			if (!focusCardActions) {
+				startingPixels = g.resizeY(360);
+				g.game.font.draw(g.game.batch, shipClass + " | " + firingArc, xLine, startingPixels);
+				startingPixels -= newLine;
+				g.game.font.draw(g.game.batch, "Attack: " +  attack + " | Agility: " + defense + " | Hull: " + hull + " | Shields: " + shields, xLine, startingPixels);
+				startingPixels -= newLine;
+				g.game.font.draw(g.game.batch, shipActions + " | " + shipUpgrades, xLine, startingPixels);
+				super.focusCardDetails();
+			}			
+		}
 	}
 }
 

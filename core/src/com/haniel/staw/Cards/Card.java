@@ -157,7 +157,7 @@ public class Card {
 		buttonUse.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("Use Card as Action");
+				g.lastAction.setText("Action: " + name);
 			}
 		});
 		actionButtons.add(buttonUse);
@@ -166,16 +166,23 @@ public class Card {
 		buttonDisable.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("ToggleDisable");
+				if (disabled) {
+					g.lastAction.setText(name + " undisabled");
+					disabled = false;
+				} else {
+					g.lastAction.setText(name + " disabled");
+					disabled = true;
+				}
 			}
 		});
 		actionButtons.add(buttonDisable);
 		
-		TextButton buttonDiscard = new TextButton("Discard Card under Ship", g.skin);
+		TextButton buttonDiscard = new TextButton("Discard by Owner", g.skin);
 		buttonDiscard.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("Discard Card by Use");
+				g.lastAction.setText(name + " discarded by owner");
+				discardedByUse = true;
 			}
 		});
 		actionButtons.add(buttonDiscard);
@@ -184,7 +191,8 @@ public class Card {
 		buttonStolen.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				System.out.println("Card Stolen/Discarded by Opponent");
+				g.lastAction.setText(name + " Stolen/Discarded by opponent");
+				discardByOpponent = true;
 			}
 		});
 		actionButtons.add(buttonStolen);
@@ -244,13 +252,19 @@ public class Card {
 		buttonActions = new TextButton("Actions", g.skin);
 		buttonActions.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
+				g.centerTable.clear();
 				if (g.playSounds) g.quickbeep.play();
 				startingActionButton = 0;
 				showActions();
-				buttonActions.remove();
+				
 			}
 		});
-		g.centerTable.add(buttonActions).width(g.buttonWidth).height(g.buttonHeight).padLeft(500).padTop(200);
+		
+		if (this instanceof ShipCard) {
+			g.centerTable.add(buttonActions).width(g.buttonWidth).height(g.buttonHeight).padLeft(g.resizeX(500));
+		} else {
+			g.centerTable.add(buttonActions).width(g.buttonWidth).height(g.buttonHeight).padLeft(g.resizeX(500)).padTop(g.resizeY(200));
+		}
 	}
 	
 	public void focusCardDetails() {
