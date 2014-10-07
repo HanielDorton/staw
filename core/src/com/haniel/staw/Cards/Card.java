@@ -28,18 +28,19 @@ public class Card {
 	private Rectangle rect;
 	protected GameScreen g;
 	protected int newLine;
-	private int newTextLine;
+	protected int newTextLine;
 	protected float xLine;
 	protected float startingPixels;
 	protected String uniqueString = "";
-	private int startingCharacter = 0;
+	protected int startingCharacter = 0;
 	private int lineLength = 80;
-	private String currenText1 = "";
-	private String currenText2 = "";
-	private String currenText3 = "";
-	private String currenText4 = "";
-	private String currenText5 = "";
-	private String currenText6 = "";
+	protected String currenText1 = "";
+	protected String currenText2 = "";
+	protected String currenText3 = "";
+	protected String currenText4 = "";
+	protected String currenText5 = "";
+	protected String currenText6 = "";
+	private String currenText7 = "";
 	protected Button buttonActions;
 	protected boolean focusCardActions = false;
 	protected ArrayList<TextButton> actionButtons = new ArrayList<TextButton>();
@@ -124,6 +125,9 @@ public class Card {
 			}
 			if (c  + (lineLength * 5) < cardText.length()) {
 				currenText6 += cardText.charAt(c  + (lineLength * 5));
+			}
+			if (c  + (lineLength * 6) < cardText.length()) {
+				currenText7 += cardText.charAt(c  + (lineLength * 6));
 			}
 		}
 		
@@ -290,14 +294,15 @@ public class Card {
 			startingPixels -= newTextLine;
 			g.game.font.draw(g.game.batch, currenText6, xLine, startingPixels);
 			startingPixels -= newLine;
-			if (source != null) g.game.font.draw(g.game.batch, faction + " " + cardType + " from " + source, xLine, startingPixels);
-			else g.game.font.draw(g.game.batch, faction + " " + cardType, xLine, startingPixels);
+			g.game.font.draw(g.game.batch, currenText7, xLine, startingPixels);
+			if (source != null) g.game.font.draw(g.game.batch, source, xLine, startingPixels);
 		}
 	}
 	
 	public void showActions() {
 		g.centerTable.clear();
 		focusCardActions = true;
+		int tempI = 0;
 		for (int i = startingActionButton; i < startingActionButton + actionButtonsPerScreen; i++) {
 			if (i < actionButtons.size()) {
 				if (i % 2 == 0) {
@@ -309,6 +314,10 @@ public class Card {
 				}
 				
 			}
+			tempI = i;			
+		}
+		if (!(tempI % 2 == 0)) {
+			g.centerTable.row().padTop(g.resizeY(30));
 		}
 		if (startingActionButton + actionButtonsPerScreen < actionButtons.size() && startingActionButton > 0) {
 			g.centerTable.add(buttonLessActions).width(g.buttonWidth).height(g.buttonHeight).padLeft(g.resizeX(260)).padRight(g.resizeX(50));

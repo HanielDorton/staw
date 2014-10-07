@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.haniel.staw.Cards.Card;
+import com.haniel.staw.Cards.Resource;
 import com.haniel.staw.Cards.ShipCard;
 
 
@@ -316,7 +317,8 @@ public class GameScreen implements Screen{
 					focusedCard.clear();
 					activeShip = current;
 					centerTable.clear();
-					displayShip((ShipCard) fleet.getShips().get(current));
+					if (fleet.getShips().get(current) instanceof ShipCard) displayShip((ShipCard) fleet.getShips().get(current));
+					else displayResource((Resource) fleet.getShips().get(current));
 					if (playSounds) quickbeep.play();
 				}
 			});
@@ -339,6 +341,13 @@ public class GameScreen implements Screen{
 	public void displayShip(ShipCard ship) {
 		currentCards.clear();
 		ship.displayShip(this);
+		startingCard = 0;
+		resetSideButtons();				
+	}
+	
+	public void displayResource(Resource r) {
+		currentCards.clear();
+		r.displayResource(this);
 		startingCard = 0;
 		resetSideButtons();				
 	}

@@ -8,7 +8,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.XmlReader.Element;
+import com.haniel.staw.Fleet;
 import com.haniel.staw.GameScreen;
 
 
@@ -24,10 +26,12 @@ public class ShipCard extends Card{
 	protected ArrayList<TextButton> shipConditionButtons = new ArrayList<TextButton>();
 	protected TextButton buttonShipCondition, buttonMoreConditions, buttonLessConditions;
 	protected boolean focusedShipConditions = false;
+	private Fleet f;
 	
 	
-	public ShipCard(Element ship, final GameScreen g) {
+	public ShipCard(Element ship, final GameScreen g, final Fleet f) {
 		super(ship, g);
+		this.f = f;
 		for (int i = 0; i< ship.getChildCount(); i++) {
 			String text = ship.getChild(i).getName();
 			if (text.equals("AttackDice")) {
@@ -94,6 +98,37 @@ public class ShipCard extends Card{
 					this.shipClass = "";
 				}
 			}
+			
+			else if (text.equals("Flagship")) {
+				try {
+					if ((ship.getChildByName("Flagship")).getText().equals("True")) {
+						f.resourceLoaded = true;
+						Element root = ship.getParent().getParent();
+						Array<Element> res = root.getChildrenByName("Resource");
+						if (res.size > 0) {
+							upgrades.add(new Resource(res.get(0), g));
+							for (int x = 0; x< res.get(0).getChildCount(); x++) {
+								String resText = res.get(0).getChild(x).getName();
+								if (resText.equals("AttackDice")) {
+									this.attack += Integer.parseInt((res.get(0).getChildByName("AttackDice")).getText());
+								}
+								if (resText.equals("DefenseDice")) {
+									this.defense += Integer.parseInt((res.get(0).getChildByName("DefenseDice")).getText());
+								}
+								if (resText.equals("Hull")) {
+									this.hull += Integer.parseInt((res.get(0).getChildByName("Hull")).getText());
+								}
+								if (resText.equals("Shields")) {
+									this.shields += Integer.parseInt((res.get(0).getChildByName("Shields")).getText());
+								}
+							}
+						}
+					}
+				}
+				catch (Exception e) {
+				}
+			}
+			
 		}
 		if (unique.equals("No")) name = shipClass;
 		getUpgrades(ship);
@@ -168,6 +203,9 @@ public class ShipCard extends Card{
 			String text = ship.getChild(i).getName();
 			if (text.equals("Captain")) {
 				upgrades.add(new CaptainCard(ship.getChild(i), g));
+			}
+			if (text.equals("Admiral")) {
+				upgrades.add(new AdmiralCard(ship.getChild(i), g));
 			}
 			if (text.equals("Crewmen")) {
 				for(int c = 0; c < (ship.getChild(i)).getChildCount(); c++) {

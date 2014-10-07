@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 import com.haniel.staw.Cards.Card;
+import com.haniel.staw.Cards.Resource;
 import com.haniel.staw.Cards.ShipCard;
 
 
@@ -16,6 +17,7 @@ public class Fleet {
 	
 	private GameScreen g;
 	public List<Card> ships = new ArrayList<Card>();
+	public boolean resourceLoaded = false;
 	
 	public Fleet(GameScreen g, String file) {
 		this.g = g;
@@ -30,16 +32,16 @@ public class Fleet {
 				Array<Element> child = root.getChildrenByName("Ships");
 				for (Element fleet : child) {
 					for (int i = 0; i< fleet.getChildCount(); i++) {
-						ships.add(new ShipCard(fleet.getChild(i), g));	
+						ships.add(new ShipCard(fleet.getChild(i), g, this));	
 					}
+				}
+				if (!resourceLoaded) {	
+					Array<Element> res = root.getChildrenByName("Resource");
+					if (res.size > 0) {
+						ships.add(new Resource(res.get(0), g));
+					}
+				}
 					
-				}
-				/* Get Resources -- TBD
-				Array<Element> res = root.getChildrenByName("Resource");
-				for (Element r : res) {
-					System.out.println(r);
-				}
-				*/
 						
 				
 			} catch (Exception e) {
