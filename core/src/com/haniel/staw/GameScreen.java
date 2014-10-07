@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -69,6 +70,7 @@ public class GameScreen implements Screen{
 	public Music backgroundMusic = Assets.manager.get("tng_bridge_2.mp3", Music.class);
 	private Vector2 touchPos = new Vector2(0, 0);
 	public boolean gameStarted = false;
+	private Rectangle focusedRect;
 
     
 	public GameScreen(final staw gam) {
@@ -86,6 +88,7 @@ public class GameScreen implements Screen{
 		game.batch.begin();
 		int x = resizeX(80);
 		int size = currentCards.size();
+		focusedRect = new Rectangle(resizeX(105), resizeY(95), resizeX(222), resizeY(315));
 		game.batch.draw(backgroundPanel, 0, 0, resizeX(assumeX), resizeY(assumeY));
     	
     	if (Gdx.input.isTouched()) {    		
@@ -110,14 +113,23 @@ public class GameScreen implements Screen{
 						if (playSounds) highpitch.play();
 						currentCards.get(i).focusCard();
 						break;
-					}
+					} 
 				}
 			}
 		}
 		if (focusedCard.size() > 0) {
 			if (focusedCard.get(0).hasTexture()) game.batch.draw(focusedCard.get(0).getTexture(), resizeX(105), resizeY(95), resizeX(222), resizeY(315));
 			game.batch.draw(cardBorder, resizeX(105), resizeY(95), resizeX(222), resizeY(315));
-			focusedCard.get(0).focusCardDetails();			
+			focusedCard.get(0).focusCardDetails();	
+			if (Gdx.input.isTouched()) {
+				if (!focusedCard.get(0).onFocusedScreen) {
+					if (focusedRect.contains(touchPos)) {
+						if (playSounds) highpitch.play();
+						centerTable.clear();
+						focusedCard.get(0).focusCard();
+					}
+				}
+			}
 		}
 		
 		game.batch.end();

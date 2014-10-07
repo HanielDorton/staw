@@ -25,6 +25,7 @@ public class ShipCard extends Card{
 	protected TextButton buttonShipCondition, buttonMoreConditions, buttonLessConditions;
 	protected boolean focusedShipConditions = false;
 	
+	
 	public ShipCard(Element ship, final GameScreen g) {
 		super(ship, g);
 		for (int i = 0; i< ship.getChildCount(); i++) {
@@ -180,7 +181,7 @@ public class ShipCard extends Card{
 			}
 			if (text.equals("Technology")) {
 				for(int t = 0; t < (ship.getChild(i)).getChildCount(); t++) {
-					upgrades.add(new WeaponCard((ship.getChild(i)).getChild(t), g));
+					upgrades.add(new Card((ship.getChild(i)).getChild(t), g));
 				}
 			}
 			if (text.equals("BorgTechnology")) {
@@ -196,10 +197,15 @@ public class ShipCard extends Card{
 		TextButton buttonDisableShield = new TextButton("Disable Shield", g.skin);
 		buttonDisableShield.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Disable Shield");
-				shields -= 1;
-				disabledShields += 1;
+				if (shields > 0) {
+					if (g.playSounds) g.quickbeep.play();
+					g.lastAction.setText(name + ": Disable Shield");
+					shields -= 1;
+					disabledShields += 1;
+				} else {
+					if (g.playSounds) g.error.play();
+					g.lastAction.setText("Error: " + name + " has no shields");
+				}
 			}
 		});
 		shipConditionButtons.add(buttonDisableShield);
@@ -207,10 +213,15 @@ public class ShipCard extends Card{
 		TextButton buttonUndisableShield = new TextButton("Undisable Shield", g.skin);
 		buttonUndisableShield.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Undisable Shield");
-				shields += 1;
-				disabledShields -= 1;
+				if (disabledShields > 0) {
+					if (g.playSounds) g.quickbeep.play();
+					g.lastAction.setText(name + ": Undisable Shield");
+					shields += 1;
+					disabledShields -= 1;
+				} else {
+					if (g.playSounds) g.error.play();
+					g.lastAction.setText("Error: " + name + " has no disabled shields");
+				}
 			}
 		});
 		shipConditionButtons.add(buttonUndisableShield);
@@ -228,9 +239,15 @@ public class ShipCard extends Card{
 		TextButton buttonDestroyShield = new TextButton("Destroy Shield", g.skin);
 		buttonDestroyShield.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Shield Destroyed");
-				shields += 1;
+				if (shields > 0) {
+					if (g.playSounds) g.quickbeep.play();
+					g.lastAction.setText(name + ": Shield Destroyed");
+					shields -= 1;
+				} else {
+					if (g.playSounds) g.error.play();
+					g.lastAction.setText("Error: " + name + " has no shields");
+				}
+				
 			}
 		});
 		shipConditionButtons.add(buttonDestroyShield);
@@ -248,9 +265,15 @@ public class ShipCard extends Card{
 		TextButton buttonDamageHull = new TextButton("Damage Hull", g.skin);
 		buttonDamageHull.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Damage Hull");
-				hull -= 1;
+				if (hull > 0) {
+					if (g.playSounds) g.quickbeep.play();
+					g.lastAction.setText(name + ": Hull Damaged");
+					hull -= 1;
+				}
+				else {
+					if (g.playSounds) g.error.play();
+					g.lastAction.setText("Error: " +name + " has no hull");
+				}
 			}
 		});
 		shipConditionButtons.add(buttonDamageHull);
@@ -258,9 +281,15 @@ public class ShipCard extends Card{
 		TextButton buttonCritical = new TextButton("Receive Critical", g.skin);
 		buttonCritical.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Receive Critical");
-				hull -= 1;
+				if (hull > 0) {
+					if (g.playSounds) g.quickbeep.play();
+					g.lastAction.setText(name + ": Receive Critical");
+					hull -= 1;
+				}
+				else {
+					if (g.playSounds) g.error.play();
+					g.lastAction.setText("Error: " +name + " has 0 hull");
+				}
 			}
 		});
 		shipConditionButtons.add(buttonCritical);
@@ -280,9 +309,14 @@ public class ShipCard extends Card{
 		TextButton buttonRemoveAux = new TextButton("Remove Auxilary Token", g.skin);
 		buttonRemoveAux.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Remove Auxilary Token");
-				auxTokens -= 1;
+				if (auxTokens > 0) {
+					if (g.playSounds) g.quickbeep.play();
+					g.lastAction.setText(name + ": Remove Auxilary Token");
+					auxTokens -= 1;
+				} else {
+					if (g.playSounds) g.error.play();
+					g.lastAction.setText("Error: " + name + " has no Aux Tokens");
+				}
 			}
 		});
 		actionButtons.add(buttonRemoveAux);
@@ -326,8 +360,15 @@ public class ShipCard extends Card{
 		TextButton buttonCloak = new TextButton("Cloak", g.skin);
 		buttonCloak.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Cloak");
+				if (shields > 0) {
+					if (g.playSounds) g.quickbeep.play();
+					g.lastAction.setText(name + ": Cloak");
+					disabledShields += shields;
+					shields = 0;
+				}else {
+					if (g.playSounds) g.error.play();
+					g.lastAction.setText("Error: " + name + " has no shields");
+				}
 			}
 		});
 		actionButtons.add(buttonCloak);
@@ -382,6 +423,7 @@ public class ShipCard extends Card{
 		buttonShipCondition = new TextButton("Ship Condition", g.skin);
 		buttonShipCondition.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
+				onFocusedScreen = false;
 				g.centerTable.clear();
 				if (g.playSounds) g.quickbeep.play();
 				startingActionButton = 0;
@@ -429,10 +471,12 @@ public class ShipCard extends Card{
 	public void focusCardDetails() {
 		if (!focusedShipConditions) {
 			if (!focusCardActions) {
-				startingPixels = g.resizeY(360);
-				g.game.font.draw(g.game.batch, shipClass + " | " + firingArc, xLine, startingPixels);
+				startingPixels = g.resizeY(390);
+				g.game.font.draw(g.game.batch, name + " - " + uniqueString + " | " + shipClass + " | " + firingArc, xLine, startingPixels);
 				startingPixels -= newLine;
 				g.game.font.draw(g.game.batch, "Attack: " +  attack + " | Agility: " + defense + " | Hull: " + hull + " | Shields: " + shields, xLine, startingPixels);
+				startingPixels -= newLine;
+				g.game.font.draw(g.game.batch, "Disabled Shields: " + disabledShields + " | Auxilary Tokens: " + auxTokens , xLine, startingPixels);
 				startingPixels -= newLine;
 				g.game.font.draw(g.game.batch, shipActions + " | " + shipUpgrades, xLine, startingPixels);
 				super.focusCardDetails();

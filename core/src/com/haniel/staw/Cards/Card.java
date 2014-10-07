@@ -31,7 +31,7 @@ public class Card {
 	private int newTextLine;
 	protected float xLine;
 	protected float startingPixels;
-	private String uniqueString = "";
+	protected String uniqueString = "";
 	private int startingCharacter = 0;
 	private int lineLength = 80;
 	private String currenText1 = "";
@@ -46,6 +46,7 @@ public class Card {
 	protected int startingActionButton = 0;
 	protected int actionButtonsPerScreen = 4;
 	protected TextButton buttonMoreActions, buttonLessActions;
+	public boolean onFocusedScreen = false;
 	
 	public Card(Element element, final GameScreen g){
 		this.g = g;
@@ -242,6 +243,7 @@ public class Card {
 	}
 
 	public void focusCard() {
+		onFocusedScreen = true;
 		focusCardActions = false;
 		g.currentCards.clear();
 		g.focusedCard.clear();
@@ -252,11 +254,11 @@ public class Card {
 		buttonActions = new TextButton("Actions", g.skin);
 		buttonActions.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
+				onFocusedScreen = false;
 				g.centerTable.clear();
 				if (g.playSounds) g.quickbeep.play();
 				startingActionButton = 0;
 				showActions();
-				
 			}
 		});
 		
@@ -271,8 +273,10 @@ public class Card {
 		// name cardType, faction, cardtext, source
 		if (!focusCardActions) {
 			startingCharacter = 0;
-			startingPixels = g.resizeY(390);
-			g.game.font.draw(g.game.batch, name + " - " + uniqueString, xLine, startingPixels);
+			if (!(this instanceof ShipCard)) {
+				startingPixels = g.resizeY(390);
+				g.game.font.draw(g.game.batch, name + " - " + uniqueString, xLine, startingPixels);
+			}
 			startingPixels = g.resizeY(270);
 			g.game.font.draw(g.game.batch, currenText1, xLine, startingPixels);
 			startingPixels -= newTextLine;

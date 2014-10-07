@@ -17,6 +17,12 @@ public class ManueverCard extends Card{
 		}
 	}
 	
+	public void focusCard() {
+		g.currentCards.clear();
+		g.resetSideButtons();
+		g.focusedCard.add(this);
+	}
+	
 	public void focusCardDetails() {
 		//blank override cause there are no details to show.
 	}
