@@ -8,17 +8,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.XmlReader.Element;
+import com.haniel.staw.Fleet;
 import com.haniel.staw.GameScreen;
 
 public class CaptainCard extends Card{
-	
-	private int skill;
 	//private boolean fleetCaptain = false;
 	private List<Card> talents = new ArrayList<Card>();
 
-	public CaptainCard(Element element,GameScreen g) {
-		super(element, g);
+	public CaptainCard(Element element,GameScreen g, Fleet f) {
+		super(element, g, f);
 		for (int i = 0; i< element.getChildCount(); i++) {
 			String text = element.getChild(i).getName();
 			if (text.equals("Skill")) {
@@ -29,7 +29,22 @@ public class CaptainCard extends Card{
 					this.skill = 0;
 				}
 			}
-			//if (text.equals("FleetCaptain")) fleetCaptain = true;
+			else if (text.equals("FleetCaptain")) {
+				if (element.getChildByName("FleetCaptain").getText().equals("True")) {
+					f.resourceLoaded = true;
+					Element root = element.getParent().getParent().getParent();
+					Array<Element> res = root.getChildrenByName("Resource");
+					if (res.size > 0) {
+						talents.add(new Resource(res.get(0), g, f));
+						for (int x = 0; x< res.get(0).getChildCount(); x++) {
+							String resText = res.get(0).getChild(x).getName();
+							if (resText.equals("Skill")) {
+								this.skill += Integer.parseInt((res.get(0).getChildByName("Skill")).getText());
+							}
+						}
+					}					
+				}
+			}
 		}
 		parseTalents(element);
 		if (name.equals("Valdore")) this.texture = new Texture(Gdx.files.internal(faction + "/" + name + " Captain.png"));
@@ -38,7 +53,7 @@ public class CaptainCard extends Card{
 	private void parseTalents(Element element) {
 		for (int i = 0; i< element.getChildCount(); i++) {
 			if (element.getChild(i).getName().equals("EliteTalent")) {
-				talents.add(new Card(element.getChild(i), g));			
+				talents.add(new Card(element.getChild(i), g, f));			
 			}
 		}
 		

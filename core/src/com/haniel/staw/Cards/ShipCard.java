@@ -26,12 +26,9 @@ public class ShipCard extends Card{
 	protected ArrayList<TextButton> shipConditionButtons = new ArrayList<TextButton>();
 	protected TextButton buttonShipCondition, buttonMoreConditions, buttonLessConditions;
 	protected boolean focusedShipConditions = false;
-	private Fleet f;
 	
-	
-	public ShipCard(Element ship, final GameScreen g, final Fleet f) {
-		super(ship, g);
-		this.f = f;
+	public ShipCard(Element ship, final GameScreen g, Fleet f) {
+		super(ship, g, f);
 		for (int i = 0; i< ship.getChildCount(); i++) {
 			String text = ship.getChild(i).getName();
 			if (text.equals("AttackDice")) {
@@ -106,7 +103,7 @@ public class ShipCard extends Card{
 						Element root = ship.getParent().getParent();
 						Array<Element> res = root.getChildrenByName("Resource");
 						if (res.size > 0) {
-							upgrades.add(new Resource(res.get(0), g));
+							upgrades.add(new Resource(res.get(0), g, f));
 							for (int x = 0; x< res.get(0).getChildCount(); x++) {
 								String resText = res.get(0).getChild(x).getName();
 								if (resText.equals("AttackDice")) {
@@ -202,30 +199,42 @@ public class ShipCard extends Card{
 		for (int i = 0; i< ship.getChildCount(); i++) {
 			String text = ship.getChild(i).getName();
 			if (text.equals("Captain")) {
-				upgrades.add(new CaptainCard(ship.getChild(i), g));
+				upgrades.add(new CaptainCard(ship.getChild(i), g, f));
 			}
 			if (text.equals("Admiral")) {
-				upgrades.add(new AdmiralCard(ship.getChild(i), g));
+				upgrades.add(new AdmiralCard(ship.getChild(i), g, f));
 			}
 			if (text.equals("Crewmen")) {
 				for(int c = 0; c < (ship.getChild(i)).getChildCount(); c++) {
-					upgrades.add(new Card((ship.getChild(i)).getChild(c), g));
+					upgrades.add(new Card((ship.getChild(i)).getChild(c), g, f));
 				}
 			}
 			if (text.equals("Weapons")) {
 				for(int w = 0; w < (ship.getChild(i)).getChildCount(); w++) {
-					upgrades.add(new WeaponCard((ship.getChild(i)).getChild(w), g));
+					upgrades.add(new WeaponCard((ship.getChild(i)).getChild(w), g, f));
 				}
 			}
 			if (text.equals("Technology")) {
 				for(int t = 0; t < (ship.getChild(i)).getChildCount(); t++) {
-					upgrades.add(new Card((ship.getChild(i)).getChild(t), g));
+					upgrades.add(new Card((ship.getChild(i)).getChild(t), g, f));
 				}
 			}
 			if (text.equals("BorgTechnology")) {
 				for(int t = 0; t < (ship.getChild(i)).getChildCount(); t++) {
-					upgrades.add(new Card((ship.getChild(i)).getChild(t), g));
+					upgrades.add(new Card((ship.getChild(i)).getChild(t), g, f));
 				}
+			}
+		}
+		//this just adds admiral bonus to captain skill if both are in the fleet
+		int addSkill = 0;
+		for (Card card : upgrades) {
+			if (card instanceof AdmiralCard) {
+				addSkill += card.skill;
+			}
+		}
+		for (Card card : upgrades) {
+			if (card instanceof CaptainCard) {
+				card.skill += addSkill;
 			}
 		}
 		

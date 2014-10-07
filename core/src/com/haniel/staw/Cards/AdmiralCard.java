@@ -6,16 +6,16 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.XmlReader.Element;
+import com.haniel.staw.Fleet;
 import com.haniel.staw.GameScreen;
 
 public class AdmiralCard extends Card{
 	
 	private int captSkill = 0;
-	private int skill;
 	private boolean isAdmiral = true;
 
-	public AdmiralCard(Element element, GameScreen g) {
-		super(element, g);
+	public AdmiralCard(Element element, GameScreen g, Fleet f) {
+		super(element, g, f);
 		for (int i = 0; i< element.getChildCount(); i++) {
 			String text = element.getChild(i).getName();
 			if (text.equals("Skill")) {

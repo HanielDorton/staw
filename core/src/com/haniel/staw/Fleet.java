@@ -38,7 +38,7 @@ public class Fleet {
 				if (!resourceLoaded) {	
 					Array<Element> res = root.getChildrenByName("Resource");
 					if (res.size > 0) {
-						ships.add(new Resource(res.get(0), g));
+						ships.add(new Resource(res.get(0), g, this));
 					}
 				}
 					

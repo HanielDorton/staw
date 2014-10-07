@@ -5,15 +5,20 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.XmlReader.Element;
+import com.haniel.staw.Fleet;
 import com.haniel.staw.GameScreen;
 
 public class Resource extends Card{
 	
 	private List<Card> upgrades = new ArrayList<Card>();
 
-	public Resource(Element element, GameScreen g) {
-		super(element, g);
+	public Resource(Element element, GameScreen g, Fleet f) {
+		super(element, g, f);
 		if (Gdx.files.internal("Resources/" + name + ".png").exists()) {
 			this.texture = new Texture(Gdx.files.internal("Resources/" + name + ".png"));
 			this.textureLoaded = true;
@@ -25,19 +30,19 @@ public class Resource extends Card{
 		for (int i = 0; i< r.getChildCount(); i++) {
 			String text = r.getChild(i).getName();
 			if (text.equals("Captain")) {
-				upgrades.add(new CaptainCard(r.getChild(i), g));
+				upgrades.add(new CaptainCard(r.getChild(i), g, f));
 			}
 			if (text.equals("EliteTalent")) {
-				upgrades.add(new Card(r.getChild(i), g));
+				upgrades.add(new Card(r.getChild(i), g, f));
 			}
 			if (text.equals("Crew")) {
-				upgrades.add(new Card(r.getChild(i), g));
+				upgrades.add(new Card(r.getChild(i), g, f));
 			}
 			if (text.equals("Weapon")) {
-				upgrades.add(new WeaponCard(r.getChild(i), g));
+				upgrades.add(new WeaponCard(r.getChild(i), g, f));
 			}
 			if (text.equals("Tech")) {
-				upgrades.add(new Card(r.getChild(i), g));
+				upgrades.add(new Card(r.getChild(i), g, f));
 			}
 			
 		}
@@ -48,6 +53,17 @@ public class Resource extends Card{
 		for (Card upgrade : upgrades) {
 			upgrade.displayCard(g);
 		}
+	}
+	
+	public void setupCardActions() {
+		TextButton buttonUse = new TextButton("Use Card Action", g.skin);
+		buttonUse.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				g.lastAction.setText("Action: " + name);
+			}
+		});
+		actionButtons.add(buttonUse);
 	}
 	
 	public void focusCardDetails() {

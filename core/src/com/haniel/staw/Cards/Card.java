@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.XmlReader.Element;
+import com.haniel.staw.Fleet;
 import com.haniel.staw.GameScreen;
 
 
@@ -48,8 +49,11 @@ public class Card {
 	protected int actionButtonsPerScreen = 4;
 	protected TextButton buttonMoreActions, buttonLessActions;
 	public boolean onFocusedScreen = false;
+	public int skill;
+	protected Fleet f;
 	
-	public Card(Element element, final GameScreen g){
+	public Card(Element element, final GameScreen g, Fleet f){
+		this.f = f;
 		this.g = g;
 		newLine = g.resizeY(30);
 		newTextLine = g.resizeY(18);
