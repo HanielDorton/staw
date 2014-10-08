@@ -28,6 +28,10 @@ public class Assets {
 		manager.load("openscreen.mp3", Sound.class);
 		manager.load("alert23.mp3", Sound.class);
 		manager.load("CardBorder.png", Texture.class);
+		manager.load("CardDiscardedStolen.png", Texture.class);
+		manager.load("CardDiscarded.png", Texture.class);
+		manager.load("CardDisabled.png", Texture.class);
+		manager.load("CardFailedtoLoad.png", Texture.class);
 		
 		for (int i = 0; i < 12; i ++) {
 			manager.load("shutdown-" + i + ".png", Texture.class);

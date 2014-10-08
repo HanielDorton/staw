@@ -21,9 +21,9 @@ public class Card {
 	
 	protected String cardType, name, unique, source, cardText, faction;
 	protected int cost;
-	protected boolean disabled = false;
-	protected boolean discardedByUse = false;
-	protected boolean discardByOpponent = false;
+	public boolean disabled = false;
+	public boolean discardedByUse = false;
+	public boolean discardedByOpponent = false;
 	protected Texture texture;
 	protected boolean textureLoaded = false;
 	private Rectangle rect;
@@ -51,6 +51,8 @@ public class Card {
 	public boolean onFocusedScreen = false;
 	public int skill;
 	protected Fleet f;
+	public boolean actionPhaseCompleted = false;
+	public boolean attackPhaseCompleted = false;
 	
 	public Card(Element element, final GameScreen g, Fleet f){
 		this.f = f;
@@ -165,8 +167,13 @@ public class Card {
 		TextButton buttonUse = new TextButton("Use Card Action", g.skin);
 		buttonUse.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText("Action: " + name);
+				if (!(disabled || discardedByUse || discardedByOpponent)) {
+					if (g.playSounds) g.quickbeep.play();
+					g.lastAction.setText("Action: " + name);
+				} else {
+					if (g.playSounds) g.error.play();
+					g.lastAction.setText("Error: " + name + " cannot be used");
+				}
 			}
 		});
 		actionButtons.add(buttonUse);
@@ -174,13 +181,19 @@ public class Card {
 		TextButton buttonDisable = new TextButton("Toggle Disable", g.skin);
 		buttonDisable.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				if (g.playSounds) g.quickbeep.play();
-				if (disabled) {
-					g.lastAction.setText(name + " undisabled");
-					disabled = false;
-				} else {
-					g.lastAction.setText(name + " disabled");
-					disabled = true;
+				if (!(discardedByUse || discardedByOpponent)) {
+					if (g.playSounds) g.quickbeep.play();
+					if (disabled) {
+						g.lastAction.setText(name + " undisabled");
+						disabled = false;
+					} else {
+						g.lastAction.setText(name + " disabled");
+						disabled = true;
+					}
+				}
+				else {
+					if (g.playSounds) g.error.play();
+					g.lastAction.setText("Error: " + name + " cannot be used");
 				}
 			}
 		});
@@ -189,9 +202,15 @@ public class Card {
 		TextButton buttonDiscard = new TextButton("Discard by Owner", g.skin);
 		buttonDiscard.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + " discarded by owner");
-				discardedByUse = true;
+				if (!(discardedByUse || discardedByOpponent)) {
+					if (g.playSounds) g.quickbeep.play();
+					g.lastAction.setText(name + " discarded by owner");
+					discardedByUse = true;
+				}
+				else {
+					if (g.playSounds) g.error.play();
+					g.lastAction.setText("Error: " + name + " cannot be used");
+				}
 			}
 		});
 		actionButtons.add(buttonDiscard);
@@ -199,12 +218,33 @@ public class Card {
 		TextButton buttonStolen = new TextButton("Card Stolen/Discarded", g.skin);
 		buttonStolen.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + " Stolen/Discarded by opponent");
-				discardByOpponent = true;
+				if (!(discardedByUse || discardedByOpponent)) {
+					if (g.playSounds) g.quickbeep.play();
+					g.lastAction.setText(name + " Stolen/Discarded by opponent");
+					discardedByOpponent = true;
+				} else {
+					if (g.playSounds) g.error.play();
+					g.lastAction.setText("Error: " + name + " cannot be used");
+				}
 			}
 		});
 		actionButtons.add(buttonStolen);
+		
+		TextButton buttonReturnToPlay = new TextButton("Return to Play", g.skin);
+		buttonReturnToPlay.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (discardedByUse || discardedByOpponent) {
+					if (g.playSounds) g.quickbeep.play();
+					g.lastAction.setText(name + " Returned To Play");
+					discardedByOpponent = false;
+					discardedByUse = false;
+				} else {
+					if (g.playSounds) g.error.play();
+					g.lastAction.setText("Error: " + name + " already in play");
+				}
+			}
+		});
+		actionButtons.add(buttonReturnToPlay);
 	}
 
 	

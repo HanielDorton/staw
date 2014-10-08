@@ -26,6 +26,8 @@ public class ShipCard extends Card{
 	protected ArrayList<TextButton> shipConditionButtons = new ArrayList<TextButton>();
 	protected TextButton buttonShipCondition, buttonMoreConditions, buttonLessConditions;
 	protected boolean focusedShipConditions = false;
+
+	
 	
 	public ShipCard(Element ship, final GameScreen g, Fleet f) {
 		super(ship, g, f);

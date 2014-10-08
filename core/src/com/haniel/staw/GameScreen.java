@@ -62,6 +62,10 @@ public class GameScreen implements Screen{
 	public boolean playSounds = true;
 	public Texture backgroundPanel = Assets.manager.get("backgroundpanel.png", Texture.class);
 	public Texture cardBorder = Assets.manager.get("CardBorder.png", Texture.class);
+	public Texture cardBorderDisabled = Assets.manager.get("CardDisabled.png", Texture.class);
+	public Texture cardBorderDiscarded = Assets.manager.get("CardDiscarded.png", Texture.class);
+	public Texture cardBorderDiscardedByOpponent = Assets.manager.get("CardDiscardedStolen.png", Texture.class);
+	public Texture cardNoTexture = Assets.manager.get("CardFailedtoLoad.png", Texture.class);
 	public Sound doubleBeep = Assets.manager.get("doublebeep.mp3", Sound.class);
 	public Sound error = Assets.manager.get("error.wav", Sound.class);
 	public Sound highpitch = Assets.manager.get("touchcard.mp3", Sound.class); 
@@ -72,6 +76,7 @@ public class GameScreen implements Screen{
 	private Vector2 touchPos = new Vector2(0, 0);
 	public boolean gameStarted = false;
 	private Rectangle focusedRect;
+	public GamePlay gp = new GamePlay(this);
 
     
 	public GameScreen(final staw gam) {
@@ -87,7 +92,7 @@ public class GameScreen implements Screen{
 		camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 		game.batch.begin();
-		int x = resizeX(80);
+		int x = resizeX(90);
 		int size = currentCards.size();
 		focusedRect = new Rectangle(resizeX(105), resizeY(95), resizeX(222), resizeY(315));
 		game.batch.draw(backgroundPanel, 0, 0, resizeX(assumeX), resizeY(assumeY));
@@ -98,15 +103,17 @@ public class GameScreen implements Screen{
 		for (int i = startingCard; i < startingCard + numberOfCards; i++) {
 			if (i < size) {
 				currentCards.get(i).getRect().setPosition(x, resizeY(106));
-				if (currentCards.get(i).hasTexture()) {
-					game.batch.draw(currentCards.get(i).getTexture(), x, resizeY(106), resizeX(200), resizeY(278));
-					game.batch.draw(cardBorder, x, resizeY(106), resizeX(200), resizeY(278));
-					x += resizeX(210);
-				}
+				if (currentCards.get(i).hasTexture()) game.batch.draw(currentCards.get(i).getTexture(), x, resizeY(106), resizeX(200), resizeY(278));
 				else {
-					game.font.draw(game.batch, currentCards.get(i).getName(), x, resizeY(200));
-					x += resizeX(210);
+					game.batch.draw(cardNoTexture, x, resizeY(106), resizeX(200), resizeY(278));
+					game.font.draw(game.batch, currentCards.get(i).getName(), x+resizeX(25), resizeY(280));
 				}
+				if (currentCards.get(i).disabled) game.batch.draw(cardBorderDisabled, x, resizeY(106), resizeX(200), resizeY(278));
+				else if (currentCards.get(i).discardedByUse) game.batch.draw(cardBorderDiscarded, x, resizeY(106), resizeX(200), resizeY(278)); 
+				else if (currentCards.get(i).discardedByOpponent) game.batch.draw(cardBorderDiscardedByOpponent, x, resizeY(106), resizeX(200), resizeY(278));
+				else  game.batch.draw(cardBorder, x, resizeY(106), resizeX(200), resizeY(278));
+				x += resizeX(205);
+
 				if (Gdx.input.isTouched()) {
 					if (currentCards.get(i).getRect().contains(touchPos)) {
 						//System.out.println(touchPos.x + "" +touchPos.y);
@@ -120,7 +127,11 @@ public class GameScreen implements Screen{
 		}
 		if (focusedCard.size() > 0) {
 			if (focusedCard.get(0).hasTexture()) game.batch.draw(focusedCard.get(0).getTexture(), resizeX(105), resizeY(95), resizeX(222), resizeY(315));
-			game.batch.draw(cardBorder, resizeX(105), resizeY(95), resizeX(222), resizeY(315));
+			else game.batch.draw(cardNoTexture, resizeX(105), resizeY(95), resizeX(222), resizeY(315));
+			if (focusedCard.get(0).discardedByUse) game.batch.draw(cardBorderDiscarded, resizeX(105), resizeY(95), resizeX(222), resizeY(315));
+			else if (focusedCard.get(0).discardedByOpponent) game.batch.draw(cardBorderDiscardedByOpponent, resizeX(105), resizeY(95), resizeX(222), resizeY(315));
+			else if (focusedCard.get(0).disabled) game.batch.draw(cardBorderDisabled, resizeX(105), resizeY(95), resizeX(222), resizeY(315));
+			else game.batch.draw(cardBorder, resizeX(105), resizeY(95), resizeX(222), resizeY(315));
 			focusedCard.get(0).focusCardDetails();	
 			if (Gdx.input.isTouched()) {
 				if (!focusedCard.get(0).onFocusedScreen) {
@@ -329,7 +340,8 @@ public class GameScreen implements Screen{
 					focusedCard.clear();
 					activeShip = current;
 					centerTable.clear();
-					displayShip((ShipCard) fleet.getShips().get(current));
+					if (fleet.getShips().get(current) instanceof ShipCard) displayShip((ShipCard) fleet.getShips().get(current));
+					else displayResource((Resource) fleet.getShips().get(current));
 					if (playSounds) quickbeep.play();
 				}
 			});
