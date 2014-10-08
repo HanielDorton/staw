@@ -34,14 +34,14 @@ public class Card {
 	protected float startingPixels;
 	protected String uniqueString = "";
 	protected int startingCharacter = 0;
-	private int lineLength = 80;
+	protected int lineLength = 80;
 	protected String currenText1 = "";
 	protected String currenText2 = "";
 	protected String currenText3 = "";
 	protected String currenText4 = "";
 	protected String currenText5 = "";
 	protected String currenText6 = "";
-	private String currenText7 = "";
+	protected String currenText7 = "";
 	protected Button buttonActions;
 	protected boolean focusCardActions = false;
 	protected ArrayList<TextButton> actionButtons = new ArrayList<TextButton>();
@@ -157,7 +157,18 @@ public class Card {
 		
 	}
 	
+	public Card(GameScreen g, int card) {
+		//this is for damage cards only
+		this.g = g;
+		this.rect = new Rectangle(0, 0, g.resizeX(200), g.resizeY(278));
+		newLine = g.resizeY(30);
+		newTextLine = g.resizeY(18);
+		xLine = g.resizeX(335);
+		setupCardActions();
+	}
+	
 	public Card(String faction, String shipClass, GameScreen g){
+		//this is for manuever cards only
 		this.g = g;
 		this.rect = new Rectangle(0, 0, g.resizeX(200), g.resizeY(278));
 		setupCardActions();

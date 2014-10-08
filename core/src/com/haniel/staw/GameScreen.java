@@ -77,6 +77,7 @@ public class GameScreen implements Screen{
 	public boolean gameStarted = false;
 	private Rectangle focusedRect;
 	public GamePlay gp = new GamePlay(this);
+	public DamageDeck damageDeck = new DamageDeck(this);
 
     
 	public GameScreen(final staw gam) {

@@ -1,6 +1,7 @@
 package com.haniel.staw.Cards;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -19,6 +20,7 @@ public class ShipCard extends Card{
 	private int attack, defense, hull, shields;
 	private String shipActions, shipUpgrades, firingArc, shipClass;
 	private List<Card> upgrades = new ArrayList<Card>();
+	private List<DamageCard> damageCards = new ArrayList<DamageCard>();
 	private ManueverCard manueverCard;
 	private boolean hasManuevers = false;
 	private int auxTokens = 0;
@@ -334,6 +336,7 @@ public class ShipCard extends Card{
 					if (g.playSounds) g.quickbeep.play();
 					g.lastAction.setText(name + ": Receive Critical");
 					hull -= 1;
+					damageCards.add(g.damageDeck.getDamageCard());
 				}
 				else {
 					if (g.playSounds) g.error.play();
@@ -457,6 +460,12 @@ public class ShipCard extends Card{
 	public void displayShip(GameScreen g){
 		g.currentCards.add(this);
 		if (hasManuevers) g.currentCards.add(manueverCard);
+		Iterator<DamageCard> iter = damageCards.iterator(); 
+		while(iter.hasNext()) {
+			DamageCard d = iter.next();
+			if (d.active) d.displayCard(g);
+			else iter.remove();
+		}
 		for (Card upgrade : upgrades) {
 			upgrade.displayCard(g);
 			if (upgrade instanceof CaptainCard) {
