@@ -190,7 +190,7 @@ public class Card {
 					g.addAction(" - " + f.name + " " + ship + " " + "use Upgrade: " + name);
 				} else {
 					if (g.playSounds) g.error.play();
-					g.addAction("Error: " + f.name + " " + ship + " " + name + " cannot be used");
+					g.addAction(" - Error: " + f.name + " " + ship + " " + name + " cannot be used");
 				}
 			}
 		});
@@ -211,7 +211,7 @@ public class Card {
 				}
 				else {
 					if (g.playSounds) g.error.play();
-					g.addAction("Error: " + f.name + " " + ship + " " + name + " cannot be used");
+					g.addAction(" - Error: " + f.name + " " + ship + " " + name + " cannot be used");
 				}
 			}
 		});
@@ -227,7 +227,7 @@ public class Card {
 				}
 				else {
 					if (g.playSounds) g.error.play();
-					g.addAction("Error: " + f.name + " " + ship + " " + name + " cannot be used");
+					g.addAction(" - Error: " + f.name + " " + ship + " " + name + " cannot be used");
 				}
 			}
 		});
@@ -242,7 +242,7 @@ public class Card {
 					discardedByOpponent = true;
 				} else {
 					if (g.playSounds) g.error.play();
-					g.addAction("Error: " + f.name + " " + ship + " " + name + " cannot be used");
+					g.addAction(" - Error: " + f.name + " " + ship + " " + name + " cannot be used");
 				}
 			}
 		});
@@ -258,7 +258,7 @@ public class Card {
 					discardedByUse = false;
 				} else {
 					if (g.playSounds) g.error.play();
-					g.addAction( "Error: " + f.name + " " + ship + " " + name + " already in play");
+					g.addAction( " - Error: " + f.name + " " + ship + " " + name + " already in play");
 				}
 			}
 		});

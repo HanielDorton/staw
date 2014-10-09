@@ -28,8 +28,6 @@ public class ShipCard extends Card{
 	protected ArrayList<TextButton> shipConditionButtons = new ArrayList<TextButton>();
 	protected TextButton buttonShipCondition, buttonMoreConditions, buttonLessConditions;
 	protected boolean focusedShipConditions = false;
-
-	
 	
 	public ShipCard(Element ship, final GameScreen g, Fleet f, String s) {
 		super(ship, g, f, s);
@@ -263,7 +261,7 @@ public class ShipCard extends Card{
 					disabledShields += 1;
 				} else {
 					if (g.playSounds) g.error.play();
-					g.addAction("Error: " + f.name + " " + name + " has no shields");
+					g.addAction(" - Error: " + f.name + " " + name + " has no shields");
 				}
 			}
 		});
@@ -279,7 +277,7 @@ public class ShipCard extends Card{
 					disabledShields -= 1;
 				} else {
 					if (g.playSounds) g.error.play();
-					g.addAction("Error: " + f.name + " " + name + " has no disabled shields");
+					g.addAction(" - Error: " + f.name + " " + name + " has no disabled shields");
 				}
 			}
 		});
@@ -304,7 +302,7 @@ public class ShipCard extends Card{
 					shields -= 1;
 				} else {
 					if (g.playSounds) g.error.play();
-					g.addAction("Error: " + f.name + " " + name + " has no shields");
+					g.addAction(" - Error: " + f.name + " " + name + " has no shields");
 				}
 				
 			}
@@ -332,7 +330,7 @@ public class ShipCard extends Card{
 				}
 				else {
 					if (g.playSounds) g.error.play();
-					g.addAction("Error: " +f.name + " " + name + " has no hull");
+					g.addAction(" - Error: " +f.name + " " + name + " has no hull");
 				}
 			}
 		});
@@ -350,7 +348,7 @@ public class ShipCard extends Card{
 				}
 				else {
 					if (g.playSounds) g.error.play();
-					g.addAction("Error: " +f.name + " " + name + " has 0 hull");
+					g.addAction(" - Error: " +f.name + " " + name + " has 0 hull");
 				}
 			}
 		});
@@ -377,7 +375,7 @@ public class ShipCard extends Card{
 					auxTokens -= 1;
 				} else {
 					if (g.playSounds) g.error.play();
-					g.addAction("Error: " + f.name + " " + name + " has no Aux Tokens");
+					g.addAction(" - Error: " + f.name + " " + name + " has no Aux Tokens");
 				}
 			}
 		});
@@ -429,7 +427,7 @@ public class ShipCard extends Card{
 					shields = 0;
 				}else {
 					if (g.playSounds) g.error.play();
-					g.addAction("Error: " + f.name + " " + name + " has no shields");
+					g.addAction(" - Error: " + f.name + " " + name + " has no shields");
 				}
 			}
 		});
@@ -561,5 +559,6 @@ public class ShipCard extends Card{
 		}
 		
 	}
+
 }
 

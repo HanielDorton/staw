@@ -129,7 +129,7 @@ public class GameScreen implements Screen{
 					if (currentCards.get(i).getRect().contains(touchPos)) {
 						//System.out.println(touchPos.x + "" +touchPos.y);
 						//System.out.println("Touched: " + i);
-						if (playSounds) highpitch.play();
+						
 						currentCards.get(i).focusCard();
 						break;
 					} 
@@ -156,7 +156,6 @@ public class GameScreen implements Screen{
 		}
     	if (Gdx.input.isTouched()) {
 		    if (shipLogRect.contains(touchPos)) {
-		    	if (playSounds) quickbeep.play();
 		    	currentLog = rounds.size()-1;
 		    	showGameLog(); 
 		    }
@@ -250,6 +249,10 @@ public class GameScreen implements Screen{
 			public void changed(ChangeEvent event, Actor actor) {
 				if (playSounds) quickbeep.play();
 				startingCard += numberOfCards;
+				if (showGameLog) {
+					currentLog++;
+					showGameLog();
+				}	
 				resetSideButtons();
 			}
 		});
@@ -258,6 +261,10 @@ public class GameScreen implements Screen{
 			public void changed(ChangeEvent event, Actor actor) {
 				if (playSounds) quickbeep.play();
 				startingCard -= numberOfCards;
+				if (showGameLog) {
+					currentLog--;
+					showGameLog();
+				}	
 				resetSideButtons();
 			}
 		});
@@ -427,14 +434,21 @@ public class GameScreen implements Screen{
 	}
 	
 	public void resetSideButtons() {
-		showGameLog = false;
 		leftTable.clear();
 		rightTable.clear();
-		if (startingCard == 0) leftTable.add(buttonLess).width(buttonHeight).height(buttonWidth - resizeY(5));
-		else leftTable.add(buttonLessActive).width(buttonHeight).height(buttonWidth - resizeY(5));
-		if (currentCards.size() > startingCard + numberOfCards) rightTable.add(buttonMoreActive).width(buttonHeight).height(buttonWidth - resizeY(5));
-		else rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth - resizeY(5));
-		
+		if (showGameLog) {
+			if (currentLog == 0) leftTable.add(buttonLess).width(buttonHeight).height(buttonWidth - resizeY(5));
+			else leftTable.add(buttonLessActive).width(buttonHeight).height(buttonWidth - resizeY(5));
+			if (rounds.size() -1 > currentLog) rightTable.add(buttonMoreActive).width(buttonHeight).height(buttonWidth - resizeY(5));
+			else rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth - resizeY(5));
+		}
+		else {
+			if (startingCard == 0) leftTable.add(buttonLess).width(buttonHeight).height(buttonWidth - resizeY(5));
+			else leftTable.add(buttonLessActive).width(buttonHeight).height(buttonWidth - resizeY(5));
+			if (currentCards.size() > startingCard + numberOfCards) rightTable.add(buttonMoreActive).width(buttonHeight).height(buttonWidth - resizeY(5));
+			else rightTable.add(buttonMore).width(buttonHeight).height(buttonWidth - resizeY(5));
+		}
+			
 		
 		topRightTable.clear();
 		topLeftTable.clear();
@@ -472,6 +486,7 @@ public class GameScreen implements Screen{
 	}
 	
 	public void showGameLog() {
+		resetCardsandSideButtons();
 		ArrayList<String> temp = new ArrayList<String>(rounds.get(currentLog));
 		if (currentLog == rounds.size()-1) {
 			temp.add("----------------------------------------------");
@@ -484,9 +499,9 @@ public class GameScreen implements Screen{
 			}
 		}
 		centerTable.clear();
-		currentLog = rounds.size()-1;
-		resetCardsandSideButtons();
+		//currentLog = rounds.size()-1;
 		showGameLog = true;
+		resetSideButtons();
 		String[] stringLog = new String[ temp.size() ];
 		temp.toArray(stringLog);
 		scrollPaneList.setItems(stringLog);

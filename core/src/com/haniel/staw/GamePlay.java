@@ -27,7 +27,7 @@ public class GamePlay {
 				if (ship instanceof ShipCard) {
 					if (ship.hull > 0) {
 						ship.setSkill();
-						addShipToSortedArray(ship);
+						addShipToSortedArray(ship, actionPhase);
 					}
 				}
 				
@@ -42,23 +42,41 @@ public class GamePlay {
 		for (Card ship: temp) {
 			if (ship.hull > 0) {
 				ship.setSkill();
-				addShipToSortedArray(ship);
+				addShipToSortedArray(ship, actionPhase);
 			}
 		}
 	}
 	
-	private void addShipToSortedArray(Card ship) {
+	private void addShipToSortedArray(Card ship, boolean actionPhase) {
 		boolean done = false;
-		for (int i = 0; i < sortedShips.size(); i++) {
-			if (!done) {
-				if (ship.skill < sortedShips.get(i).skill) {
-					sortedShips.add(i, ship);
-					done = true;
-				}
-				else if (ship.skill == sortedShips.get(i).skill) {
-					if (ship.factionLevel < sortedShips.get(i).factionLevel) {
+		if (actionPhase) {
+			for (int i = 0; i < sortedShips.size(); i++) {
+				if (!done) {
+					if (ship.skill < sortedShips.get(i).skill) {
 						sortedShips.add(i, ship);
-						done = true;			
+						done = true;
+					}
+					else if (ship.skill == sortedShips.get(i).skill) {
+						if (ship.factionLevel < sortedShips.get(i).factionLevel) {
+							sortedShips.add(i, ship);
+							done = true;			
+						}
+					}
+				}
+			}
+		}
+		else {
+			for (int i = 0; i < sortedShips.size(); i++) {
+				if (!done) {
+					if (ship.skill > sortedShips.get(i).skill) {
+						sortedShips.add(i, ship);
+						done = true;
+					}
+					else if (ship.skill == sortedShips.get(i).skill) {
+						if (ship.factionLevel < sortedShips.get(i).factionLevel) {
+							sortedShips.add(i, ship);
+							done = true;			
+						}
 					}
 				}
 			}

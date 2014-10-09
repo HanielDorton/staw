@@ -160,7 +160,7 @@ public class LoadFileMenu {
 			g.redrawFleetTable();
 			if (g.playSounds) g.doubleBeep.play();
 			centerTable.clear();
-			g.addAction("Fleet " + f.getName().replace(".xml", "") + " Loaded");
+			g.addAction(" - Fleet " + f.getName().replace(".xml", "") + " Loaded");
 		}
 		catch (Exception e) {
 			if (g.playSounds) g.error.play();

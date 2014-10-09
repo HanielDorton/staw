@@ -29,11 +29,11 @@ public class SettingsMenu {
 				else g.backgroundMusic.play();
 				if (g.playSounds) {
 					g.playSounds = false;
-					g.addAction("Sound Muted");
+					g.addAction(" - System: Sound Muted");
 				}
 				else {
 					g.playSounds = true;
-					g.addAction("Sound Restored");
+					g.addAction(" - System: Sound Restored");
 				}
 
 			}
@@ -64,7 +64,7 @@ public class SettingsMenu {
 				g.createFleetTable();
 				g.gamePlay = new GamePlay(g);
 				g.setupRoundsList();
-				g.addAction("Game Reset");
+				g.addAction(" - System: Game Reset");
 				g.buttonNextShip = new TextButton("Start Game", g.skin);
 				g.buttonNextShip.addListener(new ChangeListener() {
 					public void changed(ChangeEvent event, Actor actor) {
@@ -73,7 +73,7 @@ public class SettingsMenu {
 							g.gamePlay.next();
 						} else {
 							if (g.playSounds) g.error.play();
-							g.addAction("Error: Unable to start game with no ships loaded");
+							g.addAction(" - Error: Unable to start game with no ships loaded");
 						}
 					}
 				});

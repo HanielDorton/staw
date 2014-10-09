@@ -29,19 +29,19 @@ public class Resource extends Card{
 		for (int i = 0; i< r.getChildCount(); i++) {
 			String text = r.getChild(i).getName();
 			if (text.equals("Captain")) {
-				upgrades.add(new CaptainCard(r.getChild(i), g, f, name));
+				upgrades.add(new CaptainCard(r.getChild(i), g, f, ship));
 			}
 			if (text.equals("EliteTalent")) {
-				upgrades.add(new Card(r.getChild(i), g, f, name));
+				upgrades.add(new Card(r.getChild(i), g, f, ship));
 			}
 			if (text.equals("Crew")) {
-				upgrades.add(new Card(r.getChild(i), g, f, name));
+				upgrades.add(new Card(r.getChild(i), g, f, ship));
 			}
 			if (text.equals("Weapon")) {
-				upgrades.add(new WeaponCard(r.getChild(i), g, f, name));
+				upgrades.add(new WeaponCard(r.getChild(i), g, f, ship));
 			}
 			if (text.equals("Tech")) {
-				upgrades.add(new Card(r.getChild(i), g, f, name));
+				upgrades.add(new Card(r.getChild(i), g, f, ship));
 			}
 			
 		}
@@ -59,7 +59,7 @@ public class Resource extends Card{
 		buttonUse.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.addAction("Action: " + name);
+				g.addAction(" - " + f.name + " " + name + " action");
 			}
 		});
 		actionButtons.add(buttonUse);

@@ -14,7 +14,6 @@ import com.haniel.staw.Fleet;
 import com.haniel.staw.GameScreen;
 
 public class CaptainCard extends Card{
-	//private boolean fleetCaptain = false;
 	private List<Card> talents = new ArrayList<Card>();
 
 	public CaptainCard(Element element,GameScreen g, Fleet f, String ship) {
@@ -65,7 +64,7 @@ public class CaptainCard extends Card{
 		buttonIncreaseSkill.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.addAction(name + " skill increased");
+				g.addAction(" - " + f.name + " " + ship + " " + name + " skill increased");
 				skill += 1;
 			}
 		});
@@ -75,7 +74,7 @@ public class CaptainCard extends Card{
 		buttonDecreaseSkill.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.addAction(name + " skill decreased");
+				g.addAction(" - " + f.name + " " + ship + " " + name + " skill decreased");
 				skill -= 1;
 			}
 		});
