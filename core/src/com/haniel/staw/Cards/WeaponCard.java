@@ -9,8 +9,8 @@ public class WeaponCard extends Card{
 	private int attack;
 	private String range;
 
-	public WeaponCard(Element element, GameScreen g, Fleet f) {
-		super(element, g, f);
+	public WeaponCard(Element element, GameScreen g, Fleet f, String ship) {
+		super(element, g, f, ship);
 		for (int i = 0; i< element.getChildCount(); i++) {
 			String text = element.getChild(i).getName();
 			if (text.equals("AttackDice"))  {

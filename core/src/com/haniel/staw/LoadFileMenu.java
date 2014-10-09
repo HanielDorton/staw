@@ -141,6 +141,7 @@ public class LoadFileMenu {
 			});
 			g.fleetButtons.add(fleetButton, button);
 			g.fleetButtonsActive.remove(fleetButton);
+			fleet.name = (f.getName()).replace(".xml", "");
 			final TextButton button2 = new TextButton((f.getName()).replace(".xml", ""), g.skin2);
 			button2.addListener(new ChangeListener() {
 				public void changed(ChangeEvent event, Actor actor) {
@@ -159,11 +160,11 @@ public class LoadFileMenu {
 			g.redrawFleetTable();
 			if (g.playSounds) g.doubleBeep.play();
 			centerTable.clear();
-			g.lastAction.setText("Fleet " + f.getName().replace(".xml", "") + " Loaded");
+			g.addAction("Fleet " + f.getName().replace(".xml", "") + " Loaded");
 		}
 		catch (Exception e) {
-			System.out.println(e.getMessage());
-			g.addError("Unable to Parse File");
+			if (g.playSounds) g.error.play();
+			g.addAction("Unable to Parse File");
 		}
 	}
 	

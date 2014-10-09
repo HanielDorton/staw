@@ -17,8 +17,8 @@ public class CaptainCard extends Card{
 	//private boolean fleetCaptain = false;
 	private List<Card> talents = new ArrayList<Card>();
 
-	public CaptainCard(Element element,GameScreen g, Fleet f) {
-		super(element, g, f);
+	public CaptainCard(Element element,GameScreen g, Fleet f, String ship) {
+		super(element, g, f, ship);
 		for (int i = 0; i< element.getChildCount(); i++) {
 			String text = element.getChild(i).getName();
 			if (text.equals("Skill")) {
@@ -35,7 +35,7 @@ public class CaptainCard extends Card{
 					Element root = element.getParent().getParent().getParent();
 					Array<Element> res = root.getChildrenByName("Resource");
 					if (res.size > 0) {
-						talents.add(new Resource(res.get(0), g, f));
+						talents.add(new Resource(res.get(0), g, f, ship));
 						for (int x = 0; x< res.get(0).getChildCount(); x++) {
 							String resText = res.get(0).getChild(x).getName();
 							if (resText.equals("Skill")) {
@@ -53,7 +53,7 @@ public class CaptainCard extends Card{
 	private void parseTalents(Element element) {
 		for (int i = 0; i< element.getChildCount(); i++) {
 			if (element.getChild(i).getName().equals("EliteTalent")) {
-				talents.add(new Card(element.getChild(i), g, f));			
+				talents.add(new Card(element.getChild(i), g, f, ship));			
 			}
 		}
 		
@@ -65,7 +65,7 @@ public class CaptainCard extends Card{
 		buttonIncreaseSkill.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + " skill increased");
+				g.addAction(name + " skill increased");
 				skill += 1;
 			}
 		});
@@ -75,7 +75,7 @@ public class CaptainCard extends Card{
 		buttonDecreaseSkill.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + " skill decreased");
+				g.addAction(name + " skill decreased");
 				skill -= 1;
 			}
 		});

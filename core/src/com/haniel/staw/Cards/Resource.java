@@ -16,8 +16,8 @@ public class Resource extends Card{
 	
 	private List<Card> upgrades = new ArrayList<Card>();
 
-	public Resource(Element element, GameScreen g, Fleet f) {
-		super(element, g, f);
+	public Resource(Element element, GameScreen g, Fleet f, String ship) {
+		super(element, g, f, ship);
 		if (Gdx.files.internal("Resources/" + name + ".png").exists()) {
 			this.texture = new Texture(Gdx.files.internal("Resources/" + name + ".png"));
 			this.textureLoaded = true;
@@ -29,19 +29,19 @@ public class Resource extends Card{
 		for (int i = 0; i< r.getChildCount(); i++) {
 			String text = r.getChild(i).getName();
 			if (text.equals("Captain")) {
-				upgrades.add(new CaptainCard(r.getChild(i), g, f));
+				upgrades.add(new CaptainCard(r.getChild(i), g, f, name));
 			}
 			if (text.equals("EliteTalent")) {
-				upgrades.add(new Card(r.getChild(i), g, f));
+				upgrades.add(new Card(r.getChild(i), g, f, name));
 			}
 			if (text.equals("Crew")) {
-				upgrades.add(new Card(r.getChild(i), g, f));
+				upgrades.add(new Card(r.getChild(i), g, f, name));
 			}
 			if (text.equals("Weapon")) {
-				upgrades.add(new WeaponCard(r.getChild(i), g, f));
+				upgrades.add(new WeaponCard(r.getChild(i), g, f, name));
 			}
 			if (text.equals("Tech")) {
-				upgrades.add(new Card(r.getChild(i), g, f));
+				upgrades.add(new Card(r.getChild(i), g, f, name));
 			}
 			
 		}
@@ -59,7 +59,7 @@ public class Resource extends Card{
 		buttonUse.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText("Action: " + name);
+				g.addAction("Action: " + name);
 			}
 		});
 		actionButtons.add(buttonUse);

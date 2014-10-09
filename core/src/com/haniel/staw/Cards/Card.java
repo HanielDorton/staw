@@ -19,7 +19,12 @@ public class Card {
 	// Card is extended for Ship, Captain, Admiral and Weapons
 	// Generic cards are Techs, Talents and Crew
 	
-	protected String cardType, name, unique, source, cardText, faction;
+	protected String cardType;
+	public String name;
+	protected String unique;
+	protected String source;
+	protected String cardText;
+	protected String faction;
 	protected int cost;
 	public boolean disabled = false;
 	public boolean discardedByUse = false;
@@ -50,11 +55,13 @@ public class Card {
 	protected TextButton buttonMoreActions, buttonLessActions;
 	public boolean onFocusedScreen = false;
 	public int skill;
-	protected Fleet f;
-	public boolean actionPhaseCompleted = false;
-	public boolean attackPhaseCompleted = false;
+	public Fleet f;
+	public int factionLevel;
+	public String ship;
+	public int hull;
 	
-	public Card(Element element, final GameScreen g, Fleet f){
+	public Card(Element element, final GameScreen g, Fleet f, String ship){
+		this.ship = ship;
 		this.f = f;
 		this.g = g;
 		newLine = g.resizeY(30);
@@ -180,10 +187,10 @@ public class Card {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (!(disabled || discardedByUse || discardedByOpponent)) {
 					if (g.playSounds) g.quickbeep.play();
-					g.lastAction.setText("Action: " + name);
+					g.addAction(" - " + f.name + " " + ship + " " + "use Upgrade: " + name);
 				} else {
 					if (g.playSounds) g.error.play();
-					g.lastAction.setText("Error: " + name + " cannot be used");
+					g.addAction("Error: " + f.name + " " + ship + " " + name + " cannot be used");
 				}
 			}
 		});
@@ -195,16 +202,16 @@ public class Card {
 				if (!(discardedByUse || discardedByOpponent)) {
 					if (g.playSounds) g.quickbeep.play();
 					if (disabled) {
-						g.lastAction.setText(name + " undisabled");
+						g.addAction(" - " + f.name + " " + ship + " " + name + " undisabled");
 						disabled = false;
 					} else {
-						g.lastAction.setText(name + " disabled");
+						g.addAction(" - " + f.name + " " + ship + " " + name + " disabled");
 						disabled = true;
 					}
 				}
 				else {
 					if (g.playSounds) g.error.play();
-					g.lastAction.setText("Error: " + name + " cannot be used");
+					g.addAction("Error: " + f.name + " " + ship + " " + name + " cannot be used");
 				}
 			}
 		});
@@ -215,12 +222,12 @@ public class Card {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (!(discardedByUse || discardedByOpponent)) {
 					if (g.playSounds) g.quickbeep.play();
-					g.lastAction.setText(name + " discarded by owner");
+					g.addAction(" - " + f.name + " " + ship + " " + name + " discarded by owner");
 					discardedByUse = true;
 				}
 				else {
 					if (g.playSounds) g.error.play();
-					g.lastAction.setText("Error: " + name + " cannot be used");
+					g.addAction("Error: " + f.name + " " + ship + " " + name + " cannot be used");
 				}
 			}
 		});
@@ -231,11 +238,11 @@ public class Card {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (!(discardedByUse || discardedByOpponent)) {
 					if (g.playSounds) g.quickbeep.play();
-					g.lastAction.setText(name + " Stolen/Discarded by opponent");
+					g.addAction(" - " + f.name + " " + ship + " " + name + " Stolen/Discarded by opponent");
 					discardedByOpponent = true;
 				} else {
 					if (g.playSounds) g.error.play();
-					g.lastAction.setText("Error: " + name + " cannot be used");
+					g.addAction("Error: " + f.name + " " + ship + " " + name + " cannot be used");
 				}
 			}
 		});
@@ -246,12 +253,12 @@ public class Card {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (discardedByUse || discardedByOpponent) {
 					if (g.playSounds) g.quickbeep.play();
-					g.lastAction.setText(name + " Returned To Play");
+					g.addAction(" - " + f.name + " " + ship + " " + name + " Returned To Play");
 					discardedByOpponent = false;
 					discardedByUse = false;
 				} else {
 					if (g.playSounds) g.error.play();
-					g.lastAction.setText("Error: " + name + " already in play");
+					g.addAction( "Error: " + f.name + " " + ship + " " + name + " already in play");
 				}
 			}
 		});
@@ -261,22 +268,13 @@ public class Card {
 	
 	private void loadTexture() {
 
-		if (Gdx.files.internal(faction + "/" + name + " " + source + ".png").exists()) {
+		if (Gdx.files.internal(faction + "/" +  name + " " + source + ".png").exists()) {
 			this.texture = new Texture(Gdx.files.internal(faction + "/" + name + " " + source + ".png"));
 			this.textureLoaded = true;
 		}
 		else if (Gdx.files.internal(faction + "/" + name + ".png").exists()) {
 			this.texture = new Texture((faction + "/" + name + ".png"));
 			this.textureLoaded = true;
-		}
-		else {
-			/*
-			System.out.println("----");
-			System.out.println("Unable to Load: " + name);
-			System.out.println("Source: " + source);
-			System.out.println("CardText: " + cardText);
-			System.out.println("PointCost: " + cost);
-			*/
 		}
 	}
 
@@ -382,6 +380,12 @@ public class Card {
 		} else if (startingActionButton + actionButtonsPerScreen < actionButtons.size()) {
 			g.centerTable.add(buttonMoreActions).width(g.buttonWidth).height(g.buttonHeight).padLeft(g.resizeX(260)).padRight(g.resizeX(50));
 		}
+	}
+	
+	// void functions only used for shipcard so don't have to call (ShipCard) on gameplay actions
+	
+	public void setSkill() {
+		
 	}
 
 }

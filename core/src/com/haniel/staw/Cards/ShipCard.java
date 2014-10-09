@@ -17,7 +17,7 @@ import com.haniel.staw.GameScreen;
 
 public class ShipCard extends Card{
 	
-	private int attack, defense, hull, shields;
+	private int attack, defense, shields;
 	private String shipActions, shipUpgrades, firingArc, shipClass;
 	private List<Card> upgrades = new ArrayList<Card>();
 	private List<DamageCard> damageCards = new ArrayList<DamageCard>();
@@ -31,8 +31,9 @@ public class ShipCard extends Card{
 
 	
 	
-	public ShipCard(Element ship, final GameScreen g, Fleet f) {
-		super(ship, g, f);
+	public ShipCard(Element ship, final GameScreen g, Fleet f, String s) {
+		super(ship, g, f, s);
+		this.skill = 0;
 		for (int i = 0; i< ship.getChildCount(); i++) {
 			String text = ship.getChild(i).getName();
 			if (text.equals("AttackDice")) {
@@ -107,7 +108,7 @@ public class ShipCard extends Card{
 						Element root = ship.getParent().getParent();
 						Array<Element> res = root.getChildrenByName("Resource");
 						if (res.size > 0) {
-							upgrades.add(new Resource(res.get(0), g, f));
+							upgrades.add(new Resource(res.get(0), g, f, name));
 							for (int x = 0; x< res.get(0).getChildCount(); x++) {
 								String resText = res.get(0).getChild(x).getName();
 								if (resText.equals("AttackDice")) {
@@ -134,6 +135,7 @@ public class ShipCard extends Card{
 		if (unique.equals("No")) name = shipClass;
 		getUpgrades(ship);
 		loadTexture();
+		setupFactionLevel();
 		if (!(shipClass.equals("Nor Class Orbital Space Station"))) {
 			this.manueverCard = new ManueverCard(faction, shipClass, g);
 			hasManuevers = true;
@@ -160,6 +162,22 @@ public class ShipCard extends Card{
 		});
 	}
 	
+	private void setupFactionLevel() {
+		if (faction.equals("Federation")) this.factionLevel = 2;
+		else if (faction.equals("Klingon")) this.factionLevel = 4;
+		else if (faction.equals("Romulan")) this.factionLevel = 6;
+		else if (faction.equals("Dominion")) this.factionLevel = 8;
+		else if (faction.equals("Borg")) this.factionLevel = 10;
+		else if (faction.equals("Species 8472")) this.factionLevel = 12;
+		else if (faction.equals("Kazon")) this.factionLevel = 14;
+		else if (faction.equals("Bajoran")) this.factionLevel = 16;
+		else if (faction.equals("Ferengi")) this.factionLevel = 18;
+		else if (faction.equals("Vulcan")) this.factionLevel = 20;
+		else if (faction.equals("Independent")) this.factionLevel = 22;
+		else if (faction.equals("Mirror Universe")) this.factionLevel = 24;
+		else this.factionLevel = 26;		
+	}
+	
 	private void loadTexture() {
 		if (!textureLoaded) {
 
@@ -184,17 +202,7 @@ public class ShipCard extends Card{
 				this.texture = new Texture(Gdx.files.internal(faction + "/" + shipClass + ".png"));
 				textureLoaded = true;
 			}
-			else{
-				/*
-				System.out.println("----");
-				System.out.println("Unable to load Ship: " + name);
-				System.out.println("Class: " + shipClass);
-				*/
-			}
-
 		}
-		
-		
 	}
 
 	private void getUpgrades(Element ship) {
@@ -203,29 +211,29 @@ public class ShipCard extends Card{
 		for (int i = 0; i< ship.getChildCount(); i++) {
 			String text = ship.getChild(i).getName();
 			if (text.equals("Captain")) {
-				upgrades.add(new CaptainCard(ship.getChild(i), g, f));
+				upgrades.add(new CaptainCard(ship.getChild(i), g, f, name));
 			}
 			if (text.equals("Admiral")) {
-				upgrades.add(new AdmiralCard(ship.getChild(i), g, f));
+				upgrades.add(new AdmiralCard(ship.getChild(i), g, f, name));
 			}
 			if (text.equals("Crewmen")) {
 				for(int c = 0; c < (ship.getChild(i)).getChildCount(); c++) {
-					upgrades.add(new Card((ship.getChild(i)).getChild(c), g, f));
+					upgrades.add(new Card((ship.getChild(i)).getChild(c), g, f, name));
 				}
 			}
 			if (text.equals("Weapons")) {
 				for(int w = 0; w < (ship.getChild(i)).getChildCount(); w++) {
-					upgrades.add(new WeaponCard((ship.getChild(i)).getChild(w), g, f));
+					upgrades.add(new WeaponCard((ship.getChild(i)).getChild(w), g, f, name));
 				}
 			}
 			if (text.equals("Technology")) {
 				for(int t = 0; t < (ship.getChild(i)).getChildCount(); t++) {
-					upgrades.add(new Card((ship.getChild(i)).getChild(t), g, f));
+					upgrades.add(new Card((ship.getChild(i)).getChild(t), g, f, name));
 				}
 			}
 			if (text.equals("BorgTechnology")) {
 				for(int t = 0; t < (ship.getChild(i)).getChildCount(); t++) {
-					upgrades.add(new Card((ship.getChild(i)).getChild(t), g, f));
+					upgrades.add(new Card((ship.getChild(i)).getChild(t), g, f, name));
 				}
 			}
 		}
@@ -250,12 +258,12 @@ public class ShipCard extends Card{
 			public void changed(ChangeEvent event, Actor actor) {
 				if (shields > 0) {
 					if (g.playSounds) g.quickbeep.play();
-					g.lastAction.setText(name + ": Disable Shield");
+					g.addAction(" - " + f.name + " " + name + ": Disable Shield");
 					shields -= 1;
 					disabledShields += 1;
 				} else {
 					if (g.playSounds) g.error.play();
-					g.lastAction.setText("Error: " + name + " has no shields");
+					g.addAction("Error: " + f.name + " " + name + " has no shields");
 				}
 			}
 		});
@@ -266,12 +274,12 @@ public class ShipCard extends Card{
 			public void changed(ChangeEvent event, Actor actor) {
 				if (disabledShields > 0) {
 					if (g.playSounds) g.quickbeep.play();
-					g.lastAction.setText(name + ": Undisable Shield");
+					g.addAction(" - " + f.name + " " + name + ": Undisable Shield");
 					shields += 1;
 					disabledShields -= 1;
 				} else {
 					if (g.playSounds) g.error.play();
-					g.lastAction.setText("Error: " + name + " has no disabled shields");
+					g.addAction("Error: " + f.name + " " + name + " has no disabled shields");
 				}
 			}
 		});
@@ -281,7 +289,7 @@ public class ShipCard extends Card{
 		buttonAddShield.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Add Shield");
+				g.addAction(" - " + f.name + " " + name + ": Add Shield");
 				shields += 1;
 			}
 		});
@@ -292,11 +300,11 @@ public class ShipCard extends Card{
 			public void changed(ChangeEvent event, Actor actor) {
 				if (shields > 0) {
 					if (g.playSounds) g.quickbeep.play();
-					g.lastAction.setText(name + ": Shield Destroyed");
+					g.addAction(" - " + f.name + " " + name + ": Shield Destroyed");
 					shields -= 1;
 				} else {
 					if (g.playSounds) g.error.play();
-					g.lastAction.setText("Error: " + name + " has no shields");
+					g.addAction("Error: " + f.name + " " + name + " has no shields");
 				}
 				
 			}
@@ -307,7 +315,7 @@ public class ShipCard extends Card{
 		buttonAddHull.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Repair Hull");
+				g.addAction(" - " + f.name + " " + name + ": Repair Hull");
 				hull += 1;
 			}
 		});
@@ -318,12 +326,13 @@ public class ShipCard extends Card{
 			public void changed(ChangeEvent event, Actor actor) {
 				if (hull > 0) {
 					if (g.playSounds) g.quickbeep.play();
-					g.lastAction.setText(name + ": Hull Damaged");
+					g.addAction(" - " + f.name + " " + name + ": Hull Damaged");
 					hull -= 1;
+					if (hull == 0 ) g.addAction(" - " + f.name + " " + name + ": destroyed"); 
 				}
 				else {
 					if (g.playSounds) g.error.play();
-					g.lastAction.setText("Error: " +name + " has no hull");
+					g.addAction("Error: " +f.name + " " + name + " has no hull");
 				}
 			}
 		});
@@ -334,13 +343,14 @@ public class ShipCard extends Card{
 			public void changed(ChangeEvent event, Actor actor) {
 				if (hull > 0) {
 					if (g.playSounds) g.quickbeep.play();
-					g.lastAction.setText(name + ": Receive Critical");
+					g.addAction(" - " + f.name + " " + name + ": Receive Critical");
 					hull -= 1;
 					damageCards.add(g.damageDeck.getDamageCard());
+					if (hull == 0 ) g.addAction(" - " + f.name + " " + name + ": destroyed");
 				}
 				else {
 					if (g.playSounds) g.error.play();
-					g.lastAction.setText("Error: " +name + " has 0 hull");
+					g.addAction("Error: " +f.name + " " + name + " has 0 hull");
 				}
 			}
 		});
@@ -352,7 +362,7 @@ public class ShipCard extends Card{
 		buttonAddAux.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Add Auxilary Token");
+				g.addAction(" - " + f.name + " " + name + ": Add Auxilary Token");
 				auxTokens += 1;
 			}
 		});
@@ -363,11 +373,11 @@ public class ShipCard extends Card{
 			public void changed(ChangeEvent event, Actor actor) {
 				if (auxTokens > 0) {
 					if (g.playSounds) g.quickbeep.play();
-					g.lastAction.setText(name + ": Remove Auxilary Token");
+					g.addAction(" - " + f.name + " " + name + ": Remove Auxilary Token");
 					auxTokens -= 1;
 				} else {
 					if (g.playSounds) g.error.play();
-					g.lastAction.setText("Error: " + name + " has no Aux Tokens");
+					g.addAction("Error: " + f.name + " " + name + " has no Aux Tokens");
 				}
 			}
 		});
@@ -377,7 +387,7 @@ public class ShipCard extends Card{
 		buttonScan.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Scan");
+				g.addAction(" - " + f.name + " " + name + ": Scan");
 			}
 		});
 		actionButtons.add(buttonScan);
@@ -386,7 +396,7 @@ public class ShipCard extends Card{
 		buttonEvade.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Evade");
+				g.addAction(" - " + f.name + " " +  name + ": Evade");
 			}
 		});
 		actionButtons.add(buttonEvade);
@@ -395,7 +405,7 @@ public class ShipCard extends Card{
 		buttonTL.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Target Lock");
+				g.addAction(" - " + f.name + " " + name + ": Target Lock");
 			}
 		});
 		actionButtons.add(buttonTL);
@@ -404,7 +414,7 @@ public class ShipCard extends Card{
 		buttonBS.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": BattleStations");
+				g.addAction(" - " + f.name + " " + name + ": BattleStations");
 			}
 		});
 		actionButtons.add(buttonBS);
@@ -414,12 +424,12 @@ public class ShipCard extends Card{
 			public void changed(ChangeEvent event, Actor actor) {
 				if (shields > 0) {
 					if (g.playSounds) g.quickbeep.play();
-					g.lastAction.setText(name + ": Cloak");
+					g.addAction(" - " + f.name + " " + name + ": Cloak");
 					disabledShields += shields;
 					shields = 0;
 				}else {
 					if (g.playSounds) g.error.play();
-					g.lastAction.setText("Error: " + name + " has no shields");
+					g.addAction("Error: " + f.name + " " + name + " has no shields");
 				}
 			}
 		});
@@ -429,7 +439,7 @@ public class ShipCard extends Card{
 		buttonSensorEcho.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Sensor Echo");
+				g.addAction(" - " + f.name + " " + name + ": Sensor Echo");
 			}
 		});
 		actionButtons.add(buttonSensorEcho);
@@ -438,7 +448,7 @@ public class ShipCard extends Card{
 		buttonRegen.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Regenerate");
+				g.addAction(" - " + f.name + " " + name + ": Regenerate");
 			}
 		});
 		actionButtons.add(buttonRegen);
@@ -447,7 +457,7 @@ public class ShipCard extends Card{
 		buttonShipAction.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.lastAction.setText(name + ": Ship Action");
+				g.addAction(" - " + f.name + " " + name + ": Ship Action");
 			}
 		});
 		actionButtons.add(buttonShipAction);
@@ -540,6 +550,16 @@ public class ShipCard extends Card{
 				super.focusCardDetails();
 			}			
 		}
+	}
+	
+	public void setSkill() {
+		this.skill = 0;
+		for (Card c: upgrades) {
+			if (c instanceof CaptainCard) {
+				this.skill = c.skill;
+			}
+		}
+		
 	}
 }
 

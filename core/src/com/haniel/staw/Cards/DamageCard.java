@@ -140,12 +140,12 @@ public class DamageCard extends Card{
 			public void changed(ChangeEvent event, Actor actor) {
 				if (active) {
 					if (g.playSounds) g.quickbeep.play();
-					g.lastAction.setText(name + " Flipped Over");
+					g.addAction(name + " Flipped Over");
 					active = false;
 				}
 				else {
 					if (g.playSounds) g.error.play();
-					g.lastAction.setText("Error: " + name + " already flipped over");
+					g.addAction("Error: " + name + " already flipped over");
 				}
 				
 			}

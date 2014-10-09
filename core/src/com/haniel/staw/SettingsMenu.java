@@ -29,11 +29,11 @@ public class SettingsMenu {
 				else g.backgroundMusic.play();
 				if (g.playSounds) {
 					g.playSounds = false;
-					g.lastAction.setText("Sound Muted");
+					g.addAction("Sound Muted");
 				}
 				else {
 					g.playSounds = true;
-					g.lastAction.setText("Sound Restored");
+					g.addAction("Sound Restored");
 				}
 
 			}
@@ -56,13 +56,28 @@ public class SettingsMenu {
 			}
 		});
 		
-		TextButton buttonResetFleets = new TextButton("Reset Fleets", g.skin);
+		TextButton buttonResetFleets = new TextButton("Reset All", g.skin);
 		buttonResetFleets.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
 				centerTable.clear();
 				g.createFleetTable();
-				g.lastAction.setText("All Fleets Removed");				
+				g.gamePlay = new GamePlay(g);
+				g.setupRoundsList();
+				g.addAction("Game Reset");
+				g.buttonNextShip = new TextButton("Start Game", g.skin);
+				g.buttonNextShip.addListener(new ChangeListener() {
+					public void changed(ChangeEvent event, Actor actor) {
+						if (g.fleets.size() > 0) {
+							if (g.playSounds) g.doubleBeep.play();
+							g.gamePlay.next();
+						} else {
+							if (g.playSounds) g.error.play();
+							g.addAction("Error: Unable to start game with no ships loaded");
+						}
+					}
+				});
+				g.resetBottomMenu();
 			}
 		});
 		

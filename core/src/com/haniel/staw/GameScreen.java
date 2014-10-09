@@ -18,10 +18,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.haniel.staw.Cards.Card;
 import com.haniel.staw.Cards.Resource;
@@ -38,7 +38,7 @@ public class GameScreen implements Screen{
 	public Table fleetTable, shipTable, leftTable, rightTable, bottomTable, centerTable, topLeftTable, topRightTable;
 	public TextureAtlas atlas, atlas2;
 	public TextButton loadFile;
-	public TextField lastAction;
+	private String lastAction = "";
 	public Button buttonMore, buttonLess, buttonMoreActive, buttonLessActive, buttonMenu, buttonNextShip;
 	public Button shipButtonMore, shipButtonLess, shipButtonMoreActive, shipButtonLessActive;
 	public List<String> directoryList;
@@ -78,12 +78,19 @@ public class GameScreen implements Screen{
 	private Rectangle focusedRect;
 	public GamePlay gp = new GamePlay(this);
 	public DamageDeck damageDeck = new DamageDeck(this);
-
-    
+	public GamePlay gamePlay = new GamePlay(this);
+	ArrayList<ArrayList<String>> rounds;
+	int currentLog = 0;
+	private boolean showGameLog = false;
+	ScrollPane scrollPane;
+	public List<String> scrollPaneList;
+	private Rectangle shipLogRect = new Rectangle(resizeX(5), resizeY(45), resizeX(500), resizeY(60));
+	
 	public GameScreen(final staw gam) {
 		this.game = gam;
 		camera = new OrthographicCamera();
-	    camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());		
+	    camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	    setupRoundsList();
 	}
 
 	@Override
@@ -101,6 +108,9 @@ public class GameScreen implements Screen{
     	if (Gdx.input.isTouched()) {    		
 		    touchPos.set(Gdx.input.getX(), Math.abs(600 - Gdx.input.getY()));
     	}
+    	
+    	game.font.draw(game.batch, lastAction, resizeX(10), resizeY(75));
+    	
 		for (int i = startingCard; i < startingCard + numberOfCards; i++) {
 			if (i < size) {
 				currentCards.get(i).getRect().setPosition(x, resizeY(106));
@@ -144,7 +154,13 @@ public class GameScreen implements Screen{
 				}
 			}
 		}
-		
+    	if (Gdx.input.isTouched()) {
+		    if (shipLogRect.contains(touchPos)) {
+		    	if (playSounds) quickbeep.play();
+		    	currentLog = rounds.size()-1;
+		    	showGameLog(); 
+		    }
+    	}
 		game.batch.end();
     	stage.act(Gdx.graphics.getDeltaTime());
     	stage.draw();
@@ -153,6 +169,13 @@ public class GameScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {		
+	}
+	
+	public void setupRoundsList() {
+		rounds = new ArrayList<ArrayList<String>>();
+		ArrayList<String> l = new ArrayList<String>();
+		rounds.add(l);
+		addAction("Pre-Game Setup");
 	}
 
 	@Override
@@ -166,6 +189,7 @@ public class GameScreen implements Screen{
 		skin2 = new Skin(Gdx.files.internal("uiskin.json"), atlas2);
 		directoryList = new List<String>(skin);
 		stage = new Stage();
+		scrollPaneList = new List<String>(skin);
 		fleetTable = new Table(skin2);
 		shipTable = new Table(skin);
 		rightTable = new Table(skin);
@@ -186,11 +210,12 @@ public class GameScreen implements Screen{
 		fleetTable.setBounds(resizeX(110), resizeY(495), resizeX(800), resizeY(60));
 		rightTable.setBounds(resizeX(940), resizeY(-56), resizeX(40), stage.getHeight());
 		leftTable.setBounds(resizeX(10), resizeY(-56), resizeX(60), stage.getHeight());
-		bottomTable.setBounds(0, resizeY(45), stage.getWidth(), resizeY(40));
+		bottomTable.setBounds(resizeX(640), resizeY(45), resizeX(160), resizeY(40));
 		centerTable.setBounds(resizeX(200), resizeY(106), resizeX(600), resizeY(278));
 		topRightTable.setBounds(resizeX(950), resizeY(415), resizeX(40), resizeY(60));
 		topLeftTable.setBounds(0, resizeY(415), resizeX(60), resizeY(60));
 		Gdx.input.setInputProcessor(stage);
+		
 		
 		createFleetTable();
 		
@@ -265,11 +290,15 @@ public class GameScreen implements Screen{
 		buttonNextShip = new TextButton("Start Game", skin);
 		buttonNextShip.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
-				if (playSounds) doubleBeep.play();			
+				if (fleets.size() > 0) {
+					if (playSounds) doubleBeep.play();
+					gamePlay.next();
+				} else {
+					if (g.playSounds) g.error.play();
+					g.addAction("Error: Unable to start game with no ships loaded");
+				}
 			}
 		});
-		lastAction = new TextField("Access Granted", skin);
-		bottomTable.add(lastAction).width((buttonWidth * 2) + buttonPad).height(resizeX(40)).padRight(buttonPad);
 		bottomTable.add(buttonNextShip).width(buttonWidth).height(resizeX(40)).padRight(buttonPad);
 		bottomTable.add(buttonMenu).width(buttonWidth).height(resizeX(40));
 		resetSideButtons();
@@ -382,13 +411,13 @@ public class GameScreen implements Screen{
 		stage.dispose();
 	}
 	
-	public void addError(String errorString) {
-		if (playSounds) error.play();
-		centerTable.clear();
-		lastAction.setText(errorString);
+	public void addAction(String s) {
+		lastAction = s;
+		rounds.get(rounds.size()-1).add(s);
 	}
 
 	public void resetCardsandSideButtons() {
+		showGameLog = false;
 		currentCards.clear();
 		startingCard = 0;
 		startingShip = 0;
@@ -398,6 +427,7 @@ public class GameScreen implements Screen{
 	}
 	
 	public void resetSideButtons() {
+		showGameLog = false;
 		leftTable.clear();
 		rightTable.clear();
 		if (startingCard == 0) leftTable.add(buttonLess).width(buttonHeight).height(buttonWidth - resizeY(5));
@@ -434,4 +464,34 @@ public class GameScreen implements Screen{
 		float changeY = y / assumeY;
 		return (int) ( positionY * changeY);		
 	}
+	
+	public void resetBottomMenu() {
+		bottomTable.clear();
+		bottomTable.add(buttonNextShip).width(buttonWidth).height(resizeX(40)).padRight(buttonPad);
+		bottomTable.add(buttonMenu).width(buttonWidth).height(resizeX(40));
+	}
+	
+	public void showGameLog() {
+		ArrayList<String> temp = new ArrayList<String>(rounds.get(currentLog));
+		if (currentLog == rounds.size()-1) {
+			temp.add("----------------------------------------------");
+			if (gamePlay.sortedShips.size() > 0) {
+				gamePlay.resortShips();
+				temp.add("Ships Remaining:");
+			}
+			for (Card ship: gamePlay.sortedShips) {
+				temp.add(ship.f.name +" - " + ship.name);
+			}
+		}
+		centerTable.clear();
+		currentLog = rounds.size()-1;
+		resetCardsandSideButtons();
+		showGameLog = true;
+		String[] stringLog = new String[ temp.size() ];
+		temp.toArray(stringLog);
+		scrollPaneList.setItems(stringLog);
+		scrollPane = new ScrollPane(scrollPaneList, skin);
+		centerTable.add(scrollPane).width(resizeX(600)).height(resizeY(278));
+	}
+
 }
