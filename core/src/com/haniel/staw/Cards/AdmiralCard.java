@@ -14,15 +14,15 @@ public class AdmiralCard extends Card{
 	private int captSkill = 0;
 	private boolean isAdmiral = true;
 
-	public AdmiralCard(Element element, GameScreen g, Fleet f, String ship) {
+	public AdmiralCard(Element element, GameScreen g, Fleet f, ShipCard ship) {
 		super(element, g, f, ship);
 		for (int i = 0; i< element.getChildCount(); i++) {
 			String text = element.getChild(i).getName();
 			if (text.equals("Skill")) {
 				try {
-					String s = "";
-					s += (element.getChildByName("Skill")).getText().charAt(1);
-					this.skill = Integer.parseInt(s);
+					String sk = "";
+					sk += (element.getChildByName("Skill")).getText().charAt(1);
+					this.skill = Integer.parseInt(sk);
 				}
 				catch (Exception e) {
 					this.skill = 0;

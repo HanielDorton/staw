@@ -57,13 +57,13 @@ public class Card {
 	public int skill;
 	public Fleet f;
 	public int factionLevel;
-	public String ship;
 	public int hull;
+	public ShipCard ship;
 	
-	public Card(Element element, final GameScreen g, Fleet f, String ship){
-		this.ship = ship;
+	public Card(Element element, final GameScreen g, Fleet f, ShipCard ship){
 		this.f = f;
 		this.g = g;
+		this.ship = ship;
 		newLine = g.resizeY(30);
 		newTextLine = g.resizeY(18);
 		xLine = g.resizeX(335);
@@ -187,10 +187,11 @@ public class Card {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (!(disabled || discardedByUse || discardedByOpponent)) {
 					if (g.playSounds) g.quickbeep.play();
-					g.addAction(" - " + f.name + " " + ship + " " + "use Upgrade: " + name);
+					ship.addAction(" - " + f.name + " " + ship.name + " " + "use Upgrade: " + name);
+					if (ship.auxTokens > 0) ship.addAction("Warning: Ship has Aux tokens");
 				} else {
 					if (g.playSounds) g.error.play();
-					g.addAction(" - Error: " + f.name + " " + ship + " " + name + " cannot be used");
+					ship.addAction(" - Error: " + f.name + " " + ship.name + " " + name + " cannot be used");
 				}
 			}
 		});
@@ -202,16 +203,16 @@ public class Card {
 				if (!(discardedByUse || discardedByOpponent)) {
 					if (g.playSounds) g.quickbeep.play();
 					if (disabled) {
-						g.addAction(" - " + f.name + " " + ship + " " + name + " undisabled");
+						ship.addAction(" - " + f.name + " " + ship.name + " " + name + " undisabled");
 						disabled = false;
 					} else {
-						g.addAction(" - " + f.name + " " + ship + " " + name + " disabled");
+						ship.addAction(" - " + f.name + " " + ship.name + " " + name + " disabled");
 						disabled = true;
 					}
 				}
 				else {
 					if (g.playSounds) g.error.play();
-					g.addAction(" - Error: " + f.name + " " + ship + " " + name + " cannot be used");
+					ship.addAction(" - Error: " + f.name + " " + ship.name + " " + name + " cannot be used");
 				}
 			}
 		});
@@ -222,12 +223,12 @@ public class Card {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (!(discardedByUse || discardedByOpponent)) {
 					if (g.playSounds) g.quickbeep.play();
-					g.addAction(" - " + f.name + " " + ship + " " + name + " discarded by owner");
+					ship.addAction(" - " + f.name + " " + ship.name + " " + name + " discarded by owner");
 					discardedByUse = true;
 				}
 				else {
 					if (g.playSounds) g.error.play();
-					g.addAction(" - Error: " + f.name + " " + ship + " " + name + " cannot be used");
+					ship.addAction(" - Error: " + f.name + " " + ship.name + " " + name + " cannot be used");
 				}
 			}
 		});
@@ -238,11 +239,11 @@ public class Card {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (!(discardedByUse || discardedByOpponent)) {
 					if (g.playSounds) g.quickbeep.play();
-					g.addAction(" - " + f.name + " " + ship + " " + name + " Stolen/Discarded by opponent");
+					ship.addAction(" - " + f.name + " " + ship.name + " " + name + " Stolen/Discarded by opponent");
 					discardedByOpponent = true;
 				} else {
 					if (g.playSounds) g.error.play();
-					g.addAction(" - Error: " + f.name + " " + ship + " " + name + " cannot be used");
+					ship.addAction(" - Error: " + f.name + " " + ship.name + " " + name + " cannot be used");
 				}
 			}
 		});
@@ -253,12 +254,12 @@ public class Card {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (discardedByUse || discardedByOpponent) {
 					if (g.playSounds) g.quickbeep.play();
-					g.addAction(" - " + f.name + " " + ship + " " + name + " Returned To Play");
+					ship.addAction(" - " + f.name + " " + ship.name + " " + name + " Returned To Play");
 					discardedByOpponent = false;
 					discardedByUse = false;
 				} else {
 					if (g.playSounds) g.error.play();
-					g.addAction( " - Error: " + f.name + " " + ship + " " + name + " already in play");
+					ship.addAction( " - Error: " + f.name + " " + ship.name + " " + name + " already in play");
 				}
 			}
 		});
@@ -387,5 +388,12 @@ public class Card {
 	public void setSkill() {
 		
 	}
+	
+	public void viewShipLog() {
+		
+	}
 
+	public void addAction(String action) {
+		
+	}
 }

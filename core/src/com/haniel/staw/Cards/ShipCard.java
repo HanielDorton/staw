@@ -7,6 +7,7 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Array;
@@ -23,14 +24,15 @@ public class ShipCard extends Card{
 	private List<DamageCard> damageCards = new ArrayList<DamageCard>();
 	private ManueverCard manueverCard;
 	private boolean hasManuevers = false;
-	private int auxTokens = 0;
+	int auxTokens = 0;
 	private int disabledShields = 0;
 	protected ArrayList<TextButton> shipConditionButtons = new ArrayList<TextButton>();
 	protected TextButton buttonShipCondition, buttonMoreConditions, buttonLessConditions;
 	protected boolean focusedShipConditions = false;
+	private ArrayList<String> shipLog = new ArrayList<String>();
 	
-	public ShipCard(Element ship, final GameScreen g, Fleet f, String s) {
-		super(ship, g, f, s);
+	public ShipCard(Element ship, final GameScreen g, Fleet f, ShipCard nullShip) {
+		super(ship, g, f, nullShip);
 		this.skill = 0;
 		for (int i = 0; i< ship.getChildCount(); i++) {
 			String text = ship.getChild(i).getName();
@@ -106,7 +108,7 @@ public class ShipCard extends Card{
 						Element root = ship.getParent().getParent();
 						Array<Element> res = root.getChildrenByName("Resource");
 						if (res.size > 0) {
-							upgrades.add(new Resource(res.get(0), g, f, name));
+							upgrades.add(new Resource(res.get(0), g, f, this));
 							for (int x = 0; x< res.get(0).getChildCount(); x++) {
 								String resText = res.get(0).getChild(x).getName();
 								if (resText.equals("AttackDice")) {
@@ -209,29 +211,29 @@ public class ShipCard extends Card{
 		for (int i = 0; i< ship.getChildCount(); i++) {
 			String text = ship.getChild(i).getName();
 			if (text.equals("Captain")) {
-				upgrades.add(new CaptainCard(ship.getChild(i), g, f, name));
+				upgrades.add(0, new CaptainCard(ship.getChild(i), g, f, this));
 			}
 			if (text.equals("Admiral")) {
-				upgrades.add(new AdmiralCard(ship.getChild(i), g, f, name));
+				upgrades.add(new AdmiralCard(ship.getChild(i), g, f, this));
 			}
 			if (text.equals("Crewmen")) {
 				for(int c = 0; c < (ship.getChild(i)).getChildCount(); c++) {
-					upgrades.add(new Card((ship.getChild(i)).getChild(c), g, f, name));
+					upgrades.add(new Card((ship.getChild(i)).getChild(c), g, f, this));
 				}
 			}
 			if (text.equals("Weapons")) {
 				for(int w = 0; w < (ship.getChild(i)).getChildCount(); w++) {
-					upgrades.add(new WeaponCard((ship.getChild(i)).getChild(w), g, f, name));
+					upgrades.add(new WeaponCard((ship.getChild(i)).getChild(w), g, f, this));
 				}
 			}
 			if (text.equals("Technology")) {
 				for(int t = 0; t < (ship.getChild(i)).getChildCount(); t++) {
-					upgrades.add(new Card((ship.getChild(i)).getChild(t), g, f, name));
+					upgrades.add(new Card((ship.getChild(i)).getChild(t), g, f, this));
 				}
 			}
 			if (text.equals("BorgTechnology")) {
 				for(int t = 0; t < (ship.getChild(i)).getChildCount(); t++) {
-					upgrades.add(new Card((ship.getChild(i)).getChild(t), g, f, name));
+					upgrades.add(new Card((ship.getChild(i)).getChild(t), g, f, this));
 				}
 			}
 		}
@@ -251,86 +253,48 @@ public class ShipCard extends Card{
 	}
 	
 	public void setupShipConditionsButtons() {
-		TextButton buttonDisableShield = new TextButton("Disable Shield", g.skin);
-		buttonDisableShield.addListener(new ChangeListener() {
-			public void changed(ChangeEvent event, Actor actor) {
-				if (shields > 0) {
-					if (g.playSounds) g.quickbeep.play();
-					g.addAction(" - " + f.name + " " + name + ": Disable Shield");
-					shields -= 1;
-					disabledShields += 1;
-				} else {
-					if (g.playSounds) g.error.play();
-					g.addAction(" - Error: " + f.name + " " + name + " has no shields");
-				}
-			}
-		});
-		shipConditionButtons.add(buttonDisableShield);
 		
-		TextButton buttonUndisableShield = new TextButton("Undisable Shield", g.skin);
-		buttonUndisableShield.addListener(new ChangeListener() {
-			public void changed(ChangeEvent event, Actor actor) {
-				if (disabledShields > 0) {
-					if (g.playSounds) g.quickbeep.play();
-					g.addAction(" - " + f.name + " " + name + ": Undisable Shield");
-					shields += 1;
-					disabledShields -= 1;
-				} else {
-					if (g.playSounds) g.error.play();
-					g.addAction(" - Error: " + f.name + " " + name + " has no disabled shields");
-				}
-			}
-		});
-		shipConditionButtons.add(buttonUndisableShield);
-		
-		TextButton buttonAddShield = new TextButton("Add Shield", g.skin);
-		buttonAddShield.addListener(new ChangeListener() {
+		TextButton buttonShipLog = new TextButton("Ship Log", g.skin);
+		buttonShipLog.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.addAction(" - " + f.name + " " + name + ": Add Shield");
-				shields += 1;
+				viewShipLog();
 			}
 		});
-		shipConditionButtons.add(buttonAddShield);
+		shipConditionButtons.add(buttonShipLog);
+		
+
 		
 		TextButton buttonDestroyShield = new TextButton("Destroy Shield", g.skin);
 		buttonDestroyShield.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (shields > 0) {
 					if (g.playSounds) g.quickbeep.play();
-					g.addAction(" - " + f.name + " " + name + ": Shield Destroyed");
 					shields -= 1;
+					addAction(" - " + f.name + " " + name + ": Shield Destroyed. Remaining Shields: " + shields);					
 				} else {
 					if (g.playSounds) g.error.play();
-					g.addAction(" - Error: " + f.name + " " + name + " has no shields");
+					addAction(" - Error: " + f.name + " " + name + " has no shields");
 				}
 				
 			}
 		});
 		shipConditionButtons.add(buttonDestroyShield);
 		
-		TextButton buttonAddHull = new TextButton("Repair Hull", g.skin);
-		buttonAddHull.addListener(new ChangeListener() {
-			public void changed(ChangeEvent event, Actor actor) {
-				if (g.playSounds) g.quickbeep.play();
-				g.addAction(" - " + f.name + " " + name + ": Repair Hull");
-				hull += 1;
-			}
-		});
-		shipConditionButtons.add(buttonAddHull);
+
 		
 		TextButton buttonDamageHull = new TextButton("Damage Hull", g.skin);
 		buttonDamageHull.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (hull > 0) {
 					if (g.playSounds) g.quickbeep.play();
-					g.addAction(" - " + f.name + " " + name + ": Hull Damaged");
 					hull -= 1;
-					if (hull == 0 ) g.addAction(" - " + f.name + " " + name + ": destroyed"); 
+					addAction(" - " + f.name + " " + name + ": Hull Damaged. Remaining hull " + hull);
+					if (hull == 0 ) addAction(" - " + f.name + " " + name + ": destroyed"); 
 				}
 				else {
 					if (g.playSounds) g.error.play();
-					g.addAction(" - Error: " +f.name + " " + name + " has no hull");
+					addAction(" - Error: " +f.name + " " + name + " has no hull");
 				}
 			}
 		});
@@ -341,18 +305,70 @@ public class ShipCard extends Card{
 			public void changed(ChangeEvent event, Actor actor) {
 				if (hull > 0) {
 					if (g.playSounds) g.quickbeep.play();
-					g.addAction(" - " + f.name + " " + name + ": Receive Critical");
 					hull -= 1;
+					addAction(" - " + f.name + " " + name + ": Receive Critical. Remaining Hull: " + hull);
 					damageCards.add(g.damageDeck.getDamageCard());
-					if (hull == 0 ) g.addAction(" - " + f.name + " " + name + ": destroyed");
+					if (hull == 0 ) addAction(" - " + f.name + " " + name + ": destroyed");
 				}
 				else {
 					if (g.playSounds) g.error.play();
-					g.addAction(" - Error: " +f.name + " " + name + " has 0 hull");
+					addAction(" - Error: " +f.name + " " + name + " has 0 hull");
 				}
 			}
 		});
 		shipConditionButtons.add(buttonCritical);
+		
+		TextButton buttonAddHull = new TextButton("Repair Hull", g.skin);
+		buttonAddHull.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				hull += 1;
+				addAction(" - " + f.name + " " + name + ": Repair Hull. Remaining Hull: " + hull);
+			}
+		});
+		shipConditionButtons.add(buttonAddHull);
+		
+		TextButton buttonAddShield = new TextButton("Add Shield", g.skin);
+		buttonAddShield.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (g.playSounds) g.quickbeep.play();
+				shields += 1;
+				addAction(" - " + f.name + " " + name + ": Add Shield. Remaining Shields: " + shields);
+			}
+		});
+		shipConditionButtons.add(buttonAddShield);
+		
+		TextButton buttonDisableShield = new TextButton("Disable Shield", g.skin);
+		buttonDisableShield.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (shields > 0) {
+					if (g.playSounds) g.quickbeep.play();
+					addAction(" - " + f.name + " " + name + ": Disable Shield");
+					shields -= 1;
+					disabledShields += 1;
+				} else {
+					if (g.playSounds) g.error.play();
+					addAction(" - Error: " + f.name + " " + name + " has no shields");
+				}
+			}
+		});
+		shipConditionButtons.add(buttonDisableShield);
+		
+		TextButton buttonUndisableShield = new TextButton("Undisable Shield", g.skin);
+		buttonUndisableShield.addListener(new ChangeListener() {
+			public void changed(ChangeEvent event, Actor actor) {
+				if (disabledShields > 0) {
+					if (g.playSounds) g.quickbeep.play();
+					addAction(" - " + f.name + " " + name + ": Undisable Shield");
+					shields += 1;
+					disabledShields -= 1;
+				} else {
+					if (g.playSounds) g.error.play();
+					addAction(" - Error: " + f.name + " " + name + " has no disabled shields");
+				}
+			}
+		});
+		shipConditionButtons.add(buttonUndisableShield);
 	}
 	
 	public void setupCardActions() {
@@ -360,8 +376,8 @@ public class ShipCard extends Card{
 		buttonAddAux.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.addAction(" - " + f.name + " " + name + ": Add Auxilary Token");
 				auxTokens += 1;
+				addAction(" - " + f.name + " " + name + ": Add Aux Token. Current Aux Tokens: " + auxTokens);
 			}
 		});
 		actionButtons.add(buttonAddAux);
@@ -371,11 +387,11 @@ public class ShipCard extends Card{
 			public void changed(ChangeEvent event, Actor actor) {
 				if (auxTokens > 0) {
 					if (g.playSounds) g.quickbeep.play();
-					g.addAction(" - " + f.name + " " + name + ": Remove Auxilary Token");
 					auxTokens -= 1;
+					addAction(" - " + f.name + " " + name + ": Remove Aux Token. Current aux Tokens: " + auxTokens);
 				} else {
 					if (g.playSounds) g.error.play();
-					g.addAction(" - Error: " + f.name + " " + name + " has no Aux Tokens");
+					addAction(" - Error: " + f.name + " " + name + " has no Aux Tokens");
 				}
 			}
 		});
@@ -385,7 +401,8 @@ public class ShipCard extends Card{
 		buttonScan.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.addAction(" - " + f.name + " " + name + ": Scan");
+				addAction(" - " + f.name + " " + name + ": Scan");
+				if (auxTokens > 0) addAction("Warning: Ship has Aux tokens");
 			}
 		});
 		actionButtons.add(buttonScan);
@@ -394,7 +411,8 @@ public class ShipCard extends Card{
 		buttonEvade.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.addAction(" - " + f.name + " " +  name + ": Evade");
+				addAction(" - " + f.name + " " +  name + ": Evade");
+				if (auxTokens > 0) addAction("Warning: Ship has Aux tokens");
 			}
 		});
 		actionButtons.add(buttonEvade);
@@ -403,7 +421,8 @@ public class ShipCard extends Card{
 		buttonTL.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.addAction(" - " + f.name + " " + name + ": Target Lock");
+				addAction(" - " + f.name + " " + name + ": Target Lock");
+				if (auxTokens > 0) addAction("Warning: Ship has Aux tokens");
 			}
 		});
 		actionButtons.add(buttonTL);
@@ -412,7 +431,8 @@ public class ShipCard extends Card{
 		buttonBS.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.addAction(" - " + f.name + " " + name + ": BattleStations");
+				addAction(" - " + f.name + " " + name + ": BattleStations");
+				if (auxTokens > 0) addAction("Warning: Ship has Aux tokens");
 			}
 		});
 		actionButtons.add(buttonBS);
@@ -422,12 +442,13 @@ public class ShipCard extends Card{
 			public void changed(ChangeEvent event, Actor actor) {
 				if (shields > 0) {
 					if (g.playSounds) g.quickbeep.play();
-					g.addAction(" - " + f.name + " " + name + ": Cloak");
+					addAction(" - " + f.name + " " + name + ": Disabled Shields and Cloaked.");
+					if (auxTokens > 0) addAction("Warning: Ship has Aux tokens");
 					disabledShields += shields;
 					shields = 0;
 				}else {
 					if (g.playSounds) g.error.play();
-					g.addAction(" - Error: " + f.name + " " + name + " has no shields");
+					addAction(" - Error: " + f.name + " " + name + " has no shields");
 				}
 			}
 		});
@@ -437,7 +458,8 @@ public class ShipCard extends Card{
 		buttonSensorEcho.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.addAction(" - " + f.name + " " + name + ": Sensor Echo");
+				addAction(" - " + f.name + " " + name + ": Sensor Echo");
+				if (auxTokens > 0) addAction("Warning: Ship has Aux tokens");
 			}
 		});
 		actionButtons.add(buttonSensorEcho);
@@ -446,7 +468,8 @@ public class ShipCard extends Card{
 		buttonRegen.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.addAction(" - " + f.name + " " + name + ": Regenerate");
+				addAction(" - " + f.name + " " + name + ": Regenerate");
+				if (auxTokens > 0) addAction("Warning: Ship has Aux tokens");
 			}
 		});
 		actionButtons.add(buttonRegen);
@@ -455,7 +478,8 @@ public class ShipCard extends Card{
 		buttonShipAction.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.addAction(" - " + f.name + " " + name + ": Ship Action");
+				addAction(" - " + f.name + " " + name + ": Ship Action");
+				if (auxTokens > 0) addAction("Warning: Ship has Aux tokens");
 			}
 		});
 		actionButtons.add(buttonShipAction);
@@ -558,6 +582,20 @@ public class ShipCard extends Card{
 			}
 		}
 		
+	}
+	public void addAction(String action) {
+		g.addAction(action);
+		shipLog.add(action);
+	}
+	
+	public void viewShipLog() {
+		g.resetCardsandSideButtons();
+		g.centerTable.clear();
+		String[] stringLog = new String[ shipLog.size() ];
+		shipLog.toArray(stringLog);
+		g.scrollPaneList.setItems(stringLog);
+		g.scrollPane = new ScrollPane(g.scrollPaneList, g.skin);
+		g.centerTable.add(g.scrollPane).width(g.resizeX(600)).height(g.resizeY(278));
 	}
 
 }

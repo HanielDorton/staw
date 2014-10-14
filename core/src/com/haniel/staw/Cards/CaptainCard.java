@@ -16,7 +16,7 @@ import com.haniel.staw.GameScreen;
 public class CaptainCard extends Card{
 	private List<Card> talents = new ArrayList<Card>();
 
-	public CaptainCard(Element element,GameScreen g, Fleet f, String ship) {
+	public CaptainCard(Element element,GameScreen g, Fleet f, ShipCard ship) {
 		super(element, g, f, ship);
 		for (int i = 0; i< element.getChildCount(); i++) {
 			String text = element.getChild(i).getName();
@@ -64,8 +64,9 @@ public class CaptainCard extends Card{
 		buttonIncreaseSkill.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.addAction(" - " + f.name + " " + ship + " " + name + " skill increased");
 				skill += 1;
+				ship.addAction(" - " + f.name + " " + ship.name + " " + name + " skill increased to " + skill);
+				
 			}
 		});
 		actionButtons.add(buttonIncreaseSkill);
@@ -74,8 +75,9 @@ public class CaptainCard extends Card{
 		buttonDecreaseSkill.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				g.addAction(" - " + f.name + " " + ship + " " + name + " skill decreased");
 				skill -= 1;
+				ship.addAction(" - " + f.name + " " + ship.name + " " + name + " skill decreased to " + skill);
+
 			}
 		});
 		actionButtons.add(buttonDecreaseSkill);

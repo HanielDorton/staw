@@ -33,13 +33,13 @@ public class Fleet {
 				Array<Element> child = root.getChildrenByName("Ships");
 				for (Element fleet : child) {
 					for (int i = 0; i< fleet.getChildCount(); i++) {
-						ships.add(new ShipCard(fleet.getChild(i), g, this, ""));	
+						ships.add(new ShipCard(fleet.getChild(i), g, this, null));	
 					}
 				}
 				if (!resourceLoaded) {	
 					Array<Element> res = root.getChildrenByName("Resource");
 					if (res.size > 0) {
-						ships.add(new Resource(res.get(0), g, this, ""));
+						ships.add(new Resource(res.get(0), g, this, null));
 					}
 				}
 					

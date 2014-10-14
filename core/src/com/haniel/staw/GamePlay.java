@@ -112,10 +112,11 @@ public class GamePlay {
 			}			
 		}
 		g.currentLog = g.rounds.size()-1;
-		if (actionPhase) g.addAction(sortedShips.get(0).f.name + " - " + sortedShips.get(0).name + " - Action Phase:");
-		else g.addAction(sortedShips.get(0).f.name + " - " + sortedShips.get(0).name + " - Attack Phase:");
+		if (actionPhase) sortedShips.get(0).addAction(sortedShips.get(0).f.name + " - " + sortedShips.get(0).name + " Round " + round + " - Action Phase:");
+		else sortedShips.get(0).addAction(sortedShips.get(0).f.name + " - " + sortedShips.get(0).name + " Round " + round + " - Attack Phase:");
+		sortedShips.get(0).viewShipLog();
 		sortedShips.remove(0);
-		g.showGameLog();
+		
 		
 		
 	}
@@ -136,4 +137,6 @@ public class GamePlay {
 			g.addAction("Round " + round + ": Action Phase");
 		}
 	}
+	
+
 }

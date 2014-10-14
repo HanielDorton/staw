@@ -16,7 +16,7 @@ public class Resource extends Card{
 	
 	private List<Card> upgrades = new ArrayList<Card>();
 
-	public Resource(Element element, GameScreen g, Fleet f, String ship) {
+	public Resource(Element element, GameScreen g, Fleet f, ShipCard ship) {
 		super(element, g, f, ship);
 		if (Gdx.files.internal("Resources/" + name + ".png").exists()) {
 			this.texture = new Texture(Gdx.files.internal("Resources/" + name + ".png"));

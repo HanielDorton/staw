@@ -82,7 +82,7 @@ public class GameScreen implements Screen{
 	ArrayList<ArrayList<String>> rounds;
 	int currentLog = 0;
 	private boolean showGameLog = false;
-	ScrollPane scrollPane;
+	public ScrollPane scrollPane;
 	public List<String> scrollPaneList;
 	private Rectangle shipLogRect = new Rectangle(resizeX(5), resizeY(45), resizeX(500), resizeY(60));
 	
@@ -362,6 +362,7 @@ public class GameScreen implements Screen{
 			final TextButton button = new TextButton(fleet.getShips().get(i).getName(), skin);
 			button.addListener(new ChangeListener() {
 				public void changed(ChangeEvent event, Actor actor) {
+					showGameLog = false;
 					focusedCard.clear();
 					activeShip = current;
 					centerTable.clear();
@@ -374,6 +375,7 @@ public class GameScreen implements Screen{
 			final TextButton buttonActive = new TextButton(fleet.getShips().get(i).getName(), skin2);
 			buttonActive.addListener(new ChangeListener() {
 				public void changed(ChangeEvent event, Actor actor) {
+					showGameLog = false;
 					focusedCard.clear();
 					activeShip = current;
 					centerTable.clear();
