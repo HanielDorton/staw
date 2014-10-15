@@ -1,10 +1,10 @@
 package com.haniel.staw.Cards;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -134,7 +134,11 @@ public class ShipCard extends Card{
 		}
 		if (unique.equals("No")) name = shipClass;
 		getUpgrades(ship);
-		loadTexture();
+		try {
+			loadTexture();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+		}
 		setupFactionLevel();
 		if (!(shipClass.equals("Nor Class Orbital Space Station"))) {
 			this.manueverCard = new ManueverCard(faction, shipClass, g);
@@ -178,28 +182,28 @@ public class ShipCard extends Card{
 		else this.factionLevel = 26;		
 	}
 	
-	private void loadTexture() {
+	private void loadTexture() throws IOException {
 		if (!textureLoaded) {
 
-			if (Gdx.files.internal(faction + "/" + name + ".png").exists()) {
-				this.texture = new Texture(Gdx.files.internal(faction + "/" + name + ".png"));
+			if (g.expansionFile.getInputStream(faction + "/" + name + ".png") != null) {
+				this.texture = new Texture(g.downloadFile(faction + "/" + name + ".png"));
 				this.textureLoaded = true;
 			}	
-			else if (Gdx.files.internal(faction + "/" + name + " " + shipClass + ".png").exists()) {
-				this.texture = new Texture(Gdx.files.internal(faction + "/" + name + " " + shipClass + ".png"));
+			else if (g.expansionFile.getInputStream(faction + "/" + name + " " + shipClass + ".png") != null) {
+				this.texture = new Texture(g.downloadFile(faction + "/" + name + " " + shipClass + ".png"));
 				this.textureLoaded = true;
 			}	
-			else if (Gdx.files.internal(faction + "/" + shipClass + " " + shipUpgrades + ".png").exists()) {
-				this.texture = new Texture(Gdx.files.internal(faction + "/" + shipClass + " " + shipUpgrades + ".png"));
+			else if (g.expansionFile.getInputStream(faction + "/" + shipClass + " " + shipUpgrades + ".png") != null) {
+				this.texture = new Texture(g.downloadFile(faction + "/" + shipClass + " " + shipUpgrades + ".png"));
 				this.textureLoaded = true;
 			}	
-			else if (Gdx.files.internal(faction + "/" + shipClass + " " + source + ".png").exists()) {
-				this.texture = new Texture(Gdx.files.internal(faction + "/" + shipClass + " " + source + ".png"));
+			else if (g.expansionFile.getInputStream(faction + "/" + shipClass + " " + source + ".png") != null) {
+				this.texture = new Texture(g.downloadFile(faction + "/" + shipClass + " " + source + ".png"));
 				this.textureLoaded = true;
 			}
 
-			else if (Gdx.files.internal(faction + "/" + shipClass + ".png").exists()) {
-				this.texture = new Texture(Gdx.files.internal(faction + "/" + shipClass + ".png"));
+			else if (g.expansionFile.getInputStream(faction + "/" + shipClass + ".png") != null) {
+				this.texture = new Texture(g.downloadFile(faction + "/" + shipClass + ".png"));
 				textureLoaded = true;
 			}
 		}

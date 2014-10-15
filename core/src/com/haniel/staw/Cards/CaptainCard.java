@@ -3,7 +3,6 @@ package com.haniel.staw.Cards;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -46,7 +45,7 @@ public class CaptainCard extends Card{
 			}
 		}
 		parseTalents(element);
-		if (name.equals("Valdore")) this.texture = new Texture(Gdx.files.internal(faction + "/" + name + " Captain.png"));
+		if (name.equals("Valdore")) this.texture = new Texture(g.downloadFile(faction + "/" + name + " Captain.png"));
 	}
 	
 	private void parseTalents(Element element) {

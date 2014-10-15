@@ -1,8 +1,12 @@
 package com.haniel.staw;
 
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
+import com.android.vending.expansion.zipfile.APKExpansionSupport;
+import com.android.vending.expansion.zipfile.ZipResourceFile;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -85,12 +89,33 @@ public class GameScreen implements Screen{
 	public ScrollPane scrollPane;
 	public List<String> scrollPaneList;
 	private Rectangle shipLogRect = new Rectangle(resizeX(5), resizeY(45), resizeX(500), resizeY(60));
+	private boolean onAndroid = false;
+	public ZipResourceFile expansionFile;
 	
 	public GameScreen(final staw gam) {
 		this.game = gam;
 		camera = new OrthographicCamera();
 	    camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	    setupRoundsList();
+	    switch (Gdx.app.getType()) {		
+			case Android: {
+				onAndroid = true;
+				System.out.println(staw.getC());
+				 try {
+				        this.expansionFile = APKExpansionSupport.getAPKExpansionZipFile(staw.getC(), 1, 0);     
+				    } catch (IOException e) {
+				        e.printStackTrace();
+				    }
+				 break;
+			}
+			default: {
+				try {
+					this.expansionFile = new ZipResourceFile("C:/users/Haniel/workspace/staw/android/assets/main.1.com.haniel.staw.android.obb");
+				} catch (IOException e) {
+			        e.printStackTrace();
+			    }
+			}
+	}
 	}
 
 	@Override
@@ -509,6 +534,37 @@ public class GameScreen implements Screen{
 		scrollPaneList.setItems(stringLog);
 		scrollPane = new ScrollPane(scrollPaneList, skin);
 		centerTable.add(scrollPane).width(resizeX(600)).height(resizeY(278));
+	}
+	
+	public FileHandle downloadFile(String file) {
+		//System.out.println( new CustomFileHandle(file));
+		if (onAndroid) {
+			return new CustomFileHandle(file);
+		} else {
+			//return Gdx.files.internal(file);
+			return new CustomFileHandle(file);
+		}
+
+	}
+	
+	public class CustomFileHandle extends FileHandle
+	{
+	    public CustomFileHandle (String fileName) {     
+	        super(fileName);
+	    }
+
+	    @Override
+	    public InputStream read()
+	    {
+	    	InputStream input = null;
+
+	        try {           
+	            input = expansionFile.getInputStream(file.getPath().replace('\\', '/'));
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }   
+	        return input;
+	    }
 	}
 
 }

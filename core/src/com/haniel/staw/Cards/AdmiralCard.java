@@ -1,6 +1,7 @@
 package com.haniel.staw.Cards;
 
-import com.badlogic.gdx.Gdx;
+import java.io.IOException;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -30,10 +31,13 @@ public class AdmiralCard extends Card{
 			}
 		}
 		this.textureLoaded = false;
-		if (Gdx.files.internal(faction + "/" + name + ".png").exists()) {
-			this.texture = new Texture((faction + "/" + name + ".png"));
-			this.textureLoaded = true;
-		}
+		try {
+			if (g.expansionFile.getInputStream(faction + "/" + name + ".png") != null) {
+				this.texture = new Texture(g.downloadFile(faction + "/" + name + ".png"));
+				this.textureLoaded = true;
+			}
+		} catch (IOException e) {
+			}
 		getCaptSkill();
 		setupAdmiralButton();
 	}
@@ -50,19 +54,19 @@ public class AdmiralCard extends Card{
 		}
 	}
 	
-	public void toggleAdmCapt() {
+	public void toggleAdmCapt() throws IOException {
 		textureLoaded = false;
 		if (isAdmiral) {
 			isAdmiral = false;
-			if (Gdx.files.internal(faction + "/" + name + " - Captain.png").exists()) {
-				this.texture = new Texture(Gdx.files.internal(faction + "/" + name + " - Captain.png"));
+			if (g.expansionFile.getInputStream(faction + "/" + name + " - Captain.png") != null) {
+				this.texture = new Texture(g.downloadFile(faction + "/" + name + " - Captain.png"));
 				this.textureLoaded = true;
 			}			
 		}
 		else {
 			isAdmiral = true;
-			if (Gdx.files.internal(faction + "/" + name + ".png").exists()) {
-				this.texture = new Texture(Gdx.files.internal(faction + "/" + name + ".png"));
+			if (g.expansionFile.getInputStream(faction + "/" + name + ".png") != null) {
+				this.texture = new Texture(g.downloadFile(faction + "/" + name + ".png"));
 				this.textureLoaded = true;
 			}	
 		}
@@ -72,7 +76,12 @@ public class AdmiralCard extends Card{
 		buttonToggleAdm.addListener(new ChangeListener() {
 			public void changed(ChangeEvent event, Actor actor) {
 				if (g.playSounds) g.quickbeep.play();
-				toggleAdmCapt();
+				try {
+					toggleAdmCapt();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		actionButtons.add(buttonToggleAdm);

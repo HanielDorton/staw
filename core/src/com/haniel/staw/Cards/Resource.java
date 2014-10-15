@@ -1,9 +1,9 @@
 package com.haniel.staw.Cards;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -18,10 +18,14 @@ public class Resource extends Card{
 
 	public Resource(Element element, GameScreen g, Fleet f, ShipCard ship) {
 		super(element, g, f, ship);
-		if (Gdx.files.internal("Resources/" + name + ".png").exists()) {
-			this.texture = new Texture(Gdx.files.internal("Resources/" + name + ".png"));
-			this.textureLoaded = true;
-			getUpgrades(element);
+		try {
+			if (g.expansionFile.getInputStream("Resources/" + name + ".png") != null) {
+				this.texture = new Texture(g.downloadFile("Resources/" + name + ".png"));
+				this.textureLoaded = true;
+				getUpgrades(element);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 		}
 	}
 	

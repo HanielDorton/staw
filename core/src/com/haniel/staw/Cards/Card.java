@@ -1,8 +1,8 @@
 package com.haniel.staw.Cards;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -117,7 +117,11 @@ public class Card {
 			if (unique.equals("Yes")) uniqueString = "Unique";
 			else uniqueString ="Generic";
 		}
-		loadTexture();
+		try {
+			loadTexture();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+		}
 		this.rect = new Rectangle(0, 0, g.resizeX(200), g.resizeY(278));
 		if (cardText == null) cardText = "";
 		for (int c = startingCharacter; c < startingCharacter + lineLength; c++ ) {
@@ -267,14 +271,14 @@ public class Card {
 	}
 
 	
-	private void loadTexture() {
+	private void loadTexture() throws IOException {
 
-		if (Gdx.files.internal(faction + "/" +  name + " " + source + ".png").exists()) {
-			this.texture = new Texture(Gdx.files.internal(faction + "/" + name + " " + source + ".png"));
+		if (g.expansionFile.getInputStream(faction + "/" +  name + " " + source + ".png") != null) {
+			this.texture = new Texture(g.downloadFile(faction + "/" + name + " " + source + ".png"));
 			this.textureLoaded = true;
 		}
-		else if (Gdx.files.internal(faction + "/" + name + ".png").exists()) {
-			this.texture = new Texture((faction + "/" + name + ".png"));
+		else if (g.expansionFile.getInputStream(faction + "/" + name + ".png")!= null) {
+			this.texture = new Texture(g.downloadFile(faction + "/" + name + ".png"));
 			this.textureLoaded = true;
 		}
 	}
