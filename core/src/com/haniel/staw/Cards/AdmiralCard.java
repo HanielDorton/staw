@@ -12,11 +12,10 @@ import com.haniel.staw.GameScreen;
 
 public class AdmiralCard extends Card{
 	
-	private int captSkill = 0;
-	private boolean isAdmiral = true;
 
 	public AdmiralCard(Element element, GameScreen g, Fleet f, ShipCard ship) {
 		super(element, g, f, ship);
+		this.isAdmiral = true;
 		for (int i = 0; i< element.getChildCount(); i++) {
 			String text = element.getChild(i).getName();
 			if (text.equals("Skill")) {
@@ -31,13 +30,10 @@ public class AdmiralCard extends Card{
 			}
 		}
 		this.textureLoaded = false;
-		try {
-			if (g.expansionFile.getInputStream(faction + "/" + name + ".png") != null) {
-				this.texture = new Texture(g.downloadFile(faction + "/" + name + ".png"));
-				this.textureLoaded = true;
-			}
-		} catch (IOException e) {
-			}
+		if (g.checkForFile(faction + "/" + name + ".png")) {
+			this.texture = new Texture(g.downloadFile(faction + "/" + name + ".png"));
+			this.textureLoaded = true;
+		}
 		getCaptSkill();
 		setupAdmiralButton();
 	}
@@ -52,20 +48,26 @@ public class AdmiralCard extends Card{
 		else if (name.equals("Adm Maxwell Forrest")) {
 			captSkill = 4;
 		}
+		else if (name.equals("Adm Borg Queen")) {
+			captSkill = 7;
+		}
+		else if (name.equals("Adm Matthew Dougherty")) {
+			captSkill = 4;
+		}
 	}
 	
 	public void toggleAdmCapt() throws IOException {
 		textureLoaded = false;
 		if (isAdmiral) {
 			isAdmiral = false;
-			if (g.expansionFile.getInputStream(faction + "/" + name + " - Captain.png") != null) {
+			if (g.checkForFile(faction + "/" + name + " - Captain.png")) {
 				this.texture = new Texture(g.downloadFile(faction + "/" + name + " - Captain.png"));
 				this.textureLoaded = true;
 			}			
 		}
 		else {
 			isAdmiral = true;
-			if (g.expansionFile.getInputStream(faction + "/" + name + ".png") != null) {
+			if (g.checkForFile(faction + "/" + name + ".png")) {
 				this.texture = new Texture(g.downloadFile(faction + "/" + name + ".png"));
 				this.textureLoaded = true;
 			}	

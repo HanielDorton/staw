@@ -1,6 +1,5 @@
 package com.haniel.staw.Cards;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,14 +17,10 @@ public class Resource extends Card{
 
 	public Resource(Element element, GameScreen g, Fleet f, ShipCard ship) {
 		super(element, g, f, ship);
-		try {
-			if (g.expansionFile.getInputStream("Resources/" + name + ".png") != null) {
-				this.texture = new Texture(g.downloadFile("Resources/" + name + ".png"));
-				this.textureLoaded = true;
-				getUpgrades(element);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		if (g.checkForFile("Resources/" + name + ".png")) {
+			this.texture = new Texture(g.downloadFile("Resources/" + name + ".png"));
+			this.textureLoaded = true;
+			getUpgrades(element);
 		}
 	}
 	

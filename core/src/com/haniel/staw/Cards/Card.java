@@ -59,6 +59,8 @@ public class Card {
 	public int factionLevel;
 	public int hull;
 	public ShipCard ship;
+	public boolean isAdmiral = false;
+	public int captSkill = 0;
 	
 	public Card(Element element, final GameScreen g, Fleet f, ShipCard ship){
 		this.f = f;
@@ -74,7 +76,7 @@ public class Card {
 			if (text.equals("Name")) this.name = (element.getChildByName("Name")).getText().replace(".", "").replace("’",  "");
 			else if (text.equals("Source")) {
 				try {
-					this.source = (element.getChildByName("Source")).getText().replace(".", "").replace(" / ", " ").replace("/", " ");
+					this.source = (element.getChildByName("Source")).getText().replace(".", "").replace(" / ", " ").replace("/", " ").replace("’",  "");
 				}
 				catch (Exception n) {
 					this.source = "";
@@ -273,11 +275,11 @@ public class Card {
 	
 	private void loadTexture() throws IOException {
 
-		if (g.expansionFile.getInputStream(faction + "/" +  name + " " + source + ".png") != null) {
+		if (g.checkForFile(faction + "/" +  name + " " + source + ".png")) {
 			this.texture = new Texture(g.downloadFile(faction + "/" + name + " " + source + ".png"));
 			this.textureLoaded = true;
 		}
-		else if (g.expansionFile.getInputStream(faction + "/" + name + ".png")!= null) {
+		else if (g.checkForFile(faction + "/" + name + ".png")) {
 			this.texture = new Texture(g.downloadFile(faction + "/" + name + ".png"));
 			this.textureLoaded = true;
 		}

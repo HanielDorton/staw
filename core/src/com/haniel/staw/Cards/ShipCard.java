@@ -185,24 +185,24 @@ public class ShipCard extends Card{
 	private void loadTexture() throws IOException {
 		if (!textureLoaded) {
 
-			if (g.expansionFile.getInputStream(faction + "/" + name + ".png") != null) {
+			if (g.checkForFile(faction + "/" + name + ".png")) {
 				this.texture = new Texture(g.downloadFile(faction + "/" + name + ".png"));
 				this.textureLoaded = true;
 			}	
-			else if (g.expansionFile.getInputStream(faction + "/" + name + " " + shipClass + ".png") != null) {
+			else if (g.checkForFile(faction + "/" + name + " " + shipClass + ".png")) {
 				this.texture = new Texture(g.downloadFile(faction + "/" + name + " " + shipClass + ".png"));
 				this.textureLoaded = true;
 			}	
-			else if (g.expansionFile.getInputStream(faction + "/" + shipClass + " " + shipUpgrades + ".png") != null) {
+			else if (g.checkForFile(faction + "/" + shipClass + " " + shipUpgrades + ".png")) {
 				this.texture = new Texture(g.downloadFile(faction + "/" + shipClass + " " + shipUpgrades + ".png"));
 				this.textureLoaded = true;
 			}	
-			else if (g.expansionFile.getInputStream(faction + "/" + shipClass + " " + source + ".png") != null) {
+			else if (g.checkForFile(faction + "/" + shipClass + " " + source + ".png")) {
 				this.texture = new Texture(g.downloadFile(faction + "/" + shipClass + " " + source + ".png"));
 				this.textureLoaded = true;
 			}
 
-			else if (g.expansionFile.getInputStream(faction + "/" + shipClass + ".png") != null) {
+			else if (g.checkForFile(faction + "/" + shipClass + ".png")) {
 				this.texture = new Texture(g.downloadFile(faction + "/" + shipClass + ".png"));
 				textureLoaded = true;
 			}
@@ -583,6 +583,9 @@ public class ShipCard extends Card{
 		for (Card c: upgrades) {
 			if (c instanceof CaptainCard) {
 				this.skill = c.skill;
+			}
+			if (c instanceof AdmiralCard) {
+				if (!(c.isAdmiral))this.skill = c.captSkill;
 			}
 		}
 		

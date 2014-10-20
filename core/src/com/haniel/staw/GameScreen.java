@@ -91,6 +91,7 @@ public class GameScreen implements Screen{
 	private Rectangle shipLogRect = new Rectangle(resizeX(5), resizeY(45), resizeX(500), resizeY(60));
 	private boolean onAndroid = false;
 	public ZipResourceFile expansionFile;
+	private boolean exploaded = false;
 	
 	public GameScreen(final staw gam) {
 		this.game = gam;
@@ -100,22 +101,19 @@ public class GameScreen implements Screen{
 	    switch (Gdx.app.getType()) {		
 			case Android: {
 				onAndroid = true;
-				System.out.println(staw.getC());
 				 try {
-				        this.expansionFile = APKExpansionSupport.getAPKExpansionZipFile(staw.getC(), 1, 0);     
-				    } catch (IOException e) {
+				        this.expansionFile = APKExpansionSupport.getAPKExpansionZipFile(staw.getC(), 11, 0);     
+				        if (expansionFile != null) exploaded = true;
+				    } catch (Exception e) {
 				        e.printStackTrace();
 				    }
 				 break;
 			}
 			default: {
-				try {
-					this.expansionFile = new ZipResourceFile("C:/users/Haniel/workspace/staw/android/assets/main.1.com.haniel.staw.android.obb");
-				} catch (IOException e) {
-			        e.printStackTrace();
-			    }
+				exploaded = true;
 			}
-	}
+	    }
+	    if (!exploaded) addAction("Warning: Resources not Loaded. Contact Owner for assistance."); 
 	}
 
 	@Override
@@ -144,9 +142,9 @@ public class GameScreen implements Screen{
 					game.batch.draw(cardNoTexture, x, resizeY(106), resizeX(200), resizeY(278));
 					game.font.draw(game.batch, currentCards.get(i).getName(), x+resizeX(25), resizeY(280));
 				}
-				if (currentCards.get(i).disabled) game.batch.draw(cardBorderDisabled, x, resizeY(106), resizeX(200), resizeY(278));
-				else if (currentCards.get(i).discardedByUse) game.batch.draw(cardBorderDiscarded, x, resizeY(106), resizeX(200), resizeY(278)); 
+				if (currentCards.get(i).discardedByUse) game.batch.draw(cardBorderDiscarded, x, resizeY(106), resizeX(200), resizeY(278)); 
 				else if (currentCards.get(i).discardedByOpponent) game.batch.draw(cardBorderDiscardedByOpponent, x, resizeY(106), resizeX(200), resizeY(278));
+				else if (currentCards.get(i).disabled) game.batch.draw(cardBorderDisabled, x, resizeY(106), resizeX(200), resizeY(278));
 				else  game.batch.draw(cardBorder, x, resizeY(106), resizeX(200), resizeY(278));
 				x += resizeX(205);
 
@@ -536,13 +534,25 @@ public class GameScreen implements Screen{
 		centerTable.add(scrollPane).width(resizeX(600)).height(resizeY(278));
 	}
 	
+	public boolean checkForFile(String file) {
+		if (onAndroid) {
+			try {
+				return (expansionFile.getInputStream(file) != null);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			return Gdx.files.internal(file).exists();
+		}
+		return false;
+	}
+	
 	public FileHandle downloadFile(String file) {
-		//System.out.println( new CustomFileHandle(file));
 		if (onAndroid) {
 			return new CustomFileHandle(file);
 		} else {
-			//return Gdx.files.internal(file);
-			return new CustomFileHandle(file);
+			return Gdx.files.internal(file);
+			//return new CustomFileHandle(file);
 		}
 
 	}

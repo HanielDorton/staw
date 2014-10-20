@@ -1,7 +1,5 @@
 package com.haniel.staw.Cards;
 
-import java.io.IOException;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -129,13 +127,9 @@ public class DamageCard extends Card{
 	}
 	
 	private void getTexture(String Name) {
-		try {
-			if (g.expansionFile.getInputStream("DamageCards/" + name + ".png") != null) {
-				this.texture = new Texture(g.downloadFile("DamageCards/" + name + ".png"));
-				this.textureLoaded = true;
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		if (g.checkForFile("DamageCards/" + name + ".png")) {
+			this.texture = new Texture(g.downloadFile("DamageCards/" + name + ".png"));
+			this.textureLoaded = true;
 		}
 	}	
 	
